@@ -1,0 +1,75 @@
+.menu-bar {
+  -fx-background-color: #3B3F42;
+  -fx-border-color: #272B2E;
+  -fx-padding: 0;
+}
+
+.menu-bar .container .menu-button .label {
+    -fx-text-fill: #f8f8f2;
+}
+
+.menu-item .label {
+  -fx-text-fill: #f8f8f2;
+}
+
+.context-menu {
+  -fx-skin: "com.sun.javafx.scene.control.skin.ContextMenuSkin";
+  -fx-background-color: #3B3F42;
+  -fx-border-color: #464A4D;
+  -fx-border-width: 2px;
+}
+
+.scroll-bar:horizontal, .scroll-bar:vertical{
+    -fx-background-color: #3B3F42;
+}
+
+.increment-button, .decrement-button {
+    -fx-background-color: #3C3D3F;
+    -fx-border-color: transparent;
+}
+
+.scroll-bar:horizontal .track,
+.scroll-bar:vertical .track{
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-background-radius: 0em;
+}
+
+.scroll-bar:horizontal .thumb,
+.scroll-bar:vertical .thumb {
+    -fx-background-color: #545454;
+    -fx-background-radius: 5em;
+}
+
+.split-pane:horizontal .split-pane-divider {
+   -fx-background-color: #545454;
+}
+
+.split-pane {
+  -fx-padding: 0;
+}
+
+.tab-pane *.tab-header-area *.tab-header-background {
+  -fx-background-color: #3B3F42;
+}
+
+.tab-pane {
+  -fx-tab-min-width:80px;
+  -fx-tab-max-width:200px;
+  -fx-tab-min-height:23px;
+  -fx-tab-max-height:23px;
+}
+
+.tab {
+  -fx-font-size: 13;
+  -fx-background-color: #2B2B2B;
+}
+
+.tab:selected {
+    -fx-background-color: #545454;
+}
+
+.tab-pane:focused .tab-header-area .headers-region .tab:selected .focus-indicator {
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
