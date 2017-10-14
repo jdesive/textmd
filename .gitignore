@@ -1,8 +1,4 @@
-# User-specific stuff:
-.idea/
-
-## Plugin-specific files:
-
 # IntelliJ
 target/
+.idea/
 *.iml
