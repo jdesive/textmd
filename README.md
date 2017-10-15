@@ -19,4 +19,4 @@ A quick and simple markdown editor written in Java with a dark theme to reduce e
 * Run `mvn package` from the root directory
 * The final jar is located at `target/textmd-X.X.X-jar-with-dependencies.jar`
 
-TextMd uses the [Courier Primal](https://github.com/localredhead/courier-primal) font by [@localredhead](https://github.com/localredhead) and is mostly styled after [Intellij](https://www.jetbrains.com/idea/)'s Dracula theme.
+TextMd uses the [Courier Primal](https://github.com/localredhead/courier-primal) font by [@localredhead](https://github.com/localredhead) and is mostly styled after [Intellij](https://www.jetbrains.com/idea/)'s Darcula theme.

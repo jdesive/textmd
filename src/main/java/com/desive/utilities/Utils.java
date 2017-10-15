@@ -142,12 +142,21 @@ public class Utils {
     }
 
     public static TextInputDialog getTextInputDialog(String title, String header, Stage primaryStage) {
-        TextInputDialog dialog = new TextInputDialog("walter");
+        TextInputDialog dialog = new TextInputDialog("https://raw.githubusercontent.com/fullpipe/markdown-test-page/master/test-page.md");
         dialog.setTitle(title);
         dialog.setHeaderText(header);
         dialog.setContentText("URL:");
         dialog.initOwner(primaryStage);
         return dialog;
+    }
+
+    public static Alert getConfirmationDialog(String title, String content, Stage primaryStage){
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.initOwner(primaryStage);
+        return alert;
     }
 
     public static String wrapWithHtmlDocType(String content){

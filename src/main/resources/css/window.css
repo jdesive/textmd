@@ -41,6 +41,10 @@
     -fx-background-radius: 5em;
 }
 
+.scroll-bar .corner {
+    -fx-background-color: #3C3D3F;
+}
+
 .split-pane:horizontal .split-pane-divider {
    -fx-background-color: #545454;
 }
@@ -51,6 +55,8 @@
 
 .tab-pane *.tab-header-area *.tab-header-background {
   -fx-background-color: #3B3F42;
+  -fx-border-width: 0 0 1 0;
+  -fx-border-color: #464A4D;
 }
 
 .tab-pane {
@@ -63,6 +69,7 @@
 .tab {
   -fx-font-size: 13;
   -fx-background-color: #2B2B2B;
+  -fx-background-radius: 0;
 }
 
 .tab:selected {
@@ -72,4 +79,8 @@
 .tab-pane:focused .tab-header-area .headers-region .tab:selected .focus-indicator {
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
+}
+
+.tab-pane:top *.tab-header-area {
+  -fx-padding: 0 0 0 0;
 }

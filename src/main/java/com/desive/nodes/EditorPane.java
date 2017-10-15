@@ -22,6 +22,7 @@ package com.desive.nodes;
 import com.desive.markdown.MarkdownHighligher;
 import com.desive.markdown.MarkdownParser;
 import com.desive.utilities.Utils;
+import com.vladsch.flexmark.pdf.converter.PdfConverterExtension;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -32,6 +33,8 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.docx4j.Docx4J;
+import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.fxmisc.flowless.VirtualizedScrollPane;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
@@ -113,6 +116,7 @@ public class EditorPane extends SplitPane {
 
     public void saveAs(Stage primaryStage) throws IOException {
         FileChooser fileChooser = new FileChooser();
+        fileChooser.setInitialDirectory(file.getParentFile());
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Md files (*.md)", "*.md");
         fileChooser.getExtensionFilters().add(extFilter);
         File file = fileChooser.showSaveDialog(primaryStage);
@@ -125,12 +129,78 @@ public class EditorPane extends SplitPane {
 
     public void saveHtml(Stage primaryStage, boolean style) throws IOException {
         FileChooser fileChooser = new FileChooser();
+        fileChooser.setInitialDirectory(file.getParentFile());
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("HTML files (*.html)", "*.html");
         fileChooser.getExtensionFilters().add(extFilter);
         File file = fileChooser.showSaveDialog(primaryStage);
         if(file != null){
             PrintWriter writer = new PrintWriter(new FileWriter(file));
             writer.print(Utils.wrapWithHtmlDocType(style ? currentHtmlWithStyle : currentHtml));
+            writer.close();
+        }
+    }
+
+    public void saveDocx(Stage primaryStage) throws IOException, Docx4JException {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setInitialDirectory(file.getParentFile());
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Docx files (*.docx)", "*.docx");
+        fileChooser.getExtensionFilters().add(extFilter);
+        File file = fileChooser.showSaveDialog(primaryStage);
+        if(file != null){
+            MarkdownParser.convertMarkdownToDocx(editor.getText()).save(file, Docx4J.FLAG_SAVE_ZIP_FILE);
+        }
+    }
+
+    public void savePdf(Stage primaryStage) throws IOException{
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setInitialDirectory(file.getParentFile());
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("PDF files (*.pdf)", "*.pdf");
+        fileChooser.getExtensionFilters().add(extFilter);
+        File file = fileChooser.showSaveDialog(primaryStage);
+        if(file != null){
+            PdfConverterExtension.exportToPdf(
+                    file.getAbsolutePath(),
+                    MarkdownParser.convertMarkdownToHTML(editor.getText()),
+                    "", MarkdownParser.options
+            );
+        }
+    }
+
+    public void saveJira(Stage primaryStage) throws IOException{
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setInitialDirectory(file.getParentFile());
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Text files (*.txt)", "*.txt");
+        fileChooser.getExtensionFilters().add(extFilter);
+        File file = fileChooser.showSaveDialog(primaryStage);
+        if(file != null){
+            PrintWriter writer = new PrintWriter(new FileWriter(file));
+            writer.print(MarkdownParser.convertMarkdownToJira(editor.getText()));
+            writer.close();
+        }
+    }
+
+    public void saveYoutrack(Stage primaryStage) throws IOException{
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setInitialDirectory(file.getParentFile());
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Text files (*.txt)", "*.txt");
+        fileChooser.getExtensionFilters().add(extFilter);
+        File file = fileChooser.showSaveDialog(primaryStage);
+        if(file != null){
+            PrintWriter writer = new PrintWriter(new FileWriter(file));
+            writer.print(MarkdownParser.convertMarkdownToYoutrack(editor.getText()));
+            writer.close();
+        }
+    }
+
+    public void saveText(Stage primaryStage) throws IOException{
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setInitialDirectory(file.getParentFile());
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Text files (*.txt)", "*.txt");
+        fileChooser.getExtensionFilters().add(extFilter);
+        File file = fileChooser.showSaveDialog(primaryStage);
+        if(file != null){
+            PrintWriter writer = new PrintWriter(new FileWriter(file));
+            writer.print(MarkdownParser.convertMarkdownToText(editor.getText()));
             writer.close();
         }
     }

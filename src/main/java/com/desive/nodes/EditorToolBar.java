@@ -25,6 +25,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.KeyCombination;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.docx4j.openpackaging.exceptions.Docx4JException;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -48,12 +49,15 @@ public class EditorToolBar extends MenuBar {
 
         Menu file = new Menu("File"),
                 edit = new Menu("Edit"),
-                export = new Menu("Import/Export");
+                imports = new Menu("Import"),
+                export = new Menu("Export"),
+                open = new Menu("Open");
 
         file.getItems().addAll(
                 createNewItem(),
-                createOpenItem(),
-                createOpenFromURLItem(),
+                open,
+                imports,
+                export,
                 createSaveItem(),
                 createSaveAsItem(),
                 createExitItem()
@@ -62,18 +66,28 @@ public class EditorToolBar extends MenuBar {
                 createUndoItem(),
                 createRedoItem()
         );
-        export.getItems().addAll(
+        imports.getItems().addAll(
                 createImportFromFileItem(),
-                createImportFromUrlItem(),
+                createImportFromUrlItem()
+        );
+        export.getItems().addAll(
+                createExportDocxItem(),
+                createExportPdfItem(),
+                createExportJiraItem(),
+                createExportYoutrackItem(),
+                createExportTextItem(),
                 createExportHtmlItem(),
                 createExportHtmlWithStyleItem()
+        );
+        open.getItems().addAll(
+                createOpenItem(),
+                createOpenFromURLItem()
         );
 
         this.getMenus().addAll(
                 file,
-                edit,
-                export)
-        ;
+                edit
+        );
     }
 
     private MenuItem createUndoItem() {
@@ -137,6 +151,7 @@ public class EditorToolBar extends MenuBar {
             EditorTab currTab = ((EditorTab) tabFactory.getSelectedTab());
             try {
                 currTab.getEditorPane().saveAs(primaryStage);
+                currTab.computeTabName();
             } catch (IOException e1) {
                 Utils.getExceptionDialogBox(
                         "Oops, an exception!",
@@ -151,7 +166,8 @@ public class EditorToolBar extends MenuBar {
     }
 
     private MenuItem createImportFromUrlItem() {
-        MenuItem item = new MenuItem("Import from URL");
+        MenuItem item = new MenuItem("URL");
+        item.setAccelerator(KeyCombination.valueOf("SHORTCUT+SHIFT+I"));
         item.setOnAction(e -> {
             TextInputDialog input = Utils.getTextInputDialog(
                     "Import from URL",
@@ -178,7 +194,8 @@ public class EditorToolBar extends MenuBar {
     }
 
     private MenuItem createImportFromFileItem() {
-        MenuItem item = new MenuItem("Import from File");
+        MenuItem item = new MenuItem("File");
+        item.setAccelerator(KeyCombination.valueOf("SHORTCUT+I"));
         item.setOnAction(e -> {
             FileChooser fileChooser = new FileChooser();
             FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Md files (*.md)", "*.md");
@@ -203,9 +220,14 @@ public class EditorToolBar extends MenuBar {
     }
 
     private MenuItem createExportHtmlItem() {
-        MenuItem item = new MenuItem("Export HTML");
+        MenuItem item = new MenuItem("HTML");
         item.setOnAction(e -> {
             EditorTab currTab = ((EditorTab) tabFactory.getSelectedTab());
+            Utils.getConfirmationDialog(
+                    "Exported Successfully",
+                    "Exported HTML successfully.",
+                    primaryStage
+            ).showAndWait();
             try {
                 currTab.getEditorPane().saveHtml(primaryStage, false);
             } catch (IOException e1) {
@@ -222,15 +244,140 @@ public class EditorToolBar extends MenuBar {
     }
 
     private MenuItem createExportHtmlWithStyleItem() {
-        MenuItem item = new MenuItem("Export HTML/CSS");
+        MenuItem item = new MenuItem("HTML/CSS");
         item.setOnAction(e -> {
             EditorTab currTab = ((EditorTab) tabFactory.getSelectedTab());
             try {
                 currTab.getEditorPane().saveHtml(primaryStage, true);
+                Utils.getConfirmationDialog(
+                        "Exported Successfully",
+                        "Exported HTML/CSS successfully.",
+                        primaryStage
+                ).showAndWait();
             } catch (IOException e1) {
                 Utils.getExceptionDialogBox(
                         "Oops, an exception!",
                         "Error exporting html/css",
+                        e1.getMessage(),
+                        e1,
+                        primaryStage
+                ).showAndWait();
+            }
+        });
+        return item;
+    }
+
+    private MenuItem createExportDocxItem() {
+        MenuItem item = new MenuItem("Docx");
+        item.setOnAction(e -> {
+            EditorTab currTab = ((EditorTab) tabFactory.getSelectedTab());
+            try {
+                currTab.getEditorPane().saveDocx(primaryStage);
+                Utils.getConfirmationDialog(
+                        "Exported Successfully",
+                        "Exported Docx successfully.",
+                        primaryStage
+                ).showAndWait();
+            } catch (IOException | Docx4JException e1) {
+                Utils.getExceptionDialogBox(
+                        "Oops, an exception!",
+                        "Error exporting docx",
+                        e1.getMessage(),
+                        e1,
+                        primaryStage
+                ).showAndWait();
+            }
+        });
+        return item;
+    }
+
+    private MenuItem createExportPdfItem() {
+        MenuItem item = new MenuItem("PDF");
+        item.setOnAction(e -> {
+            EditorTab currTab = ((EditorTab) tabFactory.getSelectedTab());
+            try {
+                currTab.getEditorPane().savePdf(primaryStage);
+                Utils.getConfirmationDialog(
+                        "Exported Successfully",
+                        "Exported PDF successfully.",
+                        primaryStage
+                ).showAndWait();
+            } catch (IOException e1) {
+                Utils.getExceptionDialogBox(
+                        "Oops, an exception!",
+                        "Error exporting pdf",
+                        e1.getMessage(),
+                        e1,
+                        primaryStage
+                ).showAndWait();
+            }
+        });
+        return item;
+    }
+
+    private MenuItem createExportJiraItem() {
+        MenuItem item = new MenuItem("JIRA");
+        item.setOnAction(e -> {
+            EditorTab currTab = ((EditorTab) tabFactory.getSelectedTab());
+            try {
+                currTab.getEditorPane().saveJira(primaryStage);
+                Utils.getConfirmationDialog(
+                        "Exported Successfully",
+                        "Exported JIRA formatted text successfully.",
+                        primaryStage
+                ).showAndWait();
+            } catch (IOException e1) {
+                Utils.getExceptionDialogBox(
+                        "Oops, an exception!",
+                        "Error exporting jira text",
+                        e1.getMessage(),
+                        e1,
+                        primaryStage
+                ).showAndWait();
+            }
+        });
+        return item;
+    }
+
+    private MenuItem createExportYoutrackItem() {
+        MenuItem item = new MenuItem("YouTrack");
+        item.setOnAction(e -> {
+            EditorTab currTab = ((EditorTab) tabFactory.getSelectedTab());
+            try {
+                currTab.getEditorPane().saveYoutrack(primaryStage);
+                Utils.getConfirmationDialog(
+                        "Exported Successfully",
+                        "Exported YouTrack formatted text successfully.",
+                        primaryStage
+                ).showAndWait();
+            } catch (IOException e1) {
+                Utils.getExceptionDialogBox(
+                        "Oops, an exception!",
+                        "Error exporting youtrack text",
+                        e1.getMessage(),
+                        e1,
+                        primaryStage
+                ).showAndWait();
+            }
+        });
+        return item;
+    }
+
+    private MenuItem createExportTextItem() {
+        MenuItem item = new MenuItem("Text");
+        item.setOnAction(e -> {
+            EditorTab currTab = ((EditorTab) tabFactory.getSelectedTab());
+            try {
+                currTab.getEditorPane().saveText(primaryStage);
+                Utils.getConfirmationDialog(
+                        "Exported Successfully",
+                        "Exported text successfully.",
+                        primaryStage
+                ).showAndWait();
+            } catch (IOException e1) {
+                Utils.getExceptionDialogBox(
+                        "Oops, an exception!",
+                        "Error exporting text",
                         e1.getMessage(),
                         e1,
                         primaryStage
@@ -276,7 +423,7 @@ public class EditorToolBar extends MenuBar {
     }
 
     private MenuItem createOpenItem() {
-        MenuItem item = new MenuItem("Open");
+        MenuItem item = new MenuItem("File");
         item.setAccelerator(KeyCombination.valueOf("SHORTCUT+O"));
         item.setOnAction(e ->{
             FileChooser fileChooser = new FileChooser();
@@ -305,7 +452,7 @@ public class EditorToolBar extends MenuBar {
     }
 
     private MenuItem createOpenFromURLItem() {
-        MenuItem item = new MenuItem("Open URL");
+        MenuItem item = new MenuItem("URL");
         item.setAccelerator(KeyCombination.valueOf("SHORTCUT+SHIFT+O"));
         item.setOnAction(e -> {
             TextInputDialog input = Utils.getTextInputDialog(

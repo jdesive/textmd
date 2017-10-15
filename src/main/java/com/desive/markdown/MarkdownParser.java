@@ -19,6 +19,9 @@
 
 package com.desive.markdown;
 
+import com.vladsch.flexmark.ast.util.TextCollectingVisitor;
+import com.vladsch.flexmark.convert.html.FlexmarkHtmlParser;
+import com.vladsch.flexmark.docx.converter.internal.DocxRenderer;
 import com.vladsch.flexmark.ext.abbreviation.AbbreviationExtension;
 import com.vladsch.flexmark.ext.anchorlink.AnchorLinkExtension;
 import com.vladsch.flexmark.ext.autolink.AutolinkExtension;
@@ -27,10 +30,13 @@ import com.vladsch.flexmark.ext.gfm.tasklist.TaskListExtension;
 import com.vladsch.flexmark.ext.tables.TablesExtension;
 import com.vladsch.flexmark.ext.wikilink.WikiLinkExtension;
 import com.vladsch.flexmark.html.HtmlRenderer;
+import com.vladsch.flexmark.jira.converter.JiraConverterExtension;
 import com.vladsch.flexmark.parser.Parser;
 import com.vladsch.flexmark.util.KeepType;
 import com.vladsch.flexmark.util.options.MutableDataHolder;
 import com.vladsch.flexmark.util.options.MutableDataSet;
+import com.vladsch.flexmark.youtrack.converter.YouTrackConverterExtension;
+import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
 
 import java.util.Arrays;
 
@@ -39,7 +45,7 @@ import java.util.Arrays;
 */
 public class MarkdownParser {
 
-    static final MutableDataHolder options = new MutableDataSet()
+    public static final MutableDataHolder options = new MutableDataSet()
             .set(Parser.REFERENCES_KEEP, KeepType.LAST)
             .set(Parser.PARSE_INNER_HTML_COMMENTS, true)
             .set(Parser.INDENTED_CODE_NO_TRAILING_BLANK_LINES, false)
@@ -67,6 +73,9 @@ public class MarkdownParser {
             .set(HtmlRenderer.FENCED_CODE_LANGUAGE_CLASS_PREFIX, "")
             .set(HtmlRenderer.RENDER_HEADER_ID, true)
 
+            // Docx options
+            .set(DocxRenderer.SUPPRESS_HTML, true)
+
             // Misc. Extensions
             .set(AbbreviationExtension.ABBREVIATIONS_KEEP, KeepType.LAST)
             .set(TaskListExtension.ITEM_DONE_MARKER, "<span class=\"taskitem\">X</span>")
@@ -85,17 +94,43 @@ public class MarkdownParser {
             .set(TablesExtension.DISCARD_EXTRA_COLUMNS, true)
             .set(TablesExtension.HEADER_SEPARATOR_COLUMN_MATCH, true)
 
-
             .set(Parser.EXTENSIONS, Arrays.asList(TablesExtension.create(), EscapedCharacterExtension.create(),
                     AbbreviationExtension.create(), AutolinkExtension.create(), TaskListExtension.create(),
                     WikiLinkExtension.create()));
 
-    static Parser parser = Parser.builder(options).build();
-    static HtmlRenderer renderer = HtmlRenderer.builder(options).build();
+    static MutableDataHolder jiraOptions = new MutableDataSet()
+            .set(Parser.EXTENSIONS, Arrays.asList(JiraConverterExtension.create()));
+
+    static MutableDataHolder youtrackOptions = new MutableDataSet()
+            .set(Parser.EXTENSIONS, Arrays.asList(YouTrackConverterExtension.create()));
+
+    static Parser markdownParser = Parser.builder(options).build();
+    static FlexmarkHtmlParser htmlParser = FlexmarkHtmlParser.build();
+    static HtmlRenderer htmlRenderer = HtmlRenderer.builder(options).build();
+    static DocxRenderer docxRender = DocxRenderer.builder(options).build();
 
 
     public static String convertMarkdownToHTML(String markdown){
-        return renderer.render(parser.parse(markdown));
+        return htmlRenderer.render(markdownParser.parse(markdown));
+    }
+
+    public static WordprocessingMLPackage convertMarkdownToDocx(String markdown){
+        WordprocessingMLPackage template = DocxRenderer.getDefaultTemplate();
+        docxRender.render(markdownParser.parse(markdown), template);
+        return template;
+    }
+
+    public static String convertMarkdownToJira(String markdown){
+        return htmlRenderer.withOptions(jiraOptions).render(markdownParser.parse(markdown));
+    }
+
+    public static String convertMarkdownToYoutrack(String markdown){
+        return htmlRenderer.withOptions(youtrackOptions).render(markdownParser.parse(markdown));
+    }
+
+    public static String convertMarkdownToText(String markdown){
+        TextCollectingVisitor textCollectingVisitor = new TextCollectingVisitor();
+        return textCollectingVisitor.collectAndGetText(markdownParser.parse(markdown));
     }
 
 }
