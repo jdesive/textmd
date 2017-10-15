@@ -151,7 +151,7 @@ public class EditorPane extends SplitPane {
         }
     }
 
-    public void savePdf(Stage primaryStage) throws IOException{
+    public void savePdf(Stage primaryStage, boolean style) throws IOException{
         FileChooser fileChooser = new FileChooser();
         fileChooser.setInitialDirectory(file.getParentFile());
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("PDF files (*.pdf)", "*.pdf");
@@ -160,7 +160,7 @@ public class EditorPane extends SplitPane {
         if(file != null){
             PdfConverterExtension.exportToPdf(
                     file.getAbsolutePath(),
-                    MarkdownParser.convertMarkdownToHTML(editor.getText()),
+                    MarkdownParser.convertMarkdownToHTML(Utils.wrapWithHtmlDocType(style ? currentHtmlWithStyle : currentHtml)),
                     "", MarkdownParser.options
             );
         }

@@ -73,6 +73,7 @@ public class EditorToolBar extends MenuBar {
         export.getItems().addAll(
                 createExportDocxItem(),
                 createExportPdfItem(),
+                createExportPdfWithCssItem(),
                 createExportJiraItem(),
                 createExportYoutrackItem(),
                 createExportTextItem(),
@@ -296,7 +297,7 @@ public class EditorToolBar extends MenuBar {
         item.setOnAction(e -> {
             EditorTab currTab = ((EditorTab) tabFactory.getSelectedTab());
             try {
-                currTab.getEditorPane().savePdf(primaryStage);
+                currTab.getEditorPane().savePdf(primaryStage, false);
                 Utils.getConfirmationDialog(
                         "Exported Successfully",
                         "Exported PDF successfully.",
@@ -306,6 +307,30 @@ public class EditorToolBar extends MenuBar {
                 Utils.getExceptionDialogBox(
                         "Oops, an exception!",
                         "Error exporting pdf",
+                        e1.getMessage(),
+                        e1,
+                        primaryStage
+                ).showAndWait();
+            }
+        });
+        return item;
+    }
+
+    private MenuItem createExportPdfWithCssItem() {
+        MenuItem item = new MenuItem("PDF/CSS");
+        item.setOnAction(e -> {
+            EditorTab currTab = ((EditorTab) tabFactory.getSelectedTab());
+            try {
+                currTab.getEditorPane().savePdf(primaryStage, true);
+                Utils.getConfirmationDialog(
+                        "Exported Successfully",
+                        "Exported PDF/CSS successfully.",
+                        primaryStage
+                ).showAndWait();
+            } catch (IOException e1) {
+                Utils.getExceptionDialogBox(
+                        "Oops, an exception!",
+                        "Error exporting pdf/css",
                         e1.getMessage(),
                         e1,
                         primaryStage

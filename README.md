@@ -1,13 +1,24 @@
 # TextMd Markdown Editor
-A quick and simple markdown editor written in Java with a dark theme to reduce eye strain. 
+A quick and simple markdown editor written in Java with a dark theme to reduce eye strain. TextMd also supports exporting to
+multiple different file types, see *Markdown Export Types* for more info.
 
 ## Features
 * Simple Markdown highlighting (a little buggy...)
 * Tab view for opening multiple files
 * Open from url
-* Export Markdown to HTML
+* Export Markdown to different file types
 * Split view with live rendering 
 * Hotkeys
+
+![Main Page](https://i.imgur.com/YOanrsI.png)
+
+## Markdown Export Types
+* Docx
+* PDF or PDF/CSS (With editors style)
+* HTML or HTML/CSS (With editors style)
+* Plain Text
+* JIRA Formatted Text
+* YouTrack Formatted Text
 
 ## Maven Dependencies
 * [Flexmark](https://github.com/vsch/flexmark-java) 0.27.0
