@@ -127,7 +127,7 @@ public class EditorPane extends SplitPane {
         }
     }
 
-    public void saveHtml(Stage primaryStage, boolean style) throws IOException {
+    public boolean saveHtml(Stage primaryStage, boolean style) throws IOException {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setInitialDirectory(file.getParentFile());
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("HTML files (*.html)", "*.html");
@@ -137,10 +137,12 @@ public class EditorPane extends SplitPane {
             PrintWriter writer = new PrintWriter(new FileWriter(file));
             writer.print(Utils.wrapWithHtmlDocType(style ? currentHtmlWithStyle : currentHtml));
             writer.close();
+            return true;
         }
+        return false;
     }
 
-    public void saveDocx(Stage primaryStage) throws IOException, Docx4JException {
+    public boolean saveDocx(Stage primaryStage) throws IOException, Docx4JException {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setInitialDirectory(file.getParentFile());
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Docx files (*.docx)", "*.docx");
@@ -148,10 +150,12 @@ public class EditorPane extends SplitPane {
         File file = fileChooser.showSaveDialog(primaryStage);
         if(file != null){
             MarkdownParser.convertMarkdownToDocx(editor.getText()).save(file, Docx4J.FLAG_SAVE_ZIP_FILE);
+            return true;
         }
+        return false;
     }
 
-    public void savePdf(Stage primaryStage, boolean style) throws IOException{
+    public boolean savePdf(Stage primaryStage, boolean style) throws IOException{
         FileChooser fileChooser = new FileChooser();
         fileChooser.setInitialDirectory(file.getParentFile());
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("PDF files (*.pdf)", "*.pdf");
@@ -163,10 +167,12 @@ public class EditorPane extends SplitPane {
                     MarkdownParser.convertMarkdownToHTML(Utils.wrapWithHtmlDocType(style ? currentHtmlWithStyle : currentHtml)),
                     "", MarkdownParser.options
             );
+            return true;
         }
+        return false;
     }
 
-    public void saveJira(Stage primaryStage) throws IOException{
+    public boolean saveJira(Stage primaryStage) throws IOException{
         FileChooser fileChooser = new FileChooser();
         fileChooser.setInitialDirectory(file.getParentFile());
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Text files (*.txt)", "*.txt");
@@ -176,10 +182,12 @@ public class EditorPane extends SplitPane {
             PrintWriter writer = new PrintWriter(new FileWriter(file));
             writer.print(MarkdownParser.convertMarkdownToJira(editor.getText()));
             writer.close();
+            return true;
         }
+        return false;
     }
 
-    public void saveYoutrack(Stage primaryStage) throws IOException{
+    public boolean saveYoutrack(Stage primaryStage) throws IOException{
         FileChooser fileChooser = new FileChooser();
         fileChooser.setInitialDirectory(file.getParentFile());
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Text files (*.txt)", "*.txt");
@@ -189,10 +197,12 @@ public class EditorPane extends SplitPane {
             PrintWriter writer = new PrintWriter(new FileWriter(file));
             writer.print(MarkdownParser.convertMarkdownToYoutrack(editor.getText()));
             writer.close();
+            return true;
         }
+        return false;
     }
 
-    public void saveText(Stage primaryStage) throws IOException{
+    public boolean saveText(Stage primaryStage) throws IOException{
         FileChooser fileChooser = new FileChooser();
         fileChooser.setInitialDirectory(file.getParentFile());
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Text files (*.txt)", "*.txt");
@@ -202,7 +212,9 @@ public class EditorPane extends SplitPane {
             PrintWriter writer = new PrintWriter(new FileWriter(file));
             writer.print(MarkdownParser.convertMarkdownToText(editor.getText()));
             writer.close();
+            return true;
         }
+        return false;
     }
 
     public void setContent(String content){

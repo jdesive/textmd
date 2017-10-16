@@ -224,13 +224,14 @@ public class EditorToolBar extends MenuBar {
         MenuItem item = new MenuItem("HTML");
         item.setOnAction(e -> {
             EditorTab currTab = ((EditorTab) tabFactory.getSelectedTab());
-            Utils.getConfirmationDialog(
-                    "Exported Successfully",
-                    "Exported HTML successfully.",
-                    primaryStage
-            ).showAndWait();
             try {
-                currTab.getEditorPane().saveHtml(primaryStage, false);
+                if(currTab.getEditorPane().saveHtml(primaryStage, false)) {
+                    Utils.getConfirmationDialog(
+                            "Exported Successfully",
+                            "Exported HTML successfully.",
+                            primaryStage
+                    ).showAndWait();
+                }
             } catch (IOException e1) {
                 Utils.getExceptionDialogBox(
                         "Oops, an exception!",
@@ -249,12 +250,13 @@ public class EditorToolBar extends MenuBar {
         item.setOnAction(e -> {
             EditorTab currTab = ((EditorTab) tabFactory.getSelectedTab());
             try {
-                currTab.getEditorPane().saveHtml(primaryStage, true);
-                Utils.getConfirmationDialog(
-                        "Exported Successfully",
-                        "Exported HTML/CSS successfully.",
-                        primaryStage
-                ).showAndWait();
+                if(currTab.getEditorPane().saveHtml(primaryStage, true)) {
+                    Utils.getConfirmationDialog(
+                            "Exported Successfully",
+                            "Exported HTML/CSS successfully.",
+                            primaryStage
+                    ).showAndWait();
+                }
             } catch (IOException e1) {
                 Utils.getExceptionDialogBox(
                         "Oops, an exception!",
@@ -273,12 +275,13 @@ public class EditorToolBar extends MenuBar {
         item.setOnAction(e -> {
             EditorTab currTab = ((EditorTab) tabFactory.getSelectedTab());
             try {
-                currTab.getEditorPane().saveDocx(primaryStage);
-                Utils.getConfirmationDialog(
-                        "Exported Successfully",
-                        "Exported Docx successfully.",
-                        primaryStage
-                ).showAndWait();
+                if(currTab.getEditorPane().saveDocx(primaryStage)) {
+                    Utils.getConfirmationDialog(
+                            "Exported Successfully",
+                            "Exported Docx successfully.",
+                            primaryStage
+                    ).showAndWait();
+                }
             } catch (IOException | Docx4JException e1) {
                 Utils.getExceptionDialogBox(
                         "Oops, an exception!",
@@ -297,12 +300,13 @@ public class EditorToolBar extends MenuBar {
         item.setOnAction(e -> {
             EditorTab currTab = ((EditorTab) tabFactory.getSelectedTab());
             try {
-                currTab.getEditorPane().savePdf(primaryStage, false);
-                Utils.getConfirmationDialog(
-                        "Exported Successfully",
-                        "Exported PDF successfully.",
-                        primaryStage
-                ).showAndWait();
+                if(currTab.getEditorPane().savePdf(primaryStage, false)) {
+                    Utils.getConfirmationDialog(
+                            "Exported Successfully",
+                            "Exported PDF successfully.",
+                            primaryStage
+                    ).showAndWait();
+                }
             } catch (IOException e1) {
                 Utils.getExceptionDialogBox(
                         "Oops, an exception!",
@@ -321,12 +325,13 @@ public class EditorToolBar extends MenuBar {
         item.setOnAction(e -> {
             EditorTab currTab = ((EditorTab) tabFactory.getSelectedTab());
             try {
-                currTab.getEditorPane().savePdf(primaryStage, true);
-                Utils.getConfirmationDialog(
-                        "Exported Successfully",
-                        "Exported PDF/CSS successfully.",
-                        primaryStage
-                ).showAndWait();
+                if(currTab.getEditorPane().savePdf(primaryStage, true)) {
+                    Utils.getConfirmationDialog(
+                            "Exported Successfully",
+                            "Exported PDF/CSS successfully.",
+                            primaryStage
+                    ).showAndWait();
+                }
             } catch (IOException e1) {
                 Utils.getExceptionDialogBox(
                         "Oops, an exception!",
@@ -345,12 +350,13 @@ public class EditorToolBar extends MenuBar {
         item.setOnAction(e -> {
             EditorTab currTab = ((EditorTab) tabFactory.getSelectedTab());
             try {
-                currTab.getEditorPane().saveJira(primaryStage);
-                Utils.getConfirmationDialog(
-                        "Exported Successfully",
-                        "Exported JIRA formatted text successfully.",
-                        primaryStage
-                ).showAndWait();
+                if(currTab.getEditorPane().saveJira(primaryStage)) {
+                    Utils.getConfirmationDialog(
+                            "Exported Successfully",
+                            "Exported JIRA formatted text successfully.",
+                            primaryStage
+                    ).showAndWait();
+                }
             } catch (IOException e1) {
                 Utils.getExceptionDialogBox(
                         "Oops, an exception!",
@@ -369,12 +375,13 @@ public class EditorToolBar extends MenuBar {
         item.setOnAction(e -> {
             EditorTab currTab = ((EditorTab) tabFactory.getSelectedTab());
             try {
-                currTab.getEditorPane().saveYoutrack(primaryStage);
-                Utils.getConfirmationDialog(
-                        "Exported Successfully",
-                        "Exported YouTrack formatted text successfully.",
-                        primaryStage
-                ).showAndWait();
+                if(currTab.getEditorPane().saveYoutrack(primaryStage)) {
+                    Utils.getConfirmationDialog(
+                            "Exported Successfully",
+                            "Exported YouTrack formatted text successfully.",
+                            primaryStage
+                    ).showAndWait();
+                }
             } catch (IOException e1) {
                 Utils.getExceptionDialogBox(
                         "Oops, an exception!",
@@ -393,12 +400,13 @@ public class EditorToolBar extends MenuBar {
         item.setOnAction(e -> {
             EditorTab currTab = ((EditorTab) tabFactory.getSelectedTab());
             try {
-                currTab.getEditorPane().saveText(primaryStage);
-                Utils.getConfirmationDialog(
-                        "Exported Successfully",
-                        "Exported text successfully.",
-                        primaryStage
-                ).showAndWait();
+                if(currTab.getEditorPane().saveText(primaryStage)) {
+                    Utils.getConfirmationDialog(
+                            "Exported Successfully",
+                            "Exported text successfully.",
+                            primaryStage
+                    ).showAndWait();
+                }
             } catch (IOException e1) {
                 Utils.getExceptionDialogBox(
                         "Oops, an exception!",
