@@ -28,19 +28,34 @@
     <version>0.1.0</version>
 
     <properties>
+        <global.finalName>textmd</global.finalName>
         <flexmark.version>0.27.0</flexmark.version>
         <richtextfx.version>v0.7-M3</richtextfx.version><!-- v0.7-M5 is the latest but to avoid bugs -->
         <assembly.version>3.0.0</assembly.version>
         <compiler.version>3.6.1</compiler.version>
+        <rsyntaxtextarea.version>2.6.1</rsyntaxtextarea.version>
+        <atlassian.version>8.0.5</atlassian.version>
         <java.version>1.8</java.version>
         <mainClass>com.desive.TextMd</mainClass>
-        <project.build.finalName>textmd</project.build.finalName>
     </properties>
 
     <repositories>
         <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
+        </repository>
+        <repository>
+            <id>atlassian-public</id>
+            <url>https://packages.atlassian.com/maven/repository/public</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+                <checksumPolicy>warn</checksumPolicy>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+                <checksumPolicy>warn</checksumPolicy>
+            </releases>
         </repository>
     </repositories>
 
@@ -60,9 +75,15 @@
             <artifactId>RichTextFX</artifactId>
             <version>${richtextfx.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.atlassian.renderer</groupId>
+            <artifactId>atlassian-renderer</artifactId>
+            <version>${atlassian.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
+        <finalName>${global.finalName}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

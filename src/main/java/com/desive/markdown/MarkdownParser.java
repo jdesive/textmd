@@ -19,6 +19,7 @@
 
 package com.desive.markdown;
 
+import com.atlassian.renderer.wysiwyg.converter.DefaultWysiwygConverter;
 import com.vladsch.flexmark.ast.util.TextCollectingVisitor;
 import com.vladsch.flexmark.convert.html.FlexmarkHtmlParser;
 import com.vladsch.flexmark.docx.converter.internal.DocxRenderer;
@@ -70,7 +71,7 @@ public class MarkdownParser {
             .set(HtmlRenderer.SUPPRESS_INLINE_HTML, false)
             .set(HtmlRenderer.SOFT_BREAK, "<br />\n")
             .set(HtmlRenderer.HARD_BREAK, "<br />\n<br />\n")
-            .set(HtmlRenderer.FENCED_CODE_LANGUAGE_CLASS_PREFIX, "")
+            .set(HtmlRenderer.FENCED_CODE_LANGUAGE_CLASS_PREFIX, "prettyprint lang-")
             .set(HtmlRenderer.RENDER_HEADER_ID, true)
 
             // Docx options
@@ -108,6 +109,7 @@ public class MarkdownParser {
     static FlexmarkHtmlParser htmlParser = FlexmarkHtmlParser.build();
     static HtmlRenderer htmlRenderer = HtmlRenderer.builder(options).build();
     static DocxRenderer docxRender = DocxRenderer.builder(options).build();
+    static DefaultWysiwygConverter confluenceConverter = new DefaultWysiwygConverter();
 
 
     public static String convertMarkdownToHTML(String markdown){
@@ -131,6 +133,10 @@ public class MarkdownParser {
     public static String convertMarkdownToText(String markdown){
         TextCollectingVisitor textCollectingVisitor = new TextCollectingVisitor();
         return textCollectingVisitor.collectAndGetText(markdownParser.parse(markdown));
+    }
+
+    public static String markdownToConfluenceMarkup(String markdown) {
+        return confluenceConverter.convertXHtmlToWikiMarkup(convertMarkdownToHTML(markdown));
     }
 
 }

@@ -22,6 +22,8 @@ package com.desive.utilities;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 
 import java.io.PrintWriter;
@@ -32,6 +34,10 @@ import java.io.StringWriter;
 */
 public class Utils {
 
+    public static Paint getDefaultTextColor() {
+        return Color.valueOf("f8f8f2");
+    }
+
     public static String getDefaultFileName(){
         return "untitled.md";
     }
@@ -40,8 +46,8 @@ public class Utils {
         return "# TextMd Sample\n" +
                 "\n" +
                 "## Some samples\n" +
-                "__BOLD__ Text\n" +
-                "_ITALIC_ Text\n" +
+                "**BOLD** Text\n" +
+                "*ITALIC* Text\n" +
                 "__BOLD__ Text\n" +
                 "_ITALIC_ Text\n" +
                 "`inline-code` Text\n" +
@@ -53,10 +59,11 @@ public class Utils {
                 "public static String sample = \"Here is some sample Java code!\";\n" +
                 "```\n" +
                 "\n" +
-                "Much more!";
+                "Much more!\n" +
+                "***";
     }
 
-    public static String getWebViewCss(){ // eh, ill just hard code it.
+    public static String getWebViewCss(String background){ // eh, ill just hard code it.
         return "\nbody {\n" +
                 "  background-color: #3B3F42;\n" +
                 "  font-family: 'Courier Primal';\n" +
@@ -80,15 +87,8 @@ public class Utils {
                 "  border-radius: 2px;\n" +
                 "}\n" +
                 "\n" +
-                "pre code[class]:after {\n" +
-                "  content: 'Code: ' attr(class);\n" +
-                "  display: block; text-align: right;\n" +
-                "  font-size: smaller;\n" +
-                "  padding-top: 5px;\n" +
-                "}\n" +
-                "\n" +
                 "pre {\n" +
-                "  background-color: rgba(44, 44, 44, 0.4);\n" +
+                "  background-color: " + background + ";\n" +
                 "  font-family: 'Courier Primal';\n" +
                 "  color: #f8f8f2;\n" +
                 "  padding: 10px;\n" +

@@ -19,28 +19,37 @@
 
 package com.desive.nodes;
 
+import com.desive.nodes.tabs.EditorTab;
 import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
 
 /*
  Created by Jack DeSive on 10/13/2017 at 7:04 PM
 */
 public class TabFactory {
 
-    private TabPane tabPane;
+    private static EditorTabPane tabPane = new EditorTabPane();
+    private static TabFactory instance;
 
-    public TabFactory(TabPane tabPane) {
-        this.tabPane = tabPane;
+    public TabFactory() {
+        instance = this;
     }
 
-    public void addNewEditorTab(EditorTab editorTab) {
+    public static void addNewEditorTab(EditorTab editorTab) {
         editorTab.computeTabName();
-        this.tabPane.getTabs().add(editorTab);
-        this.tabPane.getSelectionModel().select(editorTab);
+        tabPane.getTabs().add(editorTab);
+        tabPane.getSelectionModel().select(editorTab);
     }
 
-    public Tab getSelectedTab(){
-        return this.tabPane.getSelectionModel().getSelectedItem();
+    public static Tab getSelectedTab(){
+        return tabPane.getSelectionModel().getSelectedItem();
+    }
+
+    public static TabFactory getInstance() {
+        return instance;
+    }
+
+    public static EditorTabPane getTabPane() {
+        return tabPane;
     }
 
 }

@@ -19,10 +19,9 @@
 
 package com.desive.nodes;
 
-import com.desive.utilities.Http;
-import com.desive.utilities.Utils;
+import com.desive.nodes.tabs.EditorTab;
+import com.desive.utilities.*;
 import javafx.scene.control.*;
-import javafx.scene.input.KeyCombination;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
@@ -39,19 +38,24 @@ import java.util.Scanner;
 */
 public class EditorToolBar extends MenuBar {
 
-    Stage primaryStage;
+    Dictionary dict = Dictionary.getInstance();
+
+    Stage primaryStage, settingsStage;
     TabFactory tabFactory;
 
-    public EditorToolBar(TabFactory tabFactory, Stage primaryStage) {
+    public EditorToolBar(TabFactory tabFactory, Stage primaryStage, Stage settingsStage) {
 
         this.tabFactory = tabFactory;
         this.primaryStage = primaryStage;
+        this.settingsStage = settingsStage;
 
-        Menu file = new Menu("File"),
-                edit = new Menu("Edit"),
-                imports = new Menu("Import"),
-                export = new Menu("Export"),
-                open = new Menu("Open");
+        Menu file = new Menu(dict.TOOLBAR_EDITOR_FILE_MENU),
+                edit = new Menu(dict.TOOLBAR_EDITOR_EDIT_MENU),
+                view = new Menu(dict.TOOLBAR_EDITOR_VIEW_MENU),
+                help = new Menu(dict.TOOLBAR_EDITOR_HELP_MENU),
+                imports = new Menu(dict.TOOLBAR_EDITOR_IMPORT_MENU),
+                export = new Menu(dict.TOOLBAR_EDITOR_EXPORT_MENU),
+                open = new Menu(dict.TOOLBAR_EDITOR_OPEN_MENU);
 
         file.getItems().addAll(
                 createNewItem(),
@@ -66,6 +70,11 @@ public class EditorToolBar extends MenuBar {
                 createUndoItem(),
                 createRedoItem()
         );
+        view.getItems().addAll(
+                createRefreshViewItem(),
+                createPrettifyItem()
+        );
+
         imports.getItems().addAll(
                 createImportFromFileItem(),
                 createImportFromUrlItem()
@@ -75,6 +84,7 @@ public class EditorToolBar extends MenuBar {
                 createExportPdfItem(),
                 createExportPdfWithCssItem(),
                 createExportJiraItem(),
+                createExportConfluenceItem(),
                 createExportYoutrackItem(),
                 createExportTextItem(),
                 createExportHtmlItem(),
@@ -84,16 +94,47 @@ public class EditorToolBar extends MenuBar {
                 createOpenItem(),
                 createOpenFromURLItem()
         );
+        //help.getItems().add(createSettingsItem());
 
         this.getMenus().addAll(
                 file,
-                edit
+                edit,
+                view,
+                help
         );
     }
 
+    private MenuItem createSettingsItem() {
+        MenuItem item = new MenuItem(dict.TOOLBAR_EDITOR_SETTINGS_ITEM);
+        item.setAccelerator(Shortcut.OPEN_SETTINGS_STAGE);
+        item.setOnAction(e -> {
+            this.settingsStage.centerOnScreen();
+            this.settingsStage.show();
+        });
+
+        return item;
+    }
+
+    private MenuItem createPrettifyItem() {
+        MenuItem item = new MenuItem(dict.TOOLBAR_EDITOR_PRETTIFY_ITEM);
+        item.setOnAction(e -> {
+            ((EditorTab) this.tabFactory.getSelectedTab()).getEditorPane().prettifyWebViewCode();
+        });
+        return item;
+    }
+
+    private MenuItem createRefreshViewItem() {
+        MenuItem item = new MenuItem(dict.TOOLBAR_EDITOR_REFRESH_VIEW_ITEM);
+        item.setAccelerator(Shortcut.REFRESH_EDITOR_VIEW);
+        item.setOnAction(e -> {
+            ((EditorTab) this.tabFactory.getSelectedTab()).getEditorPane().refreshWebView();
+        });
+        return item;
+    }
+
     private MenuItem createUndoItem() {
-        MenuItem item = new MenuItem("Undo");
-        item.setAccelerator(KeyCombination.valueOf("SHORTCUT+Z"));
+        MenuItem item = new MenuItem(dict.TOOLBAR_EDITOR_UNDO_ITEM);
+        item.setAccelerator(Shortcut.UNDO_EDITOR);
         item.setOnAction(e -> {
             EditorTab currTab = ((EditorTab) tabFactory.getSelectedTab());
             if(currTab.getEditorPane().getEditor().isUndoAvailable())
@@ -103,8 +144,8 @@ public class EditorToolBar extends MenuBar {
     }
 
     private MenuItem createRedoItem() {
-        MenuItem item = new MenuItem("Redo");
-        item.setAccelerator(KeyCombination.valueOf("SHORTCUT+SHIFT+Z"));
+        MenuItem item = new MenuItem(dict.TOOLBAR_EDITOR_REDO_ITEM);
+        item.setAccelerator(Shortcut.REDO_EDITOR);
         item.setOnAction(e -> {
             EditorTab currTab = ((EditorTab) tabFactory.getSelectedTab());
             if(currTab.getEditorPane().getEditor().isUndoAvailable())
@@ -114,8 +155,8 @@ public class EditorToolBar extends MenuBar {
     }
 
     private MenuItem createNewItem() {
-        MenuItem item = new MenuItem("New");
-        item.setAccelerator(KeyCombination.valueOf("SHORTCUT+N"));
+        MenuItem item = new MenuItem(dict.TOOLBAR_EDITOR_NEW_ITEM);
+        item.setAccelerator(Shortcut.NEW_FILE_EDITOR);
         item.setOnAction(e -> {
             EditorPane editorPane = new EditorPane("# New page");
             EditorTab newTab = new EditorTab(editorPane);
@@ -126,16 +167,16 @@ public class EditorToolBar extends MenuBar {
     }
 
     private MenuItem createSaveItem() {
-        MenuItem item = new MenuItem("Save");
-        item.setAccelerator(KeyCombination.valueOf("SHORTCUT+S"));
+        MenuItem item = new MenuItem(dict.TOOLBAR_EDITOR_SAVE_ITEM);
+        item.setAccelerator(Shortcut.SAVE_EDITOR);
         item.setOnAction(e -> {
             EditorTab currTab = ((EditorTab) tabFactory.getSelectedTab());
             try {
                 currTab.getEditorPane().save(primaryStage);
             } catch (IOException e1) {
                 Utils.getExceptionDialogBox(
-                        "Oops, an exception!",
-                        "Error saving markdown",
+                        dict.DIALOG_EXCEPTION_TITLE,
+                        dict.DIALOG_EXCEPTION_SAVING_MARKDOWN_CONTENT,
                         e1.getMessage(),
                         e1,
                         primaryStage
@@ -146,8 +187,8 @@ public class EditorToolBar extends MenuBar {
     }
 
     private MenuItem createSaveAsItem() {
-        MenuItem item = new MenuItem("Save As");
-        item.setAccelerator(KeyCombination.valueOf("SHORTCUT+SHIFT+S"));
+        MenuItem item = new MenuItem(dict.TOOLBAR_EDITOR_SAVE_AS_ITEM);
+        item.setAccelerator(Shortcut.SAVE_AS_EDITOR);
         item.setOnAction(e -> {
             EditorTab currTab = ((EditorTab) tabFactory.getSelectedTab());
             try {
@@ -155,8 +196,8 @@ public class EditorToolBar extends MenuBar {
                 currTab.computeTabName();
             } catch (IOException e1) {
                 Utils.getExceptionDialogBox(
-                        "Oops, an exception!",
-                        "Error saving markdown",
+                        dict.DIALOG_EXCEPTION_TITLE,
+                        dict.DIALOG_EXCEPTION_SAVING_MARKDOWN_CONTENT,
                         e1.getMessage(),
                         e1,
                         primaryStage
@@ -167,12 +208,12 @@ public class EditorToolBar extends MenuBar {
     }
 
     private MenuItem createImportFromUrlItem() {
-        MenuItem item = new MenuItem("URL");
-        item.setAccelerator(KeyCombination.valueOf("SHORTCUT+SHIFT+I"));
+        MenuItem item = new MenuItem(dict.TOOLBAR_EDITOR_IMPORT_URL_ITEM);
+        item.setAccelerator(Shortcut.IMPORT_URL_EDITOR);
         item.setOnAction(e -> {
             TextInputDialog input = Utils.getTextInputDialog(
-                    "Import from URL",
-                    "Enter a url to pull markdown from.",
+                    dict.DIALOG_IMPORT_URL_TITLE,
+                    dict.DIALOG_IMPORT_URL_CONTENT,
                     primaryStage
             );
             Optional<String> result = input.showAndWait();
@@ -182,8 +223,8 @@ public class EditorToolBar extends MenuBar {
                     tab.getEditorPane().setContent(tab.getEditorPane().getContent() + "\n" + Http.request(url + "", null, null, null, "GET"));
                 } catch (IOException e1) {
                     Utils.getExceptionDialogBox(
-                            "Oops, an exception!",
-                            "Error importing markdown",
+                            dict.DIALOG_EXCEPTION_TITLE,
+                            dict.DIALOG_EXCEPTION_IMPORT_CONTENT,
                             e1.getMessage(),
                             e1,
                             primaryStage
@@ -195,12 +236,11 @@ public class EditorToolBar extends MenuBar {
     }
 
     private MenuItem createImportFromFileItem() {
-        MenuItem item = new MenuItem("File");
-        item.setAccelerator(KeyCombination.valueOf("SHORTCUT+I"));
+        MenuItem item = new MenuItem(dict.TOOLBAR_EDITOR_IMPORT_FILE_ITEM);
+        item.setAccelerator(Shortcut.IMPORT_FILE_EDITOR);
         item.setOnAction(e -> {
             FileChooser fileChooser = new FileChooser();
-            FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Md files (*.md)", "*.md");
-            fileChooser.getExtensionFilters().add(extFilter);
+            fileChooser.getExtensionFilters().add(FileExtensionFilters.MARKDOWN);
             File file = fileChooser.showOpenDialog(primaryStage);
             if(file != null){
                 try {
@@ -208,8 +248,8 @@ public class EditorToolBar extends MenuBar {
                     tab.getEditorPane().setContent(tab.getEditorPane().getContent() + "\n" + new Scanner(file).useDelimiter("\\Z").next());
                 } catch (IOException e1) {
                     Utils.getExceptionDialogBox(
-                            "Oops, an exception!",
-                            "Error importing markdown",
+                            dict.DIALOG_EXCEPTION_TITLE,
+                            dict.DIALOG_EXCEPTION_IMPORT_CONTENT,
                             e1.getMessage(),
                             e1,
                             primaryStage
@@ -221,21 +261,21 @@ public class EditorToolBar extends MenuBar {
     }
 
     private MenuItem createExportHtmlItem() {
-        MenuItem item = new MenuItem("HTML");
+        MenuItem item = new MenuItem(dict.TOOLBAR_EDITOR_EXPORT_HTML_ITEM);
         item.setOnAction(e -> {
             EditorTab currTab = ((EditorTab) tabFactory.getSelectedTab());
             try {
                 if(currTab.getEditorPane().saveHtml(primaryStage, false)) {
                     Utils.getConfirmationDialog(
-                            "Exported Successfully",
-                            "Exported HTML successfully.",
+                            dict.DIALOG_EXPORT_SUCCESS_TITLE,
+                            dict.DIALOG_EXPORT_SUCCESS_HTML_CONTENT,
                             primaryStage
                     ).showAndWait();
                 }
             } catch (IOException e1) {
                 Utils.getExceptionDialogBox(
-                        "Oops, an exception!",
-                        "Error exporting html",
+                        dict.DIALOG_EXCEPTION_TITLE,
+                        dict.DIALOG_EXCEPTION_EXPORT_HTML_CONTENT,
                         e1.getMessage(),
                         e1,
                         primaryStage
@@ -246,21 +286,21 @@ public class EditorToolBar extends MenuBar {
     }
 
     private MenuItem createExportHtmlWithStyleItem() {
-        MenuItem item = new MenuItem("HTML/CSS");
+        MenuItem item = new MenuItem(dict.TOOLBAR_EDITOR_EXPORT_HTML_CSS_ITEM);
         item.setOnAction(e -> {
             EditorTab currTab = ((EditorTab) tabFactory.getSelectedTab());
             try {
                 if(currTab.getEditorPane().saveHtml(primaryStage, true)) {
                     Utils.getConfirmationDialog(
-                            "Exported Successfully",
-                            "Exported HTML/CSS successfully.",
+                            dict.DIALOG_EXPORT_SUCCESS_TITLE,
+                            dict.DIALOG_EXPORT_SUCCESS_HTML_CSS_CONTENT,
                             primaryStage
                     ).showAndWait();
                 }
             } catch (IOException e1) {
                 Utils.getExceptionDialogBox(
-                        "Oops, an exception!",
-                        "Error exporting html/css",
+                        dict.DIALOG_EXCEPTION_TITLE,
+                        dict.DIALOG_EXCEPTION_EXPORT_HTML_CSS_CONTENT,
                         e1.getMessage(),
                         e1,
                         primaryStage
@@ -271,21 +311,21 @@ public class EditorToolBar extends MenuBar {
     }
 
     private MenuItem createExportDocxItem() {
-        MenuItem item = new MenuItem("Docx");
+        MenuItem item = new MenuItem(dict.TOOLBAR_EDITOR_EXPORT_DOCX_ITEM);
         item.setOnAction(e -> {
             EditorTab currTab = ((EditorTab) tabFactory.getSelectedTab());
             try {
                 if(currTab.getEditorPane().saveDocx(primaryStage)) {
                     Utils.getConfirmationDialog(
-                            "Exported Successfully",
-                            "Exported Docx successfully.",
+                            dict.DIALOG_EXPORT_SUCCESS_TITLE,
+                            dict.DIALOG_EXPORT_SUCCESS_DOCX_CONTENT,
                             primaryStage
                     ).showAndWait();
                 }
             } catch (IOException | Docx4JException e1) {
                 Utils.getExceptionDialogBox(
-                        "Oops, an exception!",
-                        "Error exporting docx",
+                        dict.DIALOG_EXCEPTION_TITLE,
+                        dict.DIALOG_EXCEPTION_EXPORT_DOCX_CONTENT,
                         e1.getMessage(),
                         e1,
                         primaryStage
@@ -296,21 +336,21 @@ public class EditorToolBar extends MenuBar {
     }
 
     private MenuItem createExportPdfItem() {
-        MenuItem item = new MenuItem("PDF");
+        MenuItem item = new MenuItem(dict.TOOLBAR_EDITOR_EXPORT_PDF_ITEM);
         item.setOnAction(e -> {
             EditorTab currTab = ((EditorTab) tabFactory.getSelectedTab());
             try {
                 if(currTab.getEditorPane().savePdf(primaryStage, false)) {
                     Utils.getConfirmationDialog(
-                            "Exported Successfully",
-                            "Exported PDF successfully.",
+                            dict.DIALOG_EXPORT_SUCCESS_TITLE,
+                            dict.DIALOG_EXPORT_SUCCESS_PDF_CONTENT,
                             primaryStage
                     ).showAndWait();
                 }
             } catch (IOException e1) {
                 Utils.getExceptionDialogBox(
-                        "Oops, an exception!",
-                        "Error exporting pdf",
+                        dict.DIALOG_EXCEPTION_TITLE,
+                        dict.DIALOG_EXCEPTION_EXPORT_PDF_CONTENT,
                         e1.getMessage(),
                         e1,
                         primaryStage
@@ -321,21 +361,21 @@ public class EditorToolBar extends MenuBar {
     }
 
     private MenuItem createExportPdfWithCssItem() {
-        MenuItem item = new MenuItem("PDF/CSS");
+        MenuItem item = new MenuItem(dict.TOOLBAR_EDITOR_EXPORT_PDF_CSS_ITEM);
         item.setOnAction(e -> {
             EditorTab currTab = ((EditorTab) tabFactory.getSelectedTab());
             try {
                 if(currTab.getEditorPane().savePdf(primaryStage, true)) {
                     Utils.getConfirmationDialog(
-                            "Exported Successfully",
-                            "Exported PDF/CSS successfully.",
+                            dict.DIALOG_EXPORT_SUCCESS_TITLE,
+                            dict.DIALOG_EXPORT_SUCCESS_PDF_CSS_CONTENT,
                             primaryStage
                     ).showAndWait();
                 }
             } catch (IOException e1) {
                 Utils.getExceptionDialogBox(
-                        "Oops, an exception!",
-                        "Error exporting pdf/css",
+                        dict.DIALOG_EXCEPTION_TITLE,
+                        dict.DIALOG_EXCEPTION_EXPORT_PDF_CSS_CONTENT,
                         e1.getMessage(),
                         e1,
                         primaryStage
@@ -346,21 +386,21 @@ public class EditorToolBar extends MenuBar {
     }
 
     private MenuItem createExportJiraItem() {
-        MenuItem item = new MenuItem("JIRA");
+        MenuItem item = new MenuItem(dict.TOOLBAR_EDITOR_EXPORT_JIRA_ITEM);
         item.setOnAction(e -> {
             EditorTab currTab = ((EditorTab) tabFactory.getSelectedTab());
             try {
                 if(currTab.getEditorPane().saveJira(primaryStage)) {
                     Utils.getConfirmationDialog(
-                            "Exported Successfully",
-                            "Exported JIRA formatted text successfully.",
+                            dict.DIALOG_EXPORT_SUCCESS_TITLE,
+                            dict.DIALOG_EXPORT_SUCCESS_JIRA_CONTENT,
                             primaryStage
                     ).showAndWait();
                 }
             } catch (IOException e1) {
                 Utils.getExceptionDialogBox(
-                        "Oops, an exception!",
-                        "Error exporting jira text",
+                        dict.DIALOG_EXCEPTION_TITLE,
+                        dict.DIALOG_EXCEPTION_EXPORT_JIRA_CONTENT,
                         e1.getMessage(),
                         e1,
                         primaryStage
@@ -371,21 +411,21 @@ public class EditorToolBar extends MenuBar {
     }
 
     private MenuItem createExportYoutrackItem() {
-        MenuItem item = new MenuItem("YouTrack");
+        MenuItem item = new MenuItem(dict.TOOLBAR_EDITOR_EXPORT_YOUTRACK_ITEM);
         item.setOnAction(e -> {
             EditorTab currTab = ((EditorTab) tabFactory.getSelectedTab());
             try {
                 if(currTab.getEditorPane().saveYoutrack(primaryStage)) {
                     Utils.getConfirmationDialog(
-                            "Exported Successfully",
-                            "Exported YouTrack formatted text successfully.",
+                            dict.DIALOG_EXPORT_SUCCESS_TITLE,
+                            dict.DIALOG_EXPORT_SUCCESS_YOUTRACK_CONTENT,
                             primaryStage
                     ).showAndWait();
                 }
             } catch (IOException e1) {
                 Utils.getExceptionDialogBox(
-                        "Oops, an exception!",
-                        "Error exporting youtrack text",
+                        dict.DIALOG_EXCEPTION_TITLE,
+                        dict.DIALOG_EXCEPTION_EXPORT_YOUTRACK_CONTENT,
                         e1.getMessage(),
                         e1,
                         primaryStage
@@ -396,21 +436,46 @@ public class EditorToolBar extends MenuBar {
     }
 
     private MenuItem createExportTextItem() {
-        MenuItem item = new MenuItem("Text");
+        MenuItem item = new MenuItem(dict.TOOLBAR_EDITOR_EXPORT_TEXT_ITEM);
         item.setOnAction(e -> {
             EditorTab currTab = ((EditorTab) tabFactory.getSelectedTab());
             try {
                 if(currTab.getEditorPane().saveText(primaryStage)) {
                     Utils.getConfirmationDialog(
-                            "Exported Successfully",
-                            "Exported text successfully.",
+                            dict.DIALOG_EXPORT_SUCCESS_TITLE,
+                            dict.DIALOG_EXPORT_SUCCESS_PLAIN_TEXT_CONTENT,
                             primaryStage
                     ).showAndWait();
                 }
             } catch (IOException e1) {
                 Utils.getExceptionDialogBox(
-                        "Oops, an exception!",
-                        "Error exporting text",
+                        dict.DIALOG_EXCEPTION_TITLE,
+                        dict.DIALOG_EXCEPTION_EXPORT_PLAIN_TEXT_CONTENT,
+                        e1.getMessage(),
+                        e1,
+                        primaryStage
+                ).showAndWait();
+            }
+        });
+        return item;
+    }
+
+    private MenuItem createExportConfluenceItem() {
+        MenuItem item = new MenuItem(dict.TOOLBAR_EDITOR_EXPORT_CONFLUENCE_ITEM);
+        item.setOnAction(e -> {
+            EditorTab currTab = ((EditorTab) tabFactory.getSelectedTab());
+            try {
+                if(currTab.getEditorPane().saveConfluenceMarkup(primaryStage)) {
+                    Utils.getConfirmationDialog(
+                            dict.DIALOG_EXPORT_SUCCESS_TITLE,
+                            dict.DIALOG_EXPORT_SUCCESS_CONFLUENCE_CONTENT,
+                            primaryStage
+                    ).showAndWait();
+                }
+            } catch (IOException e1) {
+                Utils.getExceptionDialogBox(
+                        dict.DIALOG_EXCEPTION_TITLE,
+                        dict.DIALOG_EXCEPTION_EXPORT_CONFLUENCE_CONTENT,
                         e1.getMessage(),
                         e1,
                         primaryStage
@@ -421,13 +486,13 @@ public class EditorToolBar extends MenuBar {
     }
 
     private MenuItem createExitItem() {
-        MenuItem item = new MenuItem("Exit");
+        MenuItem item = new MenuItem(dict.TOOLBAR_EDITOR_EXIT_ITEM);
         item.setOnAction(e -> {
             EditorTab currTab = ((EditorTab) tabFactory.getSelectedTab());
             if(!currTab.getEditorPane().isSaved()){
                 Optional<ButtonType> save = Utils.getYesNoDialogBox(currTab.getEditorPane().getFile().getPath(),
-                        "File is not saved!",
-                        "Would you like to save this document before you exit?",
+                        dict.DIALOG_FILE_NOT_SAVED_TITLE,
+                        dict.DIALOG_FILE_NOT_SAVED_CONTENT,
                         primaryStage).showAndWait();
                 switch (save.get().getButtonData()){
                     case YES:
@@ -435,8 +500,8 @@ public class EditorToolBar extends MenuBar {
                             currTab.getEditorPane().save(primaryStage);
                         } catch (IOException e1) {
                             Utils.getExceptionDialogBox(
-                                    "Oops, an exception!",
-                                    "Error saving markdown",
+                                    dict.DIALOG_EXCEPTION_TITLE,
+                                    dict.DIALOG_EXCEPTION_SAVING_MARKDOWN_CONTENT,
                                     e1.getMessage(),
                                     e1,
                                     primaryStage
@@ -456,12 +521,11 @@ public class EditorToolBar extends MenuBar {
     }
 
     private MenuItem createOpenItem() {
-        MenuItem item = new MenuItem("File");
-        item.setAccelerator(KeyCombination.valueOf("SHORTCUT+O"));
+        MenuItem item = new MenuItem(dict.TOOLBAR_EDITOR_OPEN_FILE_ITEM);
+        item.setAccelerator(Shortcut.OPEN_FILE_EDITOR);
         item.setOnAction(e ->{
             FileChooser fileChooser = new FileChooser();
-            FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Md files (*.md)", "*.md");
-            fileChooser.getExtensionFilters().add(extFilter);
+            fileChooser.getExtensionFilters().add(FileExtensionFilters.MARKDOWN);
             File file = fileChooser.showOpenDialog(primaryStage);
             if(file != null){
                 try {
@@ -472,8 +536,8 @@ public class EditorToolBar extends MenuBar {
                     this.tabFactory.addNewEditorTab(newTab);
                 } catch (FileNotFoundException e1) {
                     Utils.getExceptionDialogBox(
-                            "Oops, an exception!",
-                            "Error opening markdown file",
+                            dict.DIALOG_EXCEPTION_TITLE,
+                            dict.DIALOG_EXCEPTION_OPENING_MARKDOWN_CONTENT,
                             e1.getMessage(),
                             e1,
                             primaryStage
@@ -485,12 +549,12 @@ public class EditorToolBar extends MenuBar {
     }
 
     private MenuItem createOpenFromURLItem() {
-        MenuItem item = new MenuItem("URL");
-        item.setAccelerator(KeyCombination.valueOf("SHORTCUT+SHIFT+O"));
+        MenuItem item = new MenuItem(dict.TOOLBAR_EDITOR_OPEN_URL_ITEM);
+        item.setAccelerator(Shortcut.OPEN_URL_EDITOR);
         item.setOnAction(e -> {
             TextInputDialog input = Utils.getTextInputDialog(
-                    "Open from URL",
-                    "Enter a url to pull markdown from.",
+                    dict.DIALOG_OPEN_URL_TITLE,
+                    dict.DIALOG_OPEN_URL_CONTENT,
                     primaryStage
             );
             Optional<String> result = input.showAndWait();
@@ -502,8 +566,8 @@ public class EditorToolBar extends MenuBar {
                     this.tabFactory.addNewEditorTab(newTab);
                 } catch (IOException e1) {
                     Utils.getExceptionDialogBox(
-                            "Oops, an exception!",
-                            "Error opening markdown file from " + url,
+                            dict.DIALOG_EXCEPTION_TITLE,
+                            dict.DIALOG_EXCEPTION_OPENING_MARKDOWN_URL_CONTENT,
                             e1.getMessage(),
                             e1,
                             primaryStage

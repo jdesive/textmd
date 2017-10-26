@@ -19,12 +19,10 @@
 
 package com.desive;
 
-import com.desive.nodes.*;
+import com.desive.stages.EditorStage;
+import com.desive.stages.SettingsStage;
+import com.desive.utilities.Dictionary;
 import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.scene.image.Image;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
@@ -33,42 +31,19 @@ import javafx.stage.Stage;
 */
 public class TextMd extends Application{
 
-    private TabFactory tabFactory;
+    EditorStage editorStage;
+    SettingsStage settingsStage;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
 
         loadFonts();
-
-        BorderPane root = new BorderPane();
-        StackPane container = new StackPane();
-        EditorTabPane tabPane = new EditorTabPane();
-        this.tabFactory = new TabFactory(tabPane);
-        EditorToolBar toolbar = new EditorToolBar(this.tabFactory, primaryStage);
-        EditorPane editorPane = new EditorPane();
-        EditorTab tempTab = new EditorTab(editorPane);
-
-        this.tabFactory.addNewEditorTab(tempTab);
-
-        root.setTop(toolbar);
-        root.setCenter(tabPane);
-        container.getChildren().add(root);
-
-        Scene scene = new Scene(container, 800, 800);
-        scene.getStylesheets().add("css/window.css");
-        primaryStage.setScene(scene);
-
-        primaryStage.setTitle("TextMd - Markdown editor");
-        primaryStage.getIcons().add(new Image("assets/favicon.png"));
-        primaryStage.show();
-        primaryStage.centerOnScreen();
-
-        primaryStage.widthProperty().addListener((event) -> {
-            toolbar.setPrefSize(primaryStage.getWidth(), 25);
-            editorPane.getEditor().setPrefSize(primaryStage.getWidth(), primaryStage.getHeight()-25);
-            editorPane.getWebView().setPrefSize(primaryStage.getWidth(), primaryStage.getHeight()-25);
-        });
-
+        new Dictionary();
+        primaryStage.close();
+        this.settingsStage = new SettingsStage();
+        this.editorStage = new EditorStage(this.settingsStage);
+        this.settingsStage.initOwner(this.editorStage);
+        this.editorStage.show();
     }
 
     private void loadFonts(){

@@ -17,12 +17,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.desive.nodes;
+package com.desive.nodes.tabs;
 
+import com.desive.nodes.EditorPane;
+import com.desive.utilities.Utils;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.control.Tab;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
 /*
@@ -47,7 +48,7 @@ public class EditorTab extends Tab {
         }else{
             text = new Text(filePath);
         }
-        text.setFill(Color.valueOf("f8f8f2"));
+        text.setFill(Utils.getDefaultTextColor());
         this.setGraphic(new StackPane(text));
         this.getGraphic().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
     }

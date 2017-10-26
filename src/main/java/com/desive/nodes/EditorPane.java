@@ -21,6 +21,8 @@ package com.desive.nodes;
 
 import com.desive.markdown.MarkdownHighligher;
 import com.desive.markdown.MarkdownParser;
+import com.desive.utilities.FileExtensionFilters;
+import com.desive.utilities.Settings;
 import com.desive.utilities.Utils;
 import com.vladsch.flexmark.pdf.converter.PdfConverterExtension;
 import javafx.animation.Animation;
@@ -40,6 +42,7 @@ import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 
 import java.io.File;
@@ -61,7 +64,7 @@ public class EditorPane extends SplitPane {
     WebEngine webEngine = webView.getEngine();
     Timeline covertTask = null;
     File file = new File(Utils.getDefaultFileName());
-    AtomicBoolean saved = new AtomicBoolean(false), highlightLimiter = new AtomicBoolean(false);
+    AtomicBoolean saved = new AtomicBoolean(false), prettifyCode = new AtomicBoolean(false);
     String currentHtml = "", currentHtmlWithStyle = "";
 
     public EditorPane() {
@@ -75,7 +78,7 @@ public class EditorPane extends SplitPane {
         this.setContent(content);
         editor.richChanges()
                 .filter(ch -> !ch.getInserted().equals(ch.getRemoved()))
-                .successionEnds(Duration.ofMillis(100))
+                .successionEnds(Duration.ofMillis(500))
                 .subscribe(change -> {
                     saved.set(false);
                     MarkdownHighligher.computeHighlighting(editor.getText(), editor);
@@ -117,8 +120,8 @@ public class EditorPane extends SplitPane {
     public void saveAs(Stage primaryStage) throws IOException {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setInitialDirectory(file.getParentFile());
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Md files (*.md)", "*.md");
-        fileChooser.getExtensionFilters().add(extFilter);
+        fileChooser.setInitialFileName(file.getName());
+        fileChooser.getExtensionFilters().add(FileExtensionFilters.MARKDOWN);
         File file = fileChooser.showSaveDialog(primaryStage);
         if(file != null){
             this.file = file;
@@ -128,25 +131,18 @@ public class EditorPane extends SplitPane {
     }
 
     public boolean saveHtml(Stage primaryStage, boolean style) throws IOException {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setInitialDirectory(file.getParentFile());
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("HTML files (*.html)", "*.html");
-        fileChooser.getExtensionFilters().add(extFilter);
-        File file = fileChooser.showSaveDialog(primaryStage);
-        if(file != null){
-            PrintWriter writer = new PrintWriter(new FileWriter(file));
-            writer.print(Utils.wrapWithHtmlDocType(style ? currentHtmlWithStyle : currentHtml));
-            writer.close();
-            return true;
-        }
-        return false;
+        return save(
+                primaryStage,
+                FileExtensionFilters.HTML,
+                Utils.wrapWithHtmlDocType(style ? currentHtmlWithStyle : currentHtml)
+        );
     }
 
     public boolean saveDocx(Stage primaryStage) throws IOException, Docx4JException {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setInitialDirectory(file.getParentFile());
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Docx files (*.docx)", "*.docx");
-        fileChooser.getExtensionFilters().add(extFilter);
+        fileChooser.setInitialFileName(file.getName().split("\\.")[0] + ".docx");
+        fileChooser.getExtensionFilters().add(FileExtensionFilters.DOCX);
         File file = fileChooser.showSaveDialog(primaryStage);
         if(file != null){
             MarkdownParser.convertMarkdownToDocx(editor.getText()).save(file, Docx4J.FLAG_SAVE_ZIP_FILE);
@@ -158,8 +154,8 @@ public class EditorPane extends SplitPane {
     public boolean savePdf(Stage primaryStage, boolean style) throws IOException{
         FileChooser fileChooser = new FileChooser();
         fileChooser.setInitialDirectory(file.getParentFile());
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("PDF files (*.pdf)", "*.pdf");
-        fileChooser.getExtensionFilters().add(extFilter);
+        fileChooser.setInitialFileName(file.getName().split("\\.")[0] + ".pdf");
+        fileChooser.getExtensionFilters().add(FileExtensionFilters.PDF);
         File file = fileChooser.showSaveDialog(primaryStage);
         if(file != null){
             PdfConverterExtension.exportToPdf(
@@ -173,49 +169,52 @@ public class EditorPane extends SplitPane {
     }
 
     public boolean saveJira(Stage primaryStage) throws IOException{
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setInitialDirectory(file.getParentFile());
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Text files (*.txt)", "*.txt");
-        fileChooser.getExtensionFilters().add(extFilter);
-        File file = fileChooser.showSaveDialog(primaryStage);
-        if(file != null){
-            PrintWriter writer = new PrintWriter(new FileWriter(file));
-            writer.print(MarkdownParser.convertMarkdownToJira(editor.getText()));
-            writer.close();
-            return true;
-        }
-        return false;
+        return save(
+                primaryStage,
+                FileExtensionFilters.TEXT,
+                MarkdownParser.convertMarkdownToJira(editor.getText())
+        );
     }
 
     public boolean saveYoutrack(Stage primaryStage) throws IOException{
+        return save(
+                primaryStage,
+                FileExtensionFilters.TEXT,
+                MarkdownParser.convertMarkdownToYoutrack(editor.getText())
+        );
+    }
+
+    public boolean saveText(Stage primaryStage) throws IOException{
+        return save(
+                primaryStage,
+                FileExtensionFilters.TEXT,
+                MarkdownParser.convertMarkdownToText(editor.getText())
+        );
+    }
+
+    public boolean saveConfluenceMarkup(Stage primaryStage) throws IOException{
+        return save(
+                primaryStage,
+                FileExtensionFilters.TEXT,
+                MarkdownParser.markdownToConfluenceMarkup(editor.getText())
+        );
+    }
+
+    public boolean save(Stage primaryStage, FileChooser.ExtensionFilter ext, String content) throws IOException{
         FileChooser fileChooser = new FileChooser();
         fileChooser.setInitialDirectory(file.getParentFile());
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Text files (*.txt)", "*.txt");
-        fileChooser.getExtensionFilters().add(extFilter);
+        fileChooser.setInitialFileName(file.getName().split("\\.")[0] + ext.getExtensions().stream().findFirst().get().replace("*", ""));
+        fileChooser.getExtensionFilters().add(ext);
         File file = fileChooser.showSaveDialog(primaryStage);
         if(file != null){
             PrintWriter writer = new PrintWriter(new FileWriter(file));
-            writer.print(MarkdownParser.convertMarkdownToYoutrack(editor.getText()));
+            writer.print(content);
             writer.close();
             return true;
         }
         return false;
     }
 
-    public boolean saveText(Stage primaryStage) throws IOException{
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setInitialDirectory(file.getParentFile());
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Text files (*.txt)", "*.txt");
-        fileChooser.getExtensionFilters().add(extFilter);
-        File file = fileChooser.showSaveDialog(primaryStage);
-        if(file != null){
-            PrintWriter writer = new PrintWriter(new FileWriter(file));
-            writer.print(MarkdownParser.convertMarkdownToText(editor.getText()));
-            writer.close();
-            return true;
-        }
-        return false;
-    }
 
     public void setContent(String content){
         editor.replaceText(0, editor.getText().length(), content);
@@ -227,78 +226,44 @@ public class EditorPane extends SplitPane {
         return editor.getText();
     }
 
+    public void prettifyWebViewCode(){
+        if(prettifyCode.get()){
+            prettifyCode.set(false);
+        }else {
+            prettifyCode.set(true);
+        }
+        this.refreshWebView();
+    }
+
+    public void refreshWebView(){
+        covertTask.playFrom(javafx.util.Duration.seconds(1));
+    }
+
     private void styleEditor(String stylesheet){
         editor.getStylesheets().add(stylesheet);
-        IntFunction<String> format = (digits -> " %" + digits + "d ");
+        IntFunction<String> format = (digits -> " %" + digits + "d\t");
         editor.setParagraphGraphicFactory(LineNumberFactory.get(editor, format));
     }
 
-    // Working to get code highlighting with highlight.js
-    /*private void styleWebViewWithHighlight(){
-        webEngine.getLoadWorker().stateProperty().addListener((obs, oldState, newState) -> {
-            if (newState == Worker.State.SUCCEEDED) {
-                Document doc = webEngine.getDocument() ;
-
-
-                // Execute Highlight.js scripts
-                InputStream jsPack = getClass().getClassLoader().getResourceAsStream("js/highlight.pack.js");
-                String jsPackContent = new Scanner(jsPack).useDelimiter("\\Z").next();
-                Element scriptNode = doc.createElement("script"), startScriptNode = doc.createElement("script");
-                Text scriptContent = doc.createTextNode(jsPackContent), startScriptContent = doc.createTextNode("$(document).ready(function() {\n" +
-                        "  $('pre code').each(function(i, block) {\n" +
-                        "    hljs.highlightBlock(block);\n" +
-                        "  });\n" +
-                        "});");
-                webEngine.executeScript(jsPackContent);
-
-                scriptNode.appendChild(scriptContent);
-                startScriptNode.appendChild(startScriptContent);
-                doc.getDocumentElement().getElementsByTagName("head").item(0).appendChild(scriptNode);
-                doc.getDocumentElement().getElementsByTagName("head").item(0).appendChild(startScriptNode);
-
-                // Inject css styles
-                Element styleNode = doc.createElement("style");
-                InputStream jsPackStyle = getClass().getClassLoader().getResourceAsStream("css/highlight/github.css");
-                String jsPackStyleContent = new Scanner(jsPackStyle).useDelimiter("\\Z").next();
-                Text styleContent = doc.createTextNode(jsPackStyleContent);
-
-                styleNode.appendChild(styleContent);
-                doc.getDocumentElement().getElementsByTagName("head").item(0).appendChild(styleNode);
-                currentHtmlWithStyle = webEngine.executeScript("document.documentElement.innerHTML").toString();
-                System.out.println(currentHtmlWithStyle);
-            }
-        });
-    }*/
-
     private void styleWebView(){
         webEngine.getLoadWorker().stateProperty().addListener((obs, oldState, newState) -> {
-            if (newState == Worker.State.SUCCEEDED) {
-                Document doc = webEngine.getDocument() ;
+            Document doc = webEngine.getDocument();
+            if (newState == Worker.State.SUCCEEDED && doc.getDocumentElement().getElementsByTagName("head").item(0) != null) {
+                Node head = doc.getDocumentElement().getElementsByTagName("head").item(0);
 
-                // Working to get code highlighting with highlight.js
-                /*Element linkNode = doc.createElement("link"), scriptNode = doc.createElement("script"),
-                        startScript = doc.createElement("script");
-                linkNode.setAttribute("rel", "stylesheet");
-                linkNode.setAttribute("href", "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css");
-
-                scriptNode.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js");
-
-                Text startScriptContent = doc.createTextNode("hljs.initHighlightingOnLoad();");
-                startScript.appendChild(startScriptContent);*/
-                /*
-                <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
-                <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
-                 */
+                // Google prettify
+                if(prettifyCode.get() || Settings.ALWAYS_PRETTIFY_CODE_VIEW) {
+                    Element scriptNode = doc.createElement("script");
+                    scriptNode.setAttribute("src", "https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js");
+                    head.appendChild(scriptNode);
+                }
 
                 // Inject css styles
                 Element styleNode = doc.createElement("style");
-                Text styleContent = doc.createTextNode(Utils.getWebViewCss());
+                Text styleContent = doc.createTextNode(Utils.getWebViewCss(prettifyCode.get() || Settings.ALWAYS_PRETTIFY_CODE_VIEW ? "#f2f2f2" : "#545454"));
 
                 styleNode.appendChild(styleContent);
-                doc.getDocumentElement().getElementsByTagName("head").item(0).appendChild(styleNode);
-                //doc.getDocumentElement().getElementsByTagName("head").item(0).appendChild(linkNode);
-                //doc.getDocumentElement().getElementsByTagName("head").item(0).appendChild(scriptNode);
-                //doc.getDocumentElement().getElementsByTagName("head").item(0).appendChild(startScript);
+                head.appendChild(styleNode);
                 currentHtmlWithStyle = webEngine.executeScript("document.documentElement.innerHTML").toString();
             }
         });
@@ -307,18 +272,22 @@ public class EditorPane extends SplitPane {
     private void setSyncViews(){
         editor.textProperty().addListener((obs, oldValue, newValue) -> {
             if(covertTask == null || covertTask.getStatus().equals(Animation.Status.STOPPED)){
-                covertTask = new Timeline(new KeyFrame(javafx.util.Duration.seconds(1), (event2) -> {
-                    String html = MarkdownParser.convertMarkdownToHTML(editor.getText());
-                    webEngine.loadContent(html);
-                    currentHtml = html;
-                    covertTask.stop();
-                }));
+                createSyncTimer(Settings.VIEW_REFRESH_RATE);
                 covertTask.play();
             }else{
                 covertTask.stop();
                 covertTask.playFromStart();
             }
         });
+    }
+
+    public void createSyncTimer(int duration){
+        covertTask = new Timeline(new KeyFrame(javafx.util.Duration.seconds(duration), (event2) -> {
+            String html = MarkdownParser.convertMarkdownToHTML(editor.getText());
+            webEngine.loadContent(html);
+            currentHtml = html;
+            covertTask.stop();
+        }));
     }
 
 }

@@ -5,7 +5,7 @@
 }
 
 .menu-bar .container .menu-button .label {
-    -fx-text-fill: #f8f8f2;
+  -fx-text-fill: #f8f8f2;
 }
 
 .menu-item .label {
@@ -20,33 +20,33 @@
 }
 
 .scroll-bar:horizontal, .scroll-bar:vertical{
-    -fx-background-color: #3B3F42;
+  -fx-background-color: #3B3F42;
 }
 
 .increment-button, .decrement-button {
-    -fx-background-color: #3C3D3F;
-    -fx-border-color: transparent;
+  -fx-background-color: #3C3D3F;
+  -fx-border-color: transparent;
 }
 
 .scroll-bar:horizontal .track,
 .scroll-bar:vertical .track{
-    -fx-background-color: transparent;
-    -fx-border-color: transparent;
-    -fx-background-radius: 0em;
+  -fx-background-color: transparent;
+  -fx-border-color: transparent;
+  -fx-background-radius: 0em;
 }
 
 .scroll-bar:horizontal .thumb,
 .scroll-bar:vertical .thumb {
-    -fx-background-color: #545454;
-    -fx-background-radius: 5em;
+  -fx-background-color: #545454;
+  -fx-background-radius: 5em;
 }
 
 .scroll-bar .corner {
-    -fx-background-color: #3C3D3F;
+  -fx-background-color: #3C3D3F;
 }
 
 .split-pane:horizontal .split-pane-divider {
-   -fx-background-color: #545454;
+  -fx-background-color: #545454;
 }
 
 .split-pane {
@@ -73,12 +73,12 @@
 }
 
 .tab:selected {
-    -fx-background-color: #545454;
+  -fx-background-color: #545454;
 }
 
 .tab-pane:focused .tab-header-area .headers-region .tab:selected .focus-indicator {
-    -fx-focus-color: transparent;
-    -fx-faint-focus-color: transparent;
+  -fx-focus-color: transparent;
+  -fx-faint-focus-color: transparent;
 }
 
 .tab-pane:top *.tab-header-area {
