@@ -38,14 +38,14 @@ public class Http {
         HttpURLConnection connection = (HttpURLConnection) targetUrl.openConnection();
 
         if(headers != null && !headers.isEmpty()){
-            headers.forEach((k, v) -> connection.setRequestProperty(k, v));
+            headers.forEach(connection::setRequestProperty);
         }
 
         connection.setRequestMethod(method.toUpperCase());
         connection.setConnectTimeout(15000);
         connection.setReadTimeout(15000);
 
-        if(body != null && body != "") {
+        if(body != null && !body.equals("")) {
             connection.setDoOutput(true);
             DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
             outputStream.writeBytes(body);

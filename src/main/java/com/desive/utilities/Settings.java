@@ -19,6 +19,8 @@
 
 package com.desive.utilities;
 
+import com.desive.nodes.TabFactory;
+import com.desive.nodes.tabs.EditorTab;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +29,7 @@ import org.slf4j.LoggerFactory;
 */
 public class Settings {
 
-    static Logger LOGGER = LoggerFactory.getLogger(Settings.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(Settings.class);
 
     // Settings View
     public static boolean ALWAYS_PRETTIFY_CODE_VIEW = false;
@@ -36,19 +38,29 @@ public class Settings {
     // Settings Editor
     public static int EDITOR_HIGHLIGHT_REFRESH_RATE = 500;
 
+    // General Settings
+    public static boolean LOAD_FONTS_AT_RUNTIME = true;
+
     public static void setAlwaysPrettifyCodeView(boolean value) {
-        ALWAYS_PRETTIFY_CODE_VIEW = value;
         LOGGER.debug("Setting \'Always Prettify Code View\' to \'{}\'", value);
+        ALWAYS_PRETTIFY_CODE_VIEW = value;
     }
 
     public static void setViewRefreshRate(int value) {
-        VIEW_REFRESH_RATE = value;
         LOGGER.debug("Setting \'View Refresh Rate\' to \'{}\'", value);
+        VIEW_REFRESH_RATE = value;
+        ((EditorTab) TabFactory.getSelectedTab()).getEditorPane().createSyncTimer(value);
     }
 
     public static void setEditorHighlightRefreshRate(int value) {
-        EDITOR_HIGHLIGHT_REFRESH_RATE = value;
         LOGGER.debug("Setting \'Editor Highlight Refresh Rate\' to \'{}\'", value);
+        EDITOR_HIGHLIGHT_REFRESH_RATE = value;
+        ((EditorTab) TabFactory.getSelectedTab()).getEditorPane().createEditorHighlightSubscription(value);
+    }
+
+    public static void setLoadFontsAtRuntime(boolean value) {
+        LOGGER.debug("Setting \'Load Fonts at runtime\' to \'{}\'", value);
+        LOAD_FONTS_AT_RUNTIME = value;
     }
 
 

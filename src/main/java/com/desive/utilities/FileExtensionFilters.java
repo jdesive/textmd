@@ -26,7 +26,7 @@ import javafx.stage.FileChooser;
 */
 public class FileExtensionFilters {
 
-    public static FileChooser.ExtensionFilter PDF = new FileChooser.ExtensionFilter("PDF files (*.pdf)", "*.pdf"),
+    public final static FileChooser.ExtensionFilter PDF = new FileChooser.ExtensionFilter("PDF files (*.pdf)", "*.pdf"),
             MARKDOWN = new FileChooser.ExtensionFilter("Md files (*.md)", "*.md"),
             DOCX = new FileChooser.ExtensionFilter("Docx files (*.docx)", "*.docx"),
             HTML = new FileChooser.ExtensionFilter("HTML files (*.html)", "*.html"),

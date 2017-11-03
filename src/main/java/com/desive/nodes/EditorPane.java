@@ -21,6 +21,7 @@ package com.desive.nodes;
 
 import com.desive.markdown.MarkdownHighligher;
 import com.desive.markdown.MarkdownParser;
+import com.desive.utilities.Dictionary;
 import com.desive.utilities.FileExtensionFilters;
 import com.desive.utilities.Settings;
 import com.desive.utilities.Utils;
@@ -29,27 +30,30 @@ import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.concurrent.Worker;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import org.docx4j.Docx4J;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.fxmisc.flowless.VirtualizedScrollPane;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
+import org.reactfx.Subscription;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 
+import javax.xml.bind.JAXBException;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.Duration;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.IntFunction;
 
@@ -59,30 +63,26 @@ import java.util.function.IntFunction;
  Created by Jack DeSive on 10/8/2017 at 2:12 PM
 */
 public class EditorPane extends SplitPane {
-    CodeArea editor = new CodeArea("");
-    WebView webView = new WebView();
-    WebEngine webEngine = webView.getEngine();
-    Timeline covertTask = null;
-    File file = new File(Utils.getDefaultFileName());
-    AtomicBoolean saved = new AtomicBoolean(false), prettifyCode = new AtomicBoolean(false);
-    String currentHtml = "", currentHtmlWithStyle = "";
 
-    public EditorPane() {
-        this(Utils.getSampleText());
-    }
+    private Dictionary dict;
+    private CodeArea editor = new CodeArea("");
+    private WebView webView = new WebView();
+    private WebEngine webEngine = webView.getEngine();
+    private Timeline covertTask = null;
+    private File file = new File(Utils.getDefaultFileName());
+    private AtomicBoolean saved = new AtomicBoolean(false), prettifyCode = new AtomicBoolean(false);
+    private String currentHtml = "", currentHtmlWithStyle = "";
+    private Subscription editorHightlightSubscription;
 
-    public EditorPane(String content) {
+    public EditorPane(Dictionary dictionary, String content) {
+
+        this.dict = dictionary;
+
         this.styleEditor("css/editor.css");
         this.styleWebView();
         this.setSyncViews();
         this.setContent(content);
-        editor.richChanges()
-                .filter(ch -> !ch.getInserted().equals(ch.getRemoved()))
-                .successionEnds(Duration.ofMillis(500))
-                .subscribe(change -> {
-                    saved.set(false);
-                    MarkdownHighligher.computeHighlighting(editor.getText(), editor);
-                });
+        this.createEditorHighlightSubscription(Settings.EDITOR_HIGHLIGHT_REFRESH_RATE);
         VirtualizedScrollPane editorScroller = new VirtualizedScrollPane<>(editor);
         this.getItems().addAll(new StackPane(editorScroller), webView);
     }
@@ -107,17 +107,55 @@ public class EditorPane extends SplitPane {
         return saved.get();
     }
 
-    public void save(Stage primaryStage) throws IOException {
+    public boolean exit(Stage primaryStage) {
+        if(!saved.get()){
+            Optional<ButtonType> save = Utils.getYesNoDialogBox(file.getPath(),
+                    dict.DIALOG_FILE_NOT_SAVED_TITLE,
+                    dict.DIALOG_FILE_NOT_SAVED_CONTENT,
+                    primaryStage).showAndWait();
+
+            if(save.isPresent())
+                return false;
+
+            switch (save.get().getButtonData()){
+                case YES:
+                    try {
+                        if(!save(primaryStage)){
+                            return false;
+                        }
+                    } catch (IOException e1) {
+                        Utils.getExceptionDialogBox(
+                                dict.DIALOG_EXCEPTION_TITLE,
+                                dict.DIALOG_EXCEPTION_SAVING_MARKDOWN_CONTENT,
+                                e1.getMessage(),
+                                e1,
+                                primaryStage
+                        ).showAndWait();
+                        return false;
+                    }
+                    break;
+                case NO:
+                    break;
+                case CANCEL_CLOSE:
+                default:
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean save(Stage primaryStage) throws IOException {
         if(file.exists()){
             PrintWriter writer = new PrintWriter(new FileWriter(file));
             writer.print(editor.getText());
             writer.close();
+            return true;
         }else{
-            saveAs(primaryStage);
+            return saveAs(primaryStage);
         }
     }
 
-    public void saveAs(Stage primaryStage) throws IOException {
+    public boolean saveAs(Stage primaryStage) throws IOException {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setInitialDirectory(file.getParentFile());
         fileChooser.setInitialFileName(file.getName());
@@ -125,9 +163,10 @@ public class EditorPane extends SplitPane {
         File file = fileChooser.showSaveDialog(primaryStage);
         if(file != null){
             this.file = file;
-            this.file.createNewFile();
-            this.save(primaryStage);
+            boolean newFile = this.file.createNewFile();
+            return newFile && this.save(primaryStage);
         }
+        return false;
     }
 
     public boolean saveHtml(Stage primaryStage, boolean style) throws IOException {
@@ -138,14 +177,14 @@ public class EditorPane extends SplitPane {
         );
     }
 
-    public boolean saveDocx(Stage primaryStage) throws IOException, Docx4JException {
+    public boolean saveDocx(Stage primaryStage) throws IOException, Docx4JException, JAXBException {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setInitialDirectory(file.getParentFile());
         fileChooser.setInitialFileName(file.getName().split("\\.")[0] + ".docx");
         fileChooser.getExtensionFilters().add(FileExtensionFilters.DOCX);
         File file = fileChooser.showSaveDialog(primaryStage);
         if(file != null){
-            MarkdownParser.convertMarkdownToDocx(editor.getText()).save(file, Docx4J.FLAG_SAVE_ZIP_FILE);
+            MarkdownParser.convertMarkdownToDocx(editor.getText(), file);
             return true;
         }
         return false;
@@ -200,7 +239,7 @@ public class EditorPane extends SplitPane {
         );
     }
 
-    public boolean save(Stage primaryStage, FileChooser.ExtensionFilter ext, String content) throws IOException{
+    private boolean save(Stage primaryStage, FileChooser.ExtensionFilter ext, String content) throws IOException{
         FileChooser fileChooser = new FileChooser();
         fileChooser.setInitialDirectory(file.getParentFile());
         fileChooser.setInitialFileName(file.getName().split("\\.")[0] + ext.getExtensions().stream().findFirst().get().replace("*", ""));
@@ -236,7 +275,7 @@ public class EditorPane extends SplitPane {
     }
 
     public void refreshWebView(){
-        covertTask.playFrom(javafx.util.Duration.seconds(1));
+        covertTask.playFrom(javafx.util.Duration.seconds(Settings.VIEW_REFRESH_RATE));
     }
 
     private void styleEditor(String stylesheet){
@@ -288,6 +327,20 @@ public class EditorPane extends SplitPane {
             currentHtml = html;
             covertTask.stop();
         }));
+    }
+
+    public void createEditorHighlightSubscription(int value) {
+
+        if(editorHightlightSubscription != null)
+            editorHightlightSubscription.unsubscribe();
+
+        editorHightlightSubscription = editor.richChanges()
+                .filter(ch -> !ch.getInserted().equals(ch.getRemoved()))
+                .successionEnds(Duration.ofMillis(value))
+                .subscribe(change -> {
+                    saved.set(false);
+                    MarkdownHighligher.computeHighlighting(editor.getText(), editor);
+                });
     }
 
 }

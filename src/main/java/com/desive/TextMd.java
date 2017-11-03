@@ -21,38 +21,91 @@ package com.desive;
 
 import com.desive.stages.EditorStage;
 import com.desive.stages.SettingsStage;
-import com.desive.utilities.Dictionary;
+import com.desive.utilities.*;
 import javafx.application.Application;
-import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import org.apache.maven.model.Model;
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.FileReader;
+import java.io.IOException;
 
 /*
  Created by Jack DeSive on 10/7/2017 at 9:28 PM
 */
 public class TextMd extends Application{
 
-    EditorStage editorStage;
-    SettingsStage settingsStage;
+    private Settings settings;
+    private Dictionary languageDictionary;
+    private FileExtensionFilters fileExtensionFilters;
+    private Shortcut shortcuts;
+    private Fonts fonts;
+    private Http http;
+
+    private EditorStage editorStage;
+    private SettingsStage settingsStage;
+
+    private String ARTIFACT_ID = null, VERSION = null;
+    private final Logger logger = LoggerFactory.getLogger(TextMd.class);
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        primaryStage.close(); // Throw away the default stage
 
-        loadFonts();
-        new Dictionary();
-        primaryStage.close();
-        this.settingsStage = new SettingsStage();
-        this.editorStage = new EditorStage(this.settingsStage);
+        // Load all data/option classes
+        this.settings = new Settings();
+        this.languageDictionary = new Dictionary();
+        this.fileExtensionFilters = new FileExtensionFilters();
+        this.http = new Http();
+        this.shortcuts = new Shortcut();
+        this.fonts = new Fonts();
+
+        this.loadUtilities();
+        this.loadPomVariables();
+        this.loadFonts();
+
+        logger.info("Starting {} {}" , ARTIFACT_ID, VERSION);
+
+        this.settingsStage = new SettingsStage(this.languageDictionary);
+        this.editorStage = new EditorStage(this.languageDictionary, this.settingsStage);
         this.settingsStage.initOwner(this.editorStage);
         this.editorStage.show();
     }
 
     private void loadFonts(){
-        Font.loadFont("https://github.com/localredhead/courier-primal/blob/master/Courier%20Primal.ttf?raw=true", 14.0);
-        Font.loadFont("https://github.com/localredhead/courier-primal/blob/master/Courier%20Primal%20Italic.ttf?raw=true", 14.0);
-        Font.loadFont("https://github.com/localredhead/courier-primal/blob/master/Courier%20Primal%20Bold.ttf?raw=true", 14.0);
-        Font.loadFont("https://github.com/localredhead/courier-primal/blob/master/Courier%20Primal%20Bold%20Italic.ttf?raw=true", 14.0);
+        if(Settings.LOAD_FONTS_AT_RUNTIME ) {
+            logger.info("Using \'{}\' fonts", fonts.COURIER_PRIMAL_NAME);
+            if(!fonts.fontExits(fonts.COURIER_PRIMAL_NAME)){
+                fonts.registerFont(fonts.COURIER_PRIMAL_URL, fonts.COURIER_PRIMAL_NAME);
+                fonts.registerFont(fonts.COURIER_PRIMAL_ITALICS_URL, fonts.COURIER_PRIMAL_ITALICS_NAME);
+                fonts.registerFont(fonts.COURIER_PRIMAL_BOLD_URL, fonts.COURIER_PRIMAL_BOLD_NAME);
+                fonts.registerFont(fonts.COURIER_PRIMAL_BOLD_ITALICS_URL, fonts.COURIER_PRIMAL_BOLD_ITALICS_NAME);
+            }
+        } else {
+            logger.info("Using \'{}\' font", fonts.COURIER_REGULAR_NAME);
+        }
+
     }
 
+    private void loadPomVariables() {
+        logger.debug("Loading maven pom.xml variables");
+        MavenXpp3Reader reader = new MavenXpp3Reader();
+        try {
+            Model model = reader.read(new FileReader("pom.xml"));
+            ARTIFACT_ID = model.getArtifactId();
+            VERSION = model.getVersion();
+        } catch (IOException | XmlPullParserException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadUtilities(){
+        new Utils();
+        new Dictionary();
+    }
 
     public static void main(String[] args) {
         launch(args);

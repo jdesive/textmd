@@ -33,14 +33,14 @@ import javafx.scene.layout.HBox;
 */
 public class ViewSettingsTab extends SettingsTab {
 
-    Dictionary dict = Dictionary.getInstance();
+    private final Dictionary dict = Dictionary.getInstance();
 
-    CheckBox alwaysPrettifyCode = new CheckBox(dict.SETTINGS_VIEW_PRETTIFY_CODE_LABEL);
-    Label viewRefreshRateLabel = new Label(dict.SETTINGS_VIEW_REFRESH_RATE_LABEL + " ");
-    TextField viewRefreshRateField = new TextField(String.valueOf(Settings.VIEW_REFRESH_RATE));
+    private CheckBox alwaysPrettifyCode = new CheckBox(dict.SETTINGS_VIEW_PRETTIFY_CODE_LABEL);
+    private Label viewRefreshRateLabel = new Label(dict.SETTINGS_VIEW_REFRESH_RATE_LABEL + " ");
+    private TextField viewRefreshRateField = new TextField(String.valueOf(Settings.VIEW_REFRESH_RATE));
 
-    public ViewSettingsTab() {
-        super(Dictionary.SETTINGS_VIEW_TAB_HEADER_LABEL);
+    public ViewSettingsTab(Dictionary dictionary) {
+        super(dictionary.SETTINGS_VIEW_TAB_HEADER_LABEL, dictionary);
 
         this.addPrettifyCodeCheckBox(0, 0);
         this.addRefreshRateBox(1, 0);

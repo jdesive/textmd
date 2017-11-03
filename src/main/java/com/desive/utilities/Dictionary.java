@@ -24,16 +24,16 @@ package com.desive.utilities;
 */
 public class Dictionary {
 
-    public static Dictionary instance;
+    private static Dictionary instance;
 
     // Editor Stage
-    public static String STAGE_EDITOR_TITLE = "TextMd - Editor";
+    public final String STAGE_EDITOR_TITLE = "TextMd - Editor";
 
     // Settings Stage
-    public static String STAGE_SETTINGS_TITLE = "TextMd - Settings";
+    public final String STAGE_SETTINGS_TITLE = "TextMd - Settings";
 
     // Editor Toolbar
-    public static String TOOLBAR_EDITOR_FILE_MENU = "File",
+    public final String TOOLBAR_EDITOR_FILE_MENU = "File",
             TOOLBAR_EDITOR_EDIT_MENU = "Edit",
             TOOLBAR_EDITOR_VIEW_MENU = "View",
             TOOLBAR_EDITOR_HELP_MENU = "Help",
@@ -61,24 +61,33 @@ public class Dictionary {
             TOOLBAR_EDITOR_EXPORT_CONFLUENCE_ITEM = "Confluence",
             TOOLBAR_EDITOR_EXIT_ITEM = "Exit",
             TOOLBAR_EDITOR_OPEN_FILE_ITEM = "File",
-            TOOLBAR_EDITOR_OPEN_URL_ITEM = "URL";
+            TOOLBAR_EDITOR_OPEN_URL_ITEM = "URL",
+            TOOLBAR_EDITOR_OPEN_HELP_PAGE_ITEM = "Help Page",
+            TOOLBAR_EDITOR_OPEN_TEST_PAGE_ITEM = "Test Page";
 
     // Settings View Tab
-    public static String SETTINGS_VIEW_REFRESH_RATE_LABEL_TOOLTIP = "How fast to refresh the HTML in the view",
+    public final String SETTINGS_VIEW_REFRESH_RATE_LABEL_TOOLTIP = "How fast to refresh the HTML in the view",
             SETTINGS_VIEW_REFRESH_RATE_FIELD_TOOLTIP = "Default: 1 second(s)",
             SETTINGS_VIEW_REFRESH_RATE_LABEL = "View refresh rate:",
             SETTINGS_VIEW_PRETTIFY_CODE_LABEL = "Always Prettify",
             SETTINGS_VIEW_PRETTIFY_CODE_LABEL_TOOLTIP = "Use Google Prettify by default",
-            SETTINGS_VIEW_TAB_HEADER_LABEL = "View";
+            SETTINGS_VIEW_TAB_HEADER_LABEL = "View",
+            SETTINGS_APPLY_BUTTON_LABEL = "Apply",
+            SETTINGS_RESET_BUTTON_LABEL = "Reset";
 
     // Settings Editor Tab
-    public static String SETTINGS_EDITOR_REFRESH_RATE_LABEL = "Highlight refresh rate:",
+    public final String SETTINGS_EDITOR_REFRESH_RATE_LABEL = "Highlight refresh rate:",
             SETTINGS_EDITOR_REFRESH_RATE_LABEL_TOOLTIP = "How fast to refresh the editors highlighting",
             SETTINGS_EDITOR_REFRESH_RATE_FIELD_TOOLTIP = "Default: 500 millisecond(s)",
             SETTINGS_EDITOR_TAB_HEADER_LABEL = "Editor";
 
+    // Settings General Tab
+    public final String SETTINGS_GENERAL_USE_COURIER_PRIMAL_FONT = "Use Courier Primal Font",
+            SETTINGS_GENERAL_USE_COURIER_PRIMAL_FONT_TOOLTIP = "Loads the font at runtime, see README for more details",
+            SETTINGS_GENERAL_TAB_HEADER_LABEL = "General";
+
     // Dialogs
-    public static String DIALOG_EXCEPTION_TITLE = "Oops, an exception!",
+    public final String DIALOG_EXCEPTION_TITLE = "Oops, an exception!",
             DIALOG_EXCEPTION_IMPORT_CONTENT = "Error importing markdown",
             DIALOG_EXCEPTION_EXPORT_HTML_CONTENT = "Error exporting HTML",
             DIALOG_EXCEPTION_EXPORT_HTML_CSS_CONTENT = "Error exporting HTML/CSS",

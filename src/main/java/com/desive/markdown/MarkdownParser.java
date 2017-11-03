@@ -20,13 +20,13 @@
 package com.desive.markdown;
 
 import com.atlassian.renderer.wysiwyg.converter.DefaultWysiwygConverter;
+import com.desive.utilities.Utils;
 import com.vladsch.flexmark.ast.util.TextCollectingVisitor;
-import com.vladsch.flexmark.convert.html.FlexmarkHtmlParser;
-import com.vladsch.flexmark.docx.converter.internal.DocxRenderer;
 import com.vladsch.flexmark.ext.abbreviation.AbbreviationExtension;
 import com.vladsch.flexmark.ext.anchorlink.AnchorLinkExtension;
 import com.vladsch.flexmark.ext.autolink.AutolinkExtension;
 import com.vladsch.flexmark.ext.escaped.character.EscapedCharacterExtension;
+import com.vladsch.flexmark.ext.gfm.strikethrough.StrikethroughExtension;
 import com.vladsch.flexmark.ext.gfm.tasklist.TaskListExtension;
 import com.vladsch.flexmark.ext.tables.TablesExtension;
 import com.vladsch.flexmark.ext.wikilink.WikiLinkExtension;
@@ -37,9 +37,15 @@ import com.vladsch.flexmark.util.KeepType;
 import com.vladsch.flexmark.util.options.MutableDataHolder;
 import com.vladsch.flexmark.util.options.MutableDataSet;
 import com.vladsch.flexmark.youtrack.converter.YouTrackConverterExtension;
+import org.docx4j.convert.in.xhtml.XHTMLImporterImpl;
+import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
+import org.docx4j.openpackaging.parts.WordprocessingML.NumberingDefinitionsPart;
 
+import javax.xml.bind.JAXBException;
+import java.io.File;
 import java.util.Arrays;
+import java.util.Collections;
 
 /*
  Created by Jack DeSive on 10/7/2017 at 9:30 PM
@@ -74,9 +80,6 @@ public class MarkdownParser {
             .set(HtmlRenderer.FENCED_CODE_LANGUAGE_CLASS_PREFIX, "prettyprint lang-")
             .set(HtmlRenderer.RENDER_HEADER_ID, true)
 
-            // Docx options
-            .set(DocxRenderer.SUPPRESS_HTML, true)
-
             // Misc. Extensions
             .set(AbbreviationExtension.ABBREVIATIONS_KEEP, KeepType.LAST)
             .set(TaskListExtension.ITEM_DONE_MARKER, "<span class=\"taskitem\">X</span>")
@@ -97,29 +100,37 @@ public class MarkdownParser {
 
             .set(Parser.EXTENSIONS, Arrays.asList(TablesExtension.create(), EscapedCharacterExtension.create(),
                     AbbreviationExtension.create(), AutolinkExtension.create(), TaskListExtension.create(),
-                    WikiLinkExtension.create()));
+                    WikiLinkExtension.create(), StrikethroughExtension.create(), AnchorLinkExtension.create()));
 
-    static MutableDataHolder jiraOptions = new MutableDataSet()
-            .set(Parser.EXTENSIONS, Arrays.asList(JiraConverterExtension.create()));
+    private static MutableDataHolder jiraOptions = new MutableDataSet()
+            .set(Parser.EXTENSIONS, Collections.singletonList(JiraConverterExtension.create()));
 
-    static MutableDataHolder youtrackOptions = new MutableDataSet()
-            .set(Parser.EXTENSIONS, Arrays.asList(YouTrackConverterExtension.create()));
+    private static MutableDataHolder youtrackOptions = new MutableDataSet()
+            .set(Parser.EXTENSIONS, Collections.singletonList(YouTrackConverterExtension.create()));
 
-    static Parser markdownParser = Parser.builder(options).build();
-    static FlexmarkHtmlParser htmlParser = FlexmarkHtmlParser.build();
-    static HtmlRenderer htmlRenderer = HtmlRenderer.builder(options).build();
-    static DocxRenderer docxRender = DocxRenderer.builder(options).build();
-    static DefaultWysiwygConverter confluenceConverter = new DefaultWysiwygConverter();
+    private static Parser markdownParser = Parser.builder(options).build();
+    private static HtmlRenderer htmlRenderer = HtmlRenderer.builder(options).build();
+    private static DefaultWysiwygConverter confluenceConverter = new DefaultWysiwygConverter();
 
 
     public static String convertMarkdownToHTML(String markdown){
         return htmlRenderer.render(markdownParser.parse(markdown));
     }
 
-    public static WordprocessingMLPackage convertMarkdownToDocx(String markdown){
-        WordprocessingMLPackage template = DocxRenderer.getDefaultTemplate();
-        docxRender.render(markdownParser.parse(markdown), template);
-        return template;
+    public static void convertMarkdownToDocx(String markdown, File file) throws Docx4JException, JAXBException {
+        WordprocessingMLPackage wordMLPackage;
+        wordMLPackage = WordprocessingMLPackage.createPackage();
+        NumberingDefinitionsPart ndp = new NumberingDefinitionsPart();
+        wordMLPackage.getMainDocumentPart().addTargetPart(ndp);
+        ndp.unmarshalDefaultNumbering();
+        XHTMLImporterImpl xHTMLImporter = new XHTMLImporterImpl(wordMLPackage);
+        xHTMLImporter.setHyperlinkStyle("Hyperlink");
+        // Must be a properly formatted html doc.. No fragments
+        wordMLPackage.getMainDocumentPart().getContent().addAll(
+                xHTMLImporter.convert(Utils.wrapWithHtmlDocType(convertMarkdownToHTML(markdown)),
+                        null)
+        );
+        wordMLPackage.save(file);
     }
 
     public static String convertMarkdownToJira(String markdown){

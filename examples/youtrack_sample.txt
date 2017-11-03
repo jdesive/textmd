@@ -1,0 +1,16 @@
+=TextMd Sample=
+
+==Some samples==
+
+*BOLD* Text ''ITALIC'' Text *BOLD* Text ''ITALIC'' Text `inline-code` Text [Link|https://github.com] Hyperlink !http://via.placeholder.com/50x50! Image
+
+==Code==
+
+{code:lang=java}
+public static String sample = "Here is some sample Java code!";
+{code}
+
+Much more!
+
+-----
+

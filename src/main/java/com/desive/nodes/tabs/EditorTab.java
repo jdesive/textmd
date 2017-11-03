@@ -25,17 +25,29 @@ import javafx.geometry.NodeOrientation;
 import javafx.scene.control.Tab;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /*
  Created by Jack DeSive on 10/13/2017 at 6:59 PM
 */
 public class EditorTab extends Tab {
 
+    private Logger logger = LoggerFactory.getLogger(EditorTab.class);
+
     private EditorPane editorPane;
 
-    public EditorTab(EditorPane editorPane) {
+    public EditorTab(EditorPane editorPane, Stage primaryStage) {
 
         this.editorPane = editorPane;
+
+        this.setOnCloseRequest(e -> {
+            if(getEditorPane().exit(primaryStage))
+                logger.debug("Closing tab {}", getEditorPane().getFile().getPath());
+            else
+                e.consume();
+        });
 
         this.setContent(this.editorPane);
     }

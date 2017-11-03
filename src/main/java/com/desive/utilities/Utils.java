@@ -28,11 +28,18 @@ import javafx.stage.Stage;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Scanner;
 
 /*
  Created by Jack DeSive on 10/8/2017 at 1:27 PM
 */
 public class Utils {
+
+    private static ClassLoader loader;
+
+    public Utils() {
+        loader = getClass().getClassLoader();
+    }
 
     public static Paint getDefaultTextColor() {
         return Color.valueOf("f8f8f2");
@@ -42,60 +49,34 @@ public class Utils {
         return "untitled.md";
     }
 
-    public static String getSampleText(){
-        return "# TextMd Sample\n" +
-                "\n" +
-                "## Some samples\n" +
-                "**BOLD** Text\n" +
-                "*ITALIC* Text\n" +
-                "__BOLD__ Text\n" +
-                "_ITALIC_ Text\n" +
-                "`inline-code` Text\n" +
-                "[Link](https://github.com) Hyperlink\n" +
-                "![Alt Text](http://via.placeholder.com/50x50) Image\n" +
-                "\n" +
-                "## Code\n" +
-                "```java\n" +
-                "public static String sample = \"Here is some sample Java code!\";\n" +
-                "```\n" +
-                "\n" +
-                "Much more!\n" +
-                "***";
+    public static String getHelpPageFileName(){
+        return "help.md";
     }
 
-    public static String getWebViewCss(String background){ // eh, ill just hard code it.
-        return "\nbody {\n" +
-                "  background-color: #3B3F42;\n" +
-                "  font-family: 'Courier Primal';\n" +
-                "  color: #f8f8f2;\n" +
-                "}\n" +
-                "\n" +
-                "a {\n" +
-                "  background-color: #3B3F42;\n" +
-                "  font-family: 'Courier Primal';\n" +
-                "  color: #90b8e0;\n" +
-                "  text-decoration: none;\n" +
-                "}\n" +
-                "\n" +
-                "a:hover {\n" +
-                "  text-decoration: underline;\n" +
-                "}\n" +
-                "\n" +
-                "p code, li code {\n" +
-                "  background-color: rgba(44, 44, 44, 0.4);\n" +
-                "  padding: 0px 3px 0px 3px;\n" +
-                "  border-radius: 2px;\n" +
-                "}\n" +
-                "\n" +
-                "pre {\n" +
-                "  background-color: " + background + ";\n" +
-                "  font-family: 'Courier Primal';\n" +
-                "  color: #f8f8f2;\n" +
-                "  padding: 10px;\n" +
-                "  border-radius: 2px;\n" +
-                "  width: 97%;\n" +
-                "  overflow: scroll;\n" +
-                "}\n";
+    public static String getTestPageFileName(){
+        return "test.md";
+    }
+
+    public static String getSampleText(){
+        return new Scanner(loader.getResourceAsStream("assets/defaults/sample.md")).useDelimiter("\\Z").next();
+    }
+
+    public static String getHelpText(){
+        return new Scanner(loader.getResourceAsStream("assets/defaults/help.md")).useDelimiter("\\Z").next();
+    }
+
+    public static String getTestText(){
+        return new Scanner(loader.getResourceAsStream("assets/defaults/test.md")).useDelimiter("\\Z").next();
+    }
+
+    public static String getNewPageText(){
+        return new Scanner(loader.getResourceAsStream("assets/defaults/new_page.md")).useDelimiter("\\Z").next();
+    }
+
+    public static String getWebViewCss(String background){
+        return new Scanner(loader.getResourceAsStream("css/editor_view.css"))
+                .useDelimiter("\\Z").next()
+                .replace("${code.background}", background);
     }
 
     public static Alert getYesNoDialogBox(String title, String header, String content, Stage primaryStage){

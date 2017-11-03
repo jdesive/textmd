@@ -1,7 +1,20 @@
+.button {
+  -fx-background-color: #545454;
+  -fx-background-radius: 30;
+  -fx-background-insets: 0,1,2,3,0;
+  -fx-text-fill: #f8f8f2;
+  -fx-padding: 5 20 5 20;
+}
+
+.button:hover {
+  -fx-background-color: #474747;
+}
+
 .tab {
   -fx-font-size: 13;
   -fx-background-color: #2B2B2B;
   -fx-background-radius: 0;
+  -fx-padding: 40px 5px 40px 5px;
 }
 
 .tab:selected {

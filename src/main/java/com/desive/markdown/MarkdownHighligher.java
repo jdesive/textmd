@@ -42,11 +42,12 @@ public class MarkdownHighligher {
     private static final String HEADING_5_PATTERN = "(^##### (.*))";
     private static final String HEADING_6_PATTERN = "(^###### (.*))";
 
-    private static final String BOLD_PATTERN = "(\\*{2})\\S.*?\\S(\\*{2})|(__)\\S.*?\\S(__)";
-    private static final String ITALICS_PATTERN = "((\\*)\\S(.*?)\\S(\\*)|(_)\\S(.*?)\\S(_))";
-    private static final String INCLINE_CODE_PATTERN = "(`\\S(.*?)\\S`)";
-    private static final String IMAGE_PATTERN = "(!\\[\\S.*\\S\\]\\(\\S.*\\S\\))";
-    private static final String LINK_PATTERN = "(\\[\\S.*\\S\\]\\(\\S.*\\S\\))";
+    private static final String BOLD_PATTERN = "(\\*{2})\\S.*?(\\*{2})|(__)\\S.*?(__)";
+    private static final String ITALICS_PATTERN = "((\\*)\\S(.*?)(\\*)|(_)\\S(.*?)(_))";
+    private static final String STRIKETHROUGH_PATTERN = "((~~)\\S(.*?)(~~))";
+    private static final String INCLINE_CODE_PATTERN = "(`\\S(.*?)`)";
+    private static final String IMAGE_PATTERN = "(!\\[\\S.*\\S]\\(\\S.*\\S\\))";
+    private static final String LINK_PATTERN = "(\\[\\S.*\\S]\\(\\S.*\\S\\))";
     private static final String HRULE_PATTERN = "($-{3,}|\\*{3,}|_{3,}^)";
     private static final String CODE_PATTERN = "(```[a-z]*\\n(?:(?!```)[\\s\\S])+```)";
 
@@ -60,6 +61,7 @@ public class MarkdownHighligher {
                     + "|(?<HRULE>" + HRULE_PATTERN + ")"
                     + "|(?<BOLD>" + BOLD_PATTERN + ")"
                     + "|(?<ITALICS>" + ITALICS_PATTERN + ")"
+                    + "|(?<STRIKE>" + STRIKETHROUGH_PATTERN + ")"
                     + "|(?<CODE>" + CODE_PATTERN + ")"
                     + "|(?<INLINECODE>" + INCLINE_CODE_PATTERN + ")"
                     + "|(?<IMAGE>" + IMAGE_PATTERN + ")"
@@ -81,6 +83,7 @@ public class MarkdownHighligher {
                     matcher.group("HEADING6") != null ? "heading6" :
                     matcher.group("BOLD") != null ? "bold" :
                     matcher.group("ITALICS") != null ? "italics" :
+                    matcher.group("STRIKE") != null ? "strikethrough" :
                     matcher.group("INLINECODE") != null ? "inline-code" :
                     matcher.group("IMAGE") != null ? "image" :
                     matcher.group("LINK") != null ? "link" :

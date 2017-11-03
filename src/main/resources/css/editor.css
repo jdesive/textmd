@@ -5,7 +5,7 @@
 
 .code-area .text {
   -fx-fill: #f8f8f2;
-  -fx-font-family: 'Courier Primal';
+  -fx-font-family: 'Courier Primal', 'Courier Regular';
   -fx-font-size: 14px;
 }
 
@@ -71,6 +71,11 @@
   -rtfx-background-color: rgba(86, 179, 93, 0.3);
   -rtfx-underline-cap: round;
   -rtfx-underline-color: #90b8e0;
+}
+
+.code-area .strikethrough {
+  -fx-fill: #e9bb34;
+  -fx-strikethrough: true;
 }
 
 .code-area .keyword, .code-area .hrule {

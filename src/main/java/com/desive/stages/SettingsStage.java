@@ -22,6 +22,7 @@ package com.desive.stages;
 import com.desive.nodes.SettingsTabPane;
 import com.desive.utilities.Dictionary;
 import javafx.scene.Scene;
+import javafx.scene.control.TabPane;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
@@ -30,18 +31,15 @@ import javafx.stage.Stage;
 */
 public class SettingsStage extends Stage {
 
-    Scene scene;
-    SettingsTabPane tabPane;
+    public SettingsStage(Dictionary dictionary) {
 
-    public SettingsStage() {
-
-        this.tabPane = new SettingsTabPane();
-        this.scene = new Scene(this.tabPane, 600, 600);
+        TabPane tabPane = new SettingsTabPane(dictionary);
+        Scene scene = new Scene(tabPane, 600, 600);
         scene.getStylesheets().add("css/settings.css");
 
-        this.setTitle(Dictionary.STAGE_SETTINGS_TITLE);
+        this.setTitle(dictionary.STAGE_SETTINGS_TITLE);
         this.getIcons().add(new Image("assets/favicon.png"));
-        this.setScene(this.scene);
+        this.setScene(scene);
         this.setResizable(false);
     }
 }

@@ -1,0 +1,47 @@
+a {
+  background-color: #3B3F42;
+  font-family: 'Courier Primal', 'Courier Regular';
+  color: #90b8e0;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+blockquote {
+  padding: 1px;
+  background-color: #545454;
+}
+
+body {
+  background-color: #3B3F42;
+  font-family: 'Courier Primal', 'Courier Regular';
+  color: #f8f8f2;
+}
+
+p code, li code {
+  background-color: rgba(44, 44, 44, 0.4);
+  padding: 0px 3px 0px 3px;
+  border-radius: 2px;
+}
+
+pre {
+  background-color: ${code.background};
+}
+
+pre, table {
+  overflow: scroll;
+  padding: 10px;
+}
+
+pre, table, blockquote {
+  font-family: 'Courier Primal', 'Courier Regular';
+  color: #f8f8f2;
+  border-radius: 2px;
+  width: 97%;
+}
+
+table {
+  background-color: #545454;
+}

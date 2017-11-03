@@ -20,7 +20,9 @@
 package com.desive.nodes;
 
 import com.desive.nodes.tabs.EditorSettingsTab;
+import com.desive.nodes.tabs.GeneralSettingsTab;
 import com.desive.nodes.tabs.ViewSettingsTab;
+import com.desive.utilities.Dictionary;
 import javafx.geometry.Side;
 import javafx.scene.control.TabPane;
 
@@ -29,13 +31,14 @@ import javafx.scene.control.TabPane;
 */
 public class SettingsTabPane extends TabPane {
 
-    public SettingsTabPane() {
+    public SettingsTabPane(Dictionary dictionary) {
 
         this.setSide(Side.LEFT);
 
         this.getTabs().addAll(
-                new EditorSettingsTab(),
-                new ViewSettingsTab()
+                new GeneralSettingsTab(dictionary),
+                new EditorSettingsTab(dictionary),
+                new ViewSettingsTab(dictionary)
         );
 
     }

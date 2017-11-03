@@ -1,5 +1,5 @@
 # TextMd Markdown Editor
-A quick and simple markdown editor written in Java with a dark theme to reduce eye strain. TextMd also supports exporting to
+A markdown editor written in Java with a dark theme to reduce eye strain. TextMd also supports exporting to
 multiple different file types, see *Markdown Export Types* for more info.
 
 ## Features
@@ -37,4 +37,13 @@ Must have *Java*, *Maven* and *Git* installed to continue.
 * Run `mvn package` from the root directory
 * The final jar is located at `target/textmd-jar-with-dependencies.jar`
 
-TextMd uses the [Courier Primal](https://github.com/localredhead/courier-primal) font by [@localredhead](https://github.com/localredhead) and is mostly styled after [Intellij](https://www.jetbrains.com/idea/)'s Darcula theme.
+### Fonts
+TextMd uses the [Courier Primal](https://github.com/localredhead/courier-primal) font by [@localredhead](https://github.com/localredhead).
+
+Alternatively you can use the 'Courier Regular' font installed by default. You can change this setting under 
+Help -> Settings -> General -> Use Courier Primal
+
+This will download and load the fonts at runtime. You can also manually install the fonts if you don't want it to load at runtime.  
+
+## Author
+*  JDeSive ([GitHub](http://linkshrink.net/79JCDO) | [LinkedIn](http://linkshrink.net/7FiiXP) | [Donate](https://paypal.me/Jdesive/5))

@@ -5,8 +5,8 @@
     <output-test url="file://$MODULE_DIR$/target/test-classes" />
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />
@@ -52,14 +52,14 @@
     <orderEntry type="library" name="Maven: com.vladsch.flexmark:flexmark-profile-pegdown:0.27.0" level="project" />
     <orderEntry type="library" name="Maven: com.vladsch.flexmark:flexmark-util:0.27.0" level="project" />
     <orderEntry type="library" name="Maven: com.vladsch.flexmark:flexmark-youtrack-converter:0.27.0" level="project" />
-    <orderEntry type="library" name="Maven: com.vladsch.flexmark:flexmark-docx-converter:0.27.0" level="project" />
-    <orderEntry type="library" name="Maven: org.docx4j:docx4j:3.3.4" level="project" />
+    <orderEntry type="library" name="Maven: org.docx4j:docx4j-ImportXHTML:3.3.1" level="project" />
+    <orderEntry type="library" name="Maven: org.docx4j:xhtmlrenderer:3.0.0" level="project" />
+    <orderEntry type="library" name="Maven: com.lowagie:itext:2.1.7" level="project" />
+    <orderEntry type="library" name="Maven: org.docx4j:docx4j:3.3.1" level="project" />
     <orderEntry type="library" name="Maven: org.plutext:jaxb-svg11:1.0.2" level="project" />
     <orderEntry type="library" name="Maven: net.engio:mbassador:1.2.4.2" level="project" />
-    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.21" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:jcl-over-slf4j:1.7.21" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-log4j12:1.7.21" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.4" level="project" />
     <orderEntry type="library" name="Maven: commons-codec:commons-codec:1.10" level="project" />
     <orderEntry type="library" name="Maven: commons-io:commons-io:2.4" level="project" />
     <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpclient:4.5.2" level="project" />
@@ -78,6 +78,9 @@
     <orderEntry type="library" name="Maven: antlr:antlr:2.7.7" level="project" />
     <orderEntry type="library" name="Maven: com.google.guava:guava:19.0" level="project" />
     <orderEntry type="library" name="Maven: com.thedeanda:lorem:2.0" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.21" level="project" />
+    <orderEntry type="library" name="Maven: junit:junit:4.12" level="project" />
+    <orderEntry type="library" name="Maven: org.hamcrest:hamcrest-core:1.3" level="project" />
     <orderEntry type="library" name="Maven: com.github.TomasMikula:RichTextFX:v0.7-M3" level="project" />
     <orderEntry type="library" name="Maven: org.reactfx:reactfx:2.0-M5" level="project" />
     <orderEntry type="library" name="Maven: org.fxmisc.undo:undofx:1.2.2" level="project" />
@@ -94,7 +97,6 @@
     <orderEntry type="library" name="Maven: javax.activation:activation:1.0.2" level="project" />
     <orderEntry type="library" name="Maven: com.atlassian.mail:atlassian-mail:1.16" level="project" />
     <orderEntry type="library" name="Maven: com.atlassian.profiling:atlassian-profiling:1.8" level="project" />
-    <orderEntry type="library" name="Maven: junit:junit:3.8.1" level="project" />
     <orderEntry type="library" name="Maven: com.atlassian.util.concurrent:atlassian-util-concurrent:0.0.12" level="project" />
     <orderEntry type="library" name="Maven: com.atlassian.plugins:atlassian-plugins-core:2.1.0" level="project" />
     <orderEntry type="library" name="Maven: dom4j:dom4j:1.4" level="project" />
@@ -104,5 +106,8 @@
     <orderEntry type="library" name="Maven: radeox:radeox:1.0b2-forked-22Apr2004" level="project" />
     <orderEntry type="library" name="Maven: xerces:xmlParserAPIs:2.2.1" level="project" />
     <orderEntry type="library" name="Maven: org.hibernate:jtidy:r8-20060801" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.maven:maven-model:3.3.9" level="project" />
+    <orderEntry type="library" name="Maven: org.codehaus.plexus:plexus-utils:3.0.22" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.4" level="project" />
   </component>
 </module>

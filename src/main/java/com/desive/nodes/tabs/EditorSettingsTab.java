@@ -32,15 +32,26 @@ import javafx.scene.layout.HBox;
 */
 public class EditorSettingsTab extends SettingsTab {
 
-    Dictionary dict = Dictionary.getInstance();
+    private Dictionary languageDictionary;
 
-    Label editorHighlightRefreshRateLabel = new Label(dict.SETTINGS_EDITOR_REFRESH_RATE_LABEL + " ");
-    TextField editorHighlightRefreshRateField = new TextField(String.valueOf(Settings.EDITOR_HIGHLIGHT_REFRESH_RATE));
+    private Label editorHighlightRefreshRateLabel;
+    private TextField editorHighlightRefreshRateField = new TextField(String.valueOf(Settings.EDITOR_HIGHLIGHT_REFRESH_RATE));
 
-    public EditorSettingsTab() {
-        super(Dictionary.SETTINGS_EDITOR_TAB_HEADER_LABEL);
+    public EditorSettingsTab(Dictionary dictionary) {
+        super(dictionary.SETTINGS_EDITOR_TAB_HEADER_LABEL, dictionary);
+
+        this.languageDictionary = dictionary;
+        editorHighlightRefreshRateLabel = new Label(dictionary.SETTINGS_EDITOR_REFRESH_RATE_LABEL + " ");
 
         this.addHighlightRefreshRateBox(0, 0);
+
+        this.apply.setOnAction(e ->
+                Settings.setEditorHighlightRefreshRate(Integer.parseInt(this.editorHighlightRefreshRateField.getText()))
+        );
+
+        this.reset.setOnAction(e ->
+                editorHighlightRefreshRateField.setText(String.valueOf(Settings.EDITOR_HIGHLIGHT_REFRESH_RATE))
+        );
 
     }
 
@@ -54,11 +65,8 @@ public class EditorSettingsTab extends SettingsTab {
                 this.editorHighlightRefreshRateLabel,
                 this.editorHighlightRefreshRateField
         );
-        this.editorHighlightRefreshRateField.setOnAction(e ->
-                Settings.setViewRefreshRate(Integer.parseInt(this.editorHighlightRefreshRateField.getText()))
-        );
-        this.editorHighlightRefreshRateField.setTooltip(new Tooltip(dict.SETTINGS_EDITOR_REFRESH_RATE_FIELD_TOOLTIP));
-        this.editorHighlightRefreshRateLabel.setTooltip(new Tooltip(dict.SETTINGS_EDITOR_REFRESH_RATE_LABEL_TOOLTIP));
+        this.editorHighlightRefreshRateField.setTooltip(new Tooltip(languageDictionary.SETTINGS_EDITOR_REFRESH_RATE_FIELD_TOOLTIP));
+        this.editorHighlightRefreshRateLabel.setTooltip(new Tooltip(languageDictionary.SETTINGS_EDITOR_REFRESH_RATE_LABEL_TOOLTIP));
         this.grid.add(viewRefreshRateBox, col, row);
     }
 

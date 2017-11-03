@@ -26,16 +26,16 @@ import javafx.scene.input.KeyCombination;
 */
 public class Shortcut {
 
-    public static KeyCombination REFRESH_EDITOR_VIEW = KeyCombination.valueOf("F5");
-    public static KeyCombination OPEN_SETTINGS_STAGE = KeyCombination.valueOf("SHORTCUT+ALT+S");
-    public static KeyCombination UNDO_EDITOR = KeyCombination.valueOf("SHORTCUT+Z");
-    public static KeyCombination REDO_EDITOR = KeyCombination.valueOf("SHORTCUT+SHIFT+Z");
-    public static KeyCombination NEW_FILE_EDITOR = KeyCombination.valueOf("SHORTCUT+N");
-    public static KeyCombination SAVE_EDITOR = KeyCombination.valueOf("SHORTCUT+S");
-    public static KeyCombination SAVE_AS_EDITOR = KeyCombination.valueOf("SHORTCUT+SHIFT+S");
-    public static KeyCombination IMPORT_FILE_EDITOR = KeyCombination.valueOf("SHORTCUT+I");
-    public static KeyCombination IMPORT_URL_EDITOR = KeyCombination.valueOf("SHORTCUT+SHIFT+I");
-    public static KeyCombination OPEN_FILE_EDITOR = KeyCombination.valueOf("SHORTCUT+O");
-    public static KeyCombination OPEN_URL_EDITOR = KeyCombination.valueOf("SHORTCUT+SHIFT+O");
+    public final static KeyCombination REFRESH_EDITOR_VIEW = KeyCombination.valueOf("F5");
+    public final static KeyCombination OPEN_SETTINGS_STAGE = KeyCombination.valueOf("SHORTCUT+ALT+S");
+    public final static KeyCombination UNDO_EDITOR = KeyCombination.valueOf("SHORTCUT+Z");
+    public final static KeyCombination REDO_EDITOR = KeyCombination.valueOf("SHORTCUT+SHIFT+Z");
+    public final static KeyCombination NEW_FILE_EDITOR = KeyCombination.valueOf("SHORTCUT+N");
+    public final static KeyCombination SAVE_EDITOR = KeyCombination.valueOf("SHORTCUT+S");
+    public final static KeyCombination SAVE_AS_EDITOR = KeyCombination.valueOf("SHORTCUT+SHIFT+S");
+    public final static KeyCombination IMPORT_FILE_EDITOR = KeyCombination.valueOf("SHORTCUT+I");
+    public final static KeyCombination IMPORT_URL_EDITOR = KeyCombination.valueOf("SHORTCUT+SHIFT+I");
+    public final static KeyCombination OPEN_FILE_EDITOR = KeyCombination.valueOf("SHORTCUT+O");
+    public final static KeyCombination OPEN_URL_EDITOR = KeyCombination.valueOf("SHORTCUT+SHIFT+O");
 
 }

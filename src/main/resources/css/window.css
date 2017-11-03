@@ -64,6 +64,7 @@
   -fx-tab-max-width:200px;
   -fx-tab-min-height:23px;
   -fx-tab-max-height:23px;
+  -fx-background-color: #2B2B2B;
 }
 
 .tab {

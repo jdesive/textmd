@@ -19,563 +19,108 @@
 
 package com.desive.nodes;
 
-import com.desive.nodes.tabs.EditorTab;
-import com.desive.utilities.*;
-import javafx.scene.control.*;
-import javafx.stage.FileChooser;
+import com.desive.nodes.menus.ToolBarMenus;
+import com.desive.nodes.menus.items.editor.edit.EditorRedoItem;
+import com.desive.nodes.menus.items.editor.edit.EditorUndoItem;
+import com.desive.nodes.menus.items.editor.file.EditorExitItem;
+import com.desive.nodes.menus.items.editor.file.EditorNewItem;
+import com.desive.nodes.menus.items.editor.file.EditorSaveAsItem;
+import com.desive.nodes.menus.items.editor.file.EditorSaveItem;
+import com.desive.nodes.menus.items.editor.file.export.*;
+import com.desive.nodes.menus.items.editor.file.open.EditorOpenFileItem;
+import com.desive.nodes.menus.items.editor.file.open.EditorOpenUrlItem;
+import com.desive.nodes.menus.items.editor.help.EditorHelpPageItem;
+import com.desive.nodes.menus.items.editor.help.EditorSettingsItem;
+import com.desive.nodes.menus.items.editor.help.EditorTestPageItem;
+import com.desive.nodes.menus.items.editor.view.EditorPrettifyItem;
+import com.desive.nodes.menus.items.editor.view.EditorRefreshViewItem;
+import com.desive.utilities.Dictionary;
+import javafx.scene.control.MenuBar;
 import javafx.stage.Stage;
-import org.docx4j.openpackaging.exceptions.Docx4JException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Optional;
-import java.util.Scanner;
-
+import static com.desive.utilities.Shortcut.*;
 
 /*
  Created by Jack DeSive on 10/8/2017 at 1:56 PM
 */
 public class EditorToolBar extends MenuBar {
 
-    Dictionary dict = Dictionary.getInstance();
+    private final Logger logger = LoggerFactory.getLogger(EditorToolBar.class);
 
-    Stage primaryStage, settingsStage;
-    TabFactory tabFactory;
+    public EditorToolBar(TabFactory tabFactory,
+                         Dictionary dictionary,
+                         ToolBarMenus menus,
+                         Stage primaryStage,
+                         Stage settingsStage) {
 
-    public EditorToolBar(TabFactory tabFactory, Stage primaryStage, Stage settingsStage) {
-
-        this.tabFactory = tabFactory;
-        this.primaryStage = primaryStage;
-        this.settingsStage = settingsStage;
-
-        Menu file = new Menu(dict.TOOLBAR_EDITOR_FILE_MENU),
-                edit = new Menu(dict.TOOLBAR_EDITOR_EDIT_MENU),
-                view = new Menu(dict.TOOLBAR_EDITOR_VIEW_MENU),
-                help = new Menu(dict.TOOLBAR_EDITOR_HELP_MENU),
-                imports = new Menu(dict.TOOLBAR_EDITOR_IMPORT_MENU),
-                export = new Menu(dict.TOOLBAR_EDITOR_EXPORT_MENU),
-                open = new Menu(dict.TOOLBAR_EDITOR_OPEN_MENU);
-
-        file.getItems().addAll(
-                createNewItem(),
-                open,
-                imports,
-                export,
-                createSaveItem(),
-                createSaveAsItem(),
-                createExitItem()
-        );
-        edit.getItems().addAll(
-                createUndoItem(),
-                createRedoItem()
-        );
-        view.getItems().addAll(
-                createRefreshViewItem(),
-                createPrettifyItem()
+        this.log(dictionary.TOOLBAR_EDITOR_FILE_MENU);
+        menus.getEditorFileMenu().getItems().addAll(
+                new EditorNewItem(dictionary, NEW_FILE_EDITOR, primaryStage, tabFactory),
+                menus.getEditorOpenSubmenu(),
+                menus.getEditorImportSubmenu(),
+                menus.getEditorExportSubmenu(),
+                new EditorSaveItem(dictionary, SAVE_EDITOR, primaryStage, tabFactory),
+                new EditorSaveAsItem(dictionary, SAVE_AS_EDITOR, primaryStage, tabFactory),
+                new EditorExitItem(dictionary, primaryStage, tabFactory)
         );
 
-        imports.getItems().addAll(
-                createImportFromFileItem(),
-                createImportFromUrlItem()
+        this.log(dictionary.TOOLBAR_EDITOR_EDIT_MENU);
+        menus.getEditorEditMenu().getItems().addAll(
+                new EditorUndoItem(dictionary, UNDO_EDITOR, tabFactory),
+                new EditorRedoItem(dictionary, REDO_EDITOR, tabFactory)
         );
-        export.getItems().addAll(
-                createExportDocxItem(),
-                createExportPdfItem(),
-                createExportPdfWithCssItem(),
-                createExportJiraItem(),
-                createExportConfluenceItem(),
-                createExportYoutrackItem(),
-                createExportTextItem(),
-                createExportHtmlItem(),
-                createExportHtmlWithStyleItem()
-        );
-        open.getItems().addAll(
-                createOpenItem(),
-                createOpenFromURLItem()
-        );
-        //help.getItems().add(createSettingsItem());
 
+        this.log(dictionary.TOOLBAR_EDITOR_VIEW_MENU);
+        menus.getEditorViewMenu().getItems().addAll(
+                new EditorRefreshViewItem(dictionary, REFRESH_EDITOR_VIEW, tabFactory),
+                new EditorPrettifyItem(dictionary, tabFactory)
+        );
+
+        this.log(dictionary.TOOLBAR_EDITOR_HELP_MENU);
+        menus.getEditorHelpMenu().getItems().addAll(
+                new EditorHelpPageItem(dictionary, primaryStage, tabFactory),
+                new EditorTestPageItem(dictionary, primaryStage, tabFactory),
+                new EditorSettingsItem(dictionary, OPEN_SETTINGS_STAGE, settingsStage)
+        );
+
+        this.log(dictionary.TOOLBAR_EDITOR_IMPORT_MENU);
+        menus.getEditorImportSubmenu().getItems().addAll(
+                new EditorOpenFileItem(dictionary, IMPORT_FILE_EDITOR, primaryStage, tabFactory),
+                new EditorOpenUrlItem(dictionary, IMPORT_URL_EDITOR, primaryStage, tabFactory)
+        );
+
+        this.log(dictionary.TOOLBAR_EDITOR_EXPORT_MENU);
+        menus.getEditorExportSubmenu().getItems().addAll(
+                new EditorExportDocxItem(dictionary, primaryStage, tabFactory), // Docx
+                new EditorExportPdfItem(dictionary, primaryStage, tabFactory, false), // PDF
+                new EditorExportPdfItem(dictionary, primaryStage, tabFactory, true), // PDF/CSS
+                new EditorExportJiraItem(dictionary, primaryStage, tabFactory), // JIRA
+                new EditorExportConfluenceItem(dictionary, primaryStage, tabFactory), // Confluence
+                new EditorExportYoutrackItem(dictionary, primaryStage, tabFactory), // Youtrack
+                new EditorExportPlainTextItem(dictionary, primaryStage, tabFactory), // Plain Text
+                new EditorExportHtmlItem(dictionary, primaryStage, tabFactory, false), // HTML
+                new EditorExportHtmlItem(dictionary, primaryStage, tabFactory, true) // HTML/CSS
+        );
+
+        this.log(dictionary.TOOLBAR_EDITOR_OPEN_MENU);
+        menus.getEditorOpenSubmenu().getItems().addAll(
+                new EditorOpenFileItem(dictionary, OPEN_FILE_EDITOR, primaryStage, tabFactory),
+                new EditorOpenUrlItem(dictionary, OPEN_URL_EDITOR, primaryStage, tabFactory)
+        );
+
+        logger.debug("Building toolbar");
         this.getMenus().addAll(
-                file,
-                edit,
-                view,
-                help
+                menus.getEditorFileMenu(),
+                menus.getEditorEditMenu(),
+                menus.getEditorViewMenu(),
+                menus.getEditorHelpMenu()
         );
     }
 
-    private MenuItem createSettingsItem() {
-        MenuItem item = new MenuItem(dict.TOOLBAR_EDITOR_SETTINGS_ITEM);
-        item.setAccelerator(Shortcut.OPEN_SETTINGS_STAGE);
-        item.setOnAction(e -> {
-            this.settingsStage.centerOnScreen();
-            this.settingsStage.show();
-        });
-
-        return item;
-    }
-
-    private MenuItem createPrettifyItem() {
-        MenuItem item = new MenuItem(dict.TOOLBAR_EDITOR_PRETTIFY_ITEM);
-        item.setOnAction(e -> {
-            ((EditorTab) this.tabFactory.getSelectedTab()).getEditorPane().prettifyWebViewCode();
-        });
-        return item;
-    }
-
-    private MenuItem createRefreshViewItem() {
-        MenuItem item = new MenuItem(dict.TOOLBAR_EDITOR_REFRESH_VIEW_ITEM);
-        item.setAccelerator(Shortcut.REFRESH_EDITOR_VIEW);
-        item.setOnAction(e -> {
-            ((EditorTab) this.tabFactory.getSelectedTab()).getEditorPane().refreshWebView();
-        });
-        return item;
-    }
-
-    private MenuItem createUndoItem() {
-        MenuItem item = new MenuItem(dict.TOOLBAR_EDITOR_UNDO_ITEM);
-        item.setAccelerator(Shortcut.UNDO_EDITOR);
-        item.setOnAction(e -> {
-            EditorTab currTab = ((EditorTab) tabFactory.getSelectedTab());
-            if(currTab.getEditorPane().getEditor().isUndoAvailable())
-                currTab.getEditorPane().getEditor().undo();
-        });
-        return item;
-    }
-
-    private MenuItem createRedoItem() {
-        MenuItem item = new MenuItem(dict.TOOLBAR_EDITOR_REDO_ITEM);
-        item.setAccelerator(Shortcut.REDO_EDITOR);
-        item.setOnAction(e -> {
-            EditorTab currTab = ((EditorTab) tabFactory.getSelectedTab());
-            if(currTab.getEditorPane().getEditor().isUndoAvailable())
-                currTab.getEditorPane().getEditor().redo();
-        });
-        return item;
-    }
-
-    private MenuItem createNewItem() {
-        MenuItem item = new MenuItem(dict.TOOLBAR_EDITOR_NEW_ITEM);
-        item.setAccelerator(Shortcut.NEW_FILE_EDITOR);
-        item.setOnAction(e -> {
-            EditorPane editorPane = new EditorPane("# New page");
-            EditorTab newTab = new EditorTab(editorPane);
-            newTab.getEditorPane().setFile(new File(Utils.getDefaultFileName()));
-            this.tabFactory.addNewEditorTab(newTab);
-        });
-        return item;
-    }
-
-    private MenuItem createSaveItem() {
-        MenuItem item = new MenuItem(dict.TOOLBAR_EDITOR_SAVE_ITEM);
-        item.setAccelerator(Shortcut.SAVE_EDITOR);
-        item.setOnAction(e -> {
-            EditorTab currTab = ((EditorTab) tabFactory.getSelectedTab());
-            try {
-                currTab.getEditorPane().save(primaryStage);
-            } catch (IOException e1) {
-                Utils.getExceptionDialogBox(
-                        dict.DIALOG_EXCEPTION_TITLE,
-                        dict.DIALOG_EXCEPTION_SAVING_MARKDOWN_CONTENT,
-                        e1.getMessage(),
-                        e1,
-                        primaryStage
-                ).showAndWait();
-            }
-        });
-        return item;
-    }
-
-    private MenuItem createSaveAsItem() {
-        MenuItem item = new MenuItem(dict.TOOLBAR_EDITOR_SAVE_AS_ITEM);
-        item.setAccelerator(Shortcut.SAVE_AS_EDITOR);
-        item.setOnAction(e -> {
-            EditorTab currTab = ((EditorTab) tabFactory.getSelectedTab());
-            try {
-                currTab.getEditorPane().saveAs(primaryStage);
-                currTab.computeTabName();
-            } catch (IOException e1) {
-                Utils.getExceptionDialogBox(
-                        dict.DIALOG_EXCEPTION_TITLE,
-                        dict.DIALOG_EXCEPTION_SAVING_MARKDOWN_CONTENT,
-                        e1.getMessage(),
-                        e1,
-                        primaryStage
-                ).showAndWait();
-            }
-        });
-        return item;
-    }
-
-    private MenuItem createImportFromUrlItem() {
-        MenuItem item = new MenuItem(dict.TOOLBAR_EDITOR_IMPORT_URL_ITEM);
-        item.setAccelerator(Shortcut.IMPORT_URL_EDITOR);
-        item.setOnAction(e -> {
-            TextInputDialog input = Utils.getTextInputDialog(
-                    dict.DIALOG_IMPORT_URL_TITLE,
-                    dict.DIALOG_IMPORT_URL_CONTENT,
-                    primaryStage
-            );
-            Optional<String> result = input.showAndWait();
-            result.ifPresent(url -> {
-                try {
-                    EditorTab tab = ((EditorTab)this.tabFactory.getSelectedTab());
-                    tab.getEditorPane().setContent(tab.getEditorPane().getContent() + "\n" + Http.request(url + "", null, null, null, "GET"));
-                } catch (IOException e1) {
-                    Utils.getExceptionDialogBox(
-                            dict.DIALOG_EXCEPTION_TITLE,
-                            dict.DIALOG_EXCEPTION_IMPORT_CONTENT,
-                            e1.getMessage(),
-                            e1,
-                            primaryStage
-                    ).showAndWait();
-                }
-            });
-        });
-        return item;
-    }
-
-    private MenuItem createImportFromFileItem() {
-        MenuItem item = new MenuItem(dict.TOOLBAR_EDITOR_IMPORT_FILE_ITEM);
-        item.setAccelerator(Shortcut.IMPORT_FILE_EDITOR);
-        item.setOnAction(e -> {
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.getExtensionFilters().add(FileExtensionFilters.MARKDOWN);
-            File file = fileChooser.showOpenDialog(primaryStage);
-            if(file != null){
-                try {
-                    EditorTab tab = ((EditorTab)this.tabFactory.getSelectedTab());
-                    tab.getEditorPane().setContent(tab.getEditorPane().getContent() + "\n" + new Scanner(file).useDelimiter("\\Z").next());
-                } catch (IOException e1) {
-                    Utils.getExceptionDialogBox(
-                            dict.DIALOG_EXCEPTION_TITLE,
-                            dict.DIALOG_EXCEPTION_IMPORT_CONTENT,
-                            e1.getMessage(),
-                            e1,
-                            primaryStage
-                    ).showAndWait();
-                }
-            }
-        });
-        return item;
-    }
-
-    private MenuItem createExportHtmlItem() {
-        MenuItem item = new MenuItem(dict.TOOLBAR_EDITOR_EXPORT_HTML_ITEM);
-        item.setOnAction(e -> {
-            EditorTab currTab = ((EditorTab) tabFactory.getSelectedTab());
-            try {
-                if(currTab.getEditorPane().saveHtml(primaryStage, false)) {
-                    Utils.getConfirmationDialog(
-                            dict.DIALOG_EXPORT_SUCCESS_TITLE,
-                            dict.DIALOG_EXPORT_SUCCESS_HTML_CONTENT,
-                            primaryStage
-                    ).showAndWait();
-                }
-            } catch (IOException e1) {
-                Utils.getExceptionDialogBox(
-                        dict.DIALOG_EXCEPTION_TITLE,
-                        dict.DIALOG_EXCEPTION_EXPORT_HTML_CONTENT,
-                        e1.getMessage(),
-                        e1,
-                        primaryStage
-                ).showAndWait();
-            }
-        });
-        return item;
-    }
-
-    private MenuItem createExportHtmlWithStyleItem() {
-        MenuItem item = new MenuItem(dict.TOOLBAR_EDITOR_EXPORT_HTML_CSS_ITEM);
-        item.setOnAction(e -> {
-            EditorTab currTab = ((EditorTab) tabFactory.getSelectedTab());
-            try {
-                if(currTab.getEditorPane().saveHtml(primaryStage, true)) {
-                    Utils.getConfirmationDialog(
-                            dict.DIALOG_EXPORT_SUCCESS_TITLE,
-                            dict.DIALOG_EXPORT_SUCCESS_HTML_CSS_CONTENT,
-                            primaryStage
-                    ).showAndWait();
-                }
-            } catch (IOException e1) {
-                Utils.getExceptionDialogBox(
-                        dict.DIALOG_EXCEPTION_TITLE,
-                        dict.DIALOG_EXCEPTION_EXPORT_HTML_CSS_CONTENT,
-                        e1.getMessage(),
-                        e1,
-                        primaryStage
-                ).showAndWait();
-            }
-        });
-        return item;
-    }
-
-    private MenuItem createExportDocxItem() {
-        MenuItem item = new MenuItem(dict.TOOLBAR_EDITOR_EXPORT_DOCX_ITEM);
-        item.setOnAction(e -> {
-            EditorTab currTab = ((EditorTab) tabFactory.getSelectedTab());
-            try {
-                if(currTab.getEditorPane().saveDocx(primaryStage)) {
-                    Utils.getConfirmationDialog(
-                            dict.DIALOG_EXPORT_SUCCESS_TITLE,
-                            dict.DIALOG_EXPORT_SUCCESS_DOCX_CONTENT,
-                            primaryStage
-                    ).showAndWait();
-                }
-            } catch (IOException | Docx4JException e1) {
-                Utils.getExceptionDialogBox(
-                        dict.DIALOG_EXCEPTION_TITLE,
-                        dict.DIALOG_EXCEPTION_EXPORT_DOCX_CONTENT,
-                        e1.getMessage(),
-                        e1,
-                        primaryStage
-                ).showAndWait();
-            }
-        });
-        return item;
-    }
-
-    private MenuItem createExportPdfItem() {
-        MenuItem item = new MenuItem(dict.TOOLBAR_EDITOR_EXPORT_PDF_ITEM);
-        item.setOnAction(e -> {
-            EditorTab currTab = ((EditorTab) tabFactory.getSelectedTab());
-            try {
-                if(currTab.getEditorPane().savePdf(primaryStage, false)) {
-                    Utils.getConfirmationDialog(
-                            dict.DIALOG_EXPORT_SUCCESS_TITLE,
-                            dict.DIALOG_EXPORT_SUCCESS_PDF_CONTENT,
-                            primaryStage
-                    ).showAndWait();
-                }
-            } catch (IOException e1) {
-                Utils.getExceptionDialogBox(
-                        dict.DIALOG_EXCEPTION_TITLE,
-                        dict.DIALOG_EXCEPTION_EXPORT_PDF_CONTENT,
-                        e1.getMessage(),
-                        e1,
-                        primaryStage
-                ).showAndWait();
-            }
-        });
-        return item;
-    }
-
-    private MenuItem createExportPdfWithCssItem() {
-        MenuItem item = new MenuItem(dict.TOOLBAR_EDITOR_EXPORT_PDF_CSS_ITEM);
-        item.setOnAction(e -> {
-            EditorTab currTab = ((EditorTab) tabFactory.getSelectedTab());
-            try {
-                if(currTab.getEditorPane().savePdf(primaryStage, true)) {
-                    Utils.getConfirmationDialog(
-                            dict.DIALOG_EXPORT_SUCCESS_TITLE,
-                            dict.DIALOG_EXPORT_SUCCESS_PDF_CSS_CONTENT,
-                            primaryStage
-                    ).showAndWait();
-                }
-            } catch (IOException e1) {
-                Utils.getExceptionDialogBox(
-                        dict.DIALOG_EXCEPTION_TITLE,
-                        dict.DIALOG_EXCEPTION_EXPORT_PDF_CSS_CONTENT,
-                        e1.getMessage(),
-                        e1,
-                        primaryStage
-                ).showAndWait();
-            }
-        });
-        return item;
-    }
-
-    private MenuItem createExportJiraItem() {
-        MenuItem item = new MenuItem(dict.TOOLBAR_EDITOR_EXPORT_JIRA_ITEM);
-        item.setOnAction(e -> {
-            EditorTab currTab = ((EditorTab) tabFactory.getSelectedTab());
-            try {
-                if(currTab.getEditorPane().saveJira(primaryStage)) {
-                    Utils.getConfirmationDialog(
-                            dict.DIALOG_EXPORT_SUCCESS_TITLE,
-                            dict.DIALOG_EXPORT_SUCCESS_JIRA_CONTENT,
-                            primaryStage
-                    ).showAndWait();
-                }
-            } catch (IOException e1) {
-                Utils.getExceptionDialogBox(
-                        dict.DIALOG_EXCEPTION_TITLE,
-                        dict.DIALOG_EXCEPTION_EXPORT_JIRA_CONTENT,
-                        e1.getMessage(),
-                        e1,
-                        primaryStage
-                ).showAndWait();
-            }
-        });
-        return item;
-    }
-
-    private MenuItem createExportYoutrackItem() {
-        MenuItem item = new MenuItem(dict.TOOLBAR_EDITOR_EXPORT_YOUTRACK_ITEM);
-        item.setOnAction(e -> {
-            EditorTab currTab = ((EditorTab) tabFactory.getSelectedTab());
-            try {
-                if(currTab.getEditorPane().saveYoutrack(primaryStage)) {
-                    Utils.getConfirmationDialog(
-                            dict.DIALOG_EXPORT_SUCCESS_TITLE,
-                            dict.DIALOG_EXPORT_SUCCESS_YOUTRACK_CONTENT,
-                            primaryStage
-                    ).showAndWait();
-                }
-            } catch (IOException e1) {
-                Utils.getExceptionDialogBox(
-                        dict.DIALOG_EXCEPTION_TITLE,
-                        dict.DIALOG_EXCEPTION_EXPORT_YOUTRACK_CONTENT,
-                        e1.getMessage(),
-                        e1,
-                        primaryStage
-                ).showAndWait();
-            }
-        });
-        return item;
-    }
-
-    private MenuItem createExportTextItem() {
-        MenuItem item = new MenuItem(dict.TOOLBAR_EDITOR_EXPORT_TEXT_ITEM);
-        item.setOnAction(e -> {
-            EditorTab currTab = ((EditorTab) tabFactory.getSelectedTab());
-            try {
-                if(currTab.getEditorPane().saveText(primaryStage)) {
-                    Utils.getConfirmationDialog(
-                            dict.DIALOG_EXPORT_SUCCESS_TITLE,
-                            dict.DIALOG_EXPORT_SUCCESS_PLAIN_TEXT_CONTENT,
-                            primaryStage
-                    ).showAndWait();
-                }
-            } catch (IOException e1) {
-                Utils.getExceptionDialogBox(
-                        dict.DIALOG_EXCEPTION_TITLE,
-                        dict.DIALOG_EXCEPTION_EXPORT_PLAIN_TEXT_CONTENT,
-                        e1.getMessage(),
-                        e1,
-                        primaryStage
-                ).showAndWait();
-            }
-        });
-        return item;
-    }
-
-    private MenuItem createExportConfluenceItem() {
-        MenuItem item = new MenuItem(dict.TOOLBAR_EDITOR_EXPORT_CONFLUENCE_ITEM);
-        item.setOnAction(e -> {
-            EditorTab currTab = ((EditorTab) tabFactory.getSelectedTab());
-            try {
-                if(currTab.getEditorPane().saveConfluenceMarkup(primaryStage)) {
-                    Utils.getConfirmationDialog(
-                            dict.DIALOG_EXPORT_SUCCESS_TITLE,
-                            dict.DIALOG_EXPORT_SUCCESS_CONFLUENCE_CONTENT,
-                            primaryStage
-                    ).showAndWait();
-                }
-            } catch (IOException e1) {
-                Utils.getExceptionDialogBox(
-                        dict.DIALOG_EXCEPTION_TITLE,
-                        dict.DIALOG_EXCEPTION_EXPORT_CONFLUENCE_CONTENT,
-                        e1.getMessage(),
-                        e1,
-                        primaryStage
-                ).showAndWait();
-            }
-        });
-        return item;
-    }
-
-    private MenuItem createExitItem() {
-        MenuItem item = new MenuItem(dict.TOOLBAR_EDITOR_EXIT_ITEM);
-        item.setOnAction(e -> {
-            EditorTab currTab = ((EditorTab) tabFactory.getSelectedTab());
-            if(!currTab.getEditorPane().isSaved()){
-                Optional<ButtonType> save = Utils.getYesNoDialogBox(currTab.getEditorPane().getFile().getPath(),
-                        dict.DIALOG_FILE_NOT_SAVED_TITLE,
-                        dict.DIALOG_FILE_NOT_SAVED_CONTENT,
-                        primaryStage).showAndWait();
-                switch (save.get().getButtonData()){
-                    case YES:
-                        try {
-                            currTab.getEditorPane().save(primaryStage);
-                        } catch (IOException e1) {
-                            Utils.getExceptionDialogBox(
-                                    dict.DIALOG_EXCEPTION_TITLE,
-                                    dict.DIALOG_EXCEPTION_SAVING_MARKDOWN_CONTENT,
-                                    e1.getMessage(),
-                                    e1,
-                                    primaryStage
-                            ).showAndWait();
-                        }
-                        break;
-                    case NO:
-                        break;
-                    case CANCEL_CLOSE:
-                    default:
-                        return;
-                }
-            }
-            primaryStage.close();
-        });
-        return item;
-    }
-
-    private MenuItem createOpenItem() {
-        MenuItem item = new MenuItem(dict.TOOLBAR_EDITOR_OPEN_FILE_ITEM);
-        item.setAccelerator(Shortcut.OPEN_FILE_EDITOR);
-        item.setOnAction(e ->{
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.getExtensionFilters().add(FileExtensionFilters.MARKDOWN);
-            File file = fileChooser.showOpenDialog(primaryStage);
-            if(file != null){
-                try {
-                    String content =  new Scanner(file).useDelimiter("\\Z").next();
-                    EditorPane editorPane = new EditorPane(content);
-                    EditorTab newTab = new EditorTab(editorPane);
-                    newTab.getEditorPane().setFile(file);
-                    this.tabFactory.addNewEditorTab(newTab);
-                } catch (FileNotFoundException e1) {
-                    Utils.getExceptionDialogBox(
-                            dict.DIALOG_EXCEPTION_TITLE,
-                            dict.DIALOG_EXCEPTION_OPENING_MARKDOWN_CONTENT,
-                            e1.getMessage(),
-                            e1,
-                            primaryStage
-                    ).showAndWait();
-                }
-            }
-        });
-        return item;
-    }
-
-    private MenuItem createOpenFromURLItem() {
-        MenuItem item = new MenuItem(dict.TOOLBAR_EDITOR_OPEN_URL_ITEM);
-        item.setAccelerator(Shortcut.OPEN_URL_EDITOR);
-        item.setOnAction(e -> {
-            TextInputDialog input = Utils.getTextInputDialog(
-                    dict.DIALOG_OPEN_URL_TITLE,
-                    dict.DIALOG_OPEN_URL_CONTENT,
-                    primaryStage
-            );
-            Optional<String> result = input.showAndWait();
-            result.ifPresent(url -> {
-                try {
-                    EditorPane editorPane = new EditorPane(Http.request(url + "", null, null, null, "GET"));
-                    EditorTab newTab = new EditorTab(editorPane);
-                    newTab.getEditorPane().setFile(new File(Utils.getDefaultFileName()));
-                    this.tabFactory.addNewEditorTab(newTab);
-                } catch (IOException e1) {
-                    Utils.getExceptionDialogBox(
-                            dict.DIALOG_EXCEPTION_TITLE,
-                            dict.DIALOG_EXCEPTION_OPENING_MARKDOWN_URL_CONTENT,
-                            e1.getMessage(),
-                            e1,
-                            primaryStage
-                    ).showAndWait();
-                }
-            });
-        });
-        return item;
+    private void log(String param) {
+        logger.debug("Building \'{}\' menu", param);
     }
 
 }
