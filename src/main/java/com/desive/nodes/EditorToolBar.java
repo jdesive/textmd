@@ -34,13 +34,14 @@ import com.desive.nodes.menus.items.editor.help.EditorSettingsItem;
 import com.desive.nodes.menus.items.editor.help.EditorTestPageItem;
 import com.desive.nodes.menus.items.editor.view.EditorPrettifyItem;
 import com.desive.nodes.menus.items.editor.view.EditorRefreshViewItem;
+import com.desive.stages.dialogs.DialogFactory;
 import com.desive.utilities.Dictionary;
 import javafx.scene.control.MenuBar;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.desive.utilities.Shortcut.*;
+import static com.desive.utilities.constants.Shortcut.*;
 
 /*
  Created by Jack DeSive on 10/8/2017 at 1:56 PM
@@ -50,6 +51,7 @@ public class EditorToolBar extends MenuBar {
     private final Logger logger = LoggerFactory.getLogger(EditorToolBar.class);
 
     public EditorToolBar(TabFactory tabFactory,
+                         DialogFactory dialogFactory,
                          Dictionary dictionary,
                          ToolBarMenus menus,
                          Stage primaryStage,
@@ -57,12 +59,12 @@ public class EditorToolBar extends MenuBar {
 
         this.log(dictionary.TOOLBAR_EDITOR_FILE_MENU);
         menus.getEditorFileMenu().getItems().addAll(
-                new EditorNewItem(dictionary, NEW_FILE_EDITOR, primaryStage, tabFactory),
+                new EditorNewItem(dictionary, NEW_FILE_EDITOR, tabFactory),
                 menus.getEditorOpenSubmenu(),
                 menus.getEditorImportSubmenu(),
                 menus.getEditorExportSubmenu(),
-                new EditorSaveItem(dictionary, SAVE_EDITOR, primaryStage, tabFactory),
-                new EditorSaveAsItem(dictionary, SAVE_AS_EDITOR, primaryStage, tabFactory),
+                new EditorSaveItem(dictionary, SAVE_EDITOR, primaryStage, tabFactory, dialogFactory),
+                new EditorSaveAsItem(dictionary, SAVE_AS_EDITOR, primaryStage, tabFactory, dialogFactory),
                 new EditorExitItem(dictionary, primaryStage, tabFactory)
         );
 
@@ -80,34 +82,33 @@ public class EditorToolBar extends MenuBar {
 
         this.log(dictionary.TOOLBAR_EDITOR_HELP_MENU);
         menus.getEditorHelpMenu().getItems().addAll(
-                new EditorHelpPageItem(dictionary, primaryStage, tabFactory),
-                new EditorTestPageItem(dictionary, primaryStage, tabFactory),
+                new EditorHelpPageItem(dictionary, tabFactory),
+                new EditorTestPageItem(dictionary, tabFactory),
                 new EditorSettingsItem(dictionary, OPEN_SETTINGS_STAGE, settingsStage)
         );
 
         this.log(dictionary.TOOLBAR_EDITOR_IMPORT_MENU);
         menus.getEditorImportSubmenu().getItems().addAll(
-                new EditorOpenFileItem(dictionary, IMPORT_FILE_EDITOR, primaryStage, tabFactory),
-                new EditorOpenUrlItem(dictionary, IMPORT_URL_EDITOR, primaryStage, tabFactory)
+                new EditorOpenFileItem(dictionary, IMPORT_FILE_EDITOR, primaryStage, tabFactory, dialogFactory),
+                new EditorOpenUrlItem(dictionary, IMPORT_URL_EDITOR, primaryStage, tabFactory, dialogFactory)
         );
 
         this.log(dictionary.TOOLBAR_EDITOR_EXPORT_MENU);
         menus.getEditorExportSubmenu().getItems().addAll(
-                new EditorExportDocxItem(dictionary, primaryStage, tabFactory), // Docx
-                new EditorExportPdfItem(dictionary, primaryStage, tabFactory, false), // PDF
-                new EditorExportPdfItem(dictionary, primaryStage, tabFactory, true), // PDF/CSS
-                new EditorExportJiraItem(dictionary, primaryStage, tabFactory), // JIRA
-                new EditorExportConfluenceItem(dictionary, primaryStage, tabFactory), // Confluence
-                new EditorExportYoutrackItem(dictionary, primaryStage, tabFactory), // Youtrack
-                new EditorExportPlainTextItem(dictionary, primaryStage, tabFactory), // Plain Text
-                new EditorExportHtmlItem(dictionary, primaryStage, tabFactory, false), // HTML
-                new EditorExportHtmlItem(dictionary, primaryStage, tabFactory, true) // HTML/CSS
+                new EditorExportDocxItem(dictionary, primaryStage, tabFactory, dialogFactory), // Docx
+                new EditorExportPdfItem(dictionary, primaryStage, tabFactory, dialogFactory, true), // PDF/CSS
+                new EditorExportJiraItem(dictionary, primaryStage, tabFactory, dialogFactory), // JIRA
+                new EditorExportConfluenceItem(dictionary, primaryStage, tabFactory, dialogFactory), // Confluence
+                new EditorExportYoutrackItem(dictionary, primaryStage, tabFactory, dialogFactory), // Youtrack
+                new EditorExportPlainTextItem(dictionary, primaryStage, tabFactory, dialogFactory), // Plain Text
+                new EditorExportHtmlItem(dictionary, primaryStage, tabFactory, dialogFactory, false), // HTML
+                new EditorExportHtmlItem(dictionary, primaryStage, tabFactory, dialogFactory, true) // HTML/CSS
         );
 
         this.log(dictionary.TOOLBAR_EDITOR_OPEN_MENU);
         menus.getEditorOpenSubmenu().getItems().addAll(
-                new EditorOpenFileItem(dictionary, OPEN_FILE_EDITOR, primaryStage, tabFactory),
-                new EditorOpenUrlItem(dictionary, OPEN_URL_EDITOR, primaryStage, tabFactory)
+                new EditorOpenFileItem(dictionary, OPEN_FILE_EDITOR, primaryStage, tabFactory, dialogFactory),
+                new EditorOpenUrlItem(dictionary, OPEN_URL_EDITOR, primaryStage, tabFactory, dialogFactory)
         );
 
         logger.debug("Building toolbar");

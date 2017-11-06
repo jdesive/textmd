@@ -20,35 +20,53 @@
 package com.desive.nodes;
 
 import com.desive.nodes.tabs.EditorTab;
+import com.desive.stages.dialogs.DialogFactory;
+import com.desive.utilities.Dictionary;
 import javafx.scene.control.Tab;
+import javafx.stage.Stage;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
 
 /*
  Created by Jack DeSive on 10/13/2017 at 7:04 PM
 */
 public class TabFactory {
 
-    private static EditorTabPane tabPane = new EditorTabPane();
-    private static TabFactory instance;
+    private EditorTabPane tabPane = new EditorTabPane();
+    private Dictionary dictionary;
+    private DialogFactory dialogFactory;
+    private Stage ownerStage;
 
-    public TabFactory() {
-        instance = this;
+    public TabFactory(Dictionary dictionary, DialogFactory dialogFactory, Stage ownerStage) {
+       this.dictionary = dictionary;
+       this.dialogFactory = dialogFactory;
+       this.ownerStage = ownerStage;
     }
 
-    public static void addNewEditorTab(EditorTab editorTab) {
+    public void addNewEditorTab(File file) throws FileNotFoundException {
+        addNewEditorTab(file, new Scanner(file).useDelimiter("\\Z").next());
+    }
+
+    public void addNewEditorTab(File file, String fileContent) {
+        EditorPane editorPane = new EditorPane(dictionary, dialogFactory, fileContent);
+        EditorTab newTab = new EditorTab(editorPane, ownerStage);
+        newTab.getEditorPane().setFile(file);
+        addNewTab(newTab);
+    }
+
+    public void addNewTab(EditorTab editorTab) {
         editorTab.computeTabName();
         tabPane.getTabs().add(editorTab);
         tabPane.getSelectionModel().select(editorTab);
     }
 
-    public static Tab getSelectedTab(){
+    public Tab getSelectedTab(){
         return tabPane.getSelectionModel().getSelectedItem();
     }
 
-    public static TabFactory getInstance() {
-        return instance;
-    }
-
-    public static EditorTabPane getTabPane() {
+    public EditorTabPane getTabPane() {
         return tabPane;
     }
 

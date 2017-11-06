@@ -19,8 +19,10 @@
 
 package com.desive;
 
+import com.desive.nodes.TabFactory;
 import com.desive.stages.EditorStage;
 import com.desive.stages.SettingsStage;
+import com.desive.stages.dialogs.DialogFactory;
 import com.desive.utilities.*;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -40,10 +42,11 @@ public class TextMd extends Application{
 
     private Settings settings;
     private Dictionary languageDictionary;
-    private FileExtensionFilters fileExtensionFilters;
-    private Shortcut shortcuts;
     private Fonts fonts;
     private Http http;
+
+    private TabFactory tabFactory;
+    private DialogFactory dialogFactory;
 
     private EditorStage editorStage;
     private SettingsStage settingsStage;
@@ -55,28 +58,29 @@ public class TextMd extends Application{
     public void start(Stage primaryStage) throws Exception {
         primaryStage.close(); // Throw away the default stage
 
-        // Load all data/option classes
-        this.settings = new Settings();
-        this.languageDictionary = new Dictionary();
-        this.fileExtensionFilters = new FileExtensionFilters();
-        this.http = new Http();
-        this.shortcuts = new Shortcut();
-        this.fonts = new Fonts();
+        languageDictionary = new Dictionary();
+        http = new Http();
+        fonts = new Fonts();
+        tabFactory = new TabFactory(languageDictionary, dialogFactory, primaryStage);
+        dialogFactory = new DialogFactory(languageDictionary);
+        settings = new Settings(tabFactory);
 
-        this.loadUtilities();
-        this.loadPomVariables();
-        this.loadFonts();
+        loadUtilities();
+        loadPomVariables();
+        loadFonts();
 
         logger.info("Starting {} {}" , ARTIFACT_ID, VERSION);
 
-        this.settingsStage = new SettingsStage(this.languageDictionary);
-        this.editorStage = new EditorStage(this.languageDictionary, this.settingsStage);
-        this.settingsStage.initOwner(this.editorStage);
-        this.editorStage.show();
+        settingsStage = new SettingsStage(languageDictionary);
+        editorStage = new EditorStage(languageDictionary, tabFactory, dialogFactory, settingsStage);
+        settingsStage.initOwner(editorStage);
+        dialogFactory.initOwner(editorStage);
+
+        editorStage.show();
     }
 
     private void loadFonts(){
-        if(Settings.LOAD_FONTS_AT_RUNTIME ) {
+        if(Settings.LOAD_FONTS_AT_RUNTIME) {
             logger.info("Using \'{}\' fonts", fonts.COURIER_PRIMAL_NAME);
             if(!fonts.fontExits(fonts.COURIER_PRIMAL_NAME)){
                 fonts.registerFont(fonts.COURIER_PRIMAL_URL, fonts.COURIER_PRIMAL_NAME);

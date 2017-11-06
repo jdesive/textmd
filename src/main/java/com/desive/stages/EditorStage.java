@@ -24,9 +24,11 @@ import com.desive.nodes.EditorToolBar;
 import com.desive.nodes.TabFactory;
 import com.desive.nodes.menus.ToolBarMenus;
 import com.desive.nodes.tabs.EditorTab;
+import com.desive.stages.dialogs.DialogFactory;
 import com.desive.utilities.Dictionary;
 import com.desive.utilities.Utils;
 import javafx.collections.FXCollections;
+import javafx.event.Event;
 import javafx.scene.Scene;
 import javafx.scene.control.Tab;
 import javafx.scene.image.Image;
@@ -36,6 +38,7 @@ import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
@@ -49,18 +52,15 @@ public class EditorStage extends Stage {
 
     private final Logger logger = LoggerFactory.getLogger(EditorStage.class);
 
-    public EditorStage(Dictionary dictionary, Stage settingsStage) {
+    public EditorStage(Dictionary dictionary, TabFactory tabFactory, DialogFactory dialogFactory, Stage settingsStage) {
 
         ToolBarMenus toolBarMenus = new ToolBarMenus(dictionary);
-        editorPane = new EditorPane(dictionary, Utils.getSampleText());
-        toolbar = new EditorToolBar(TabFactory.getInstance(), dictionary, toolBarMenus,this, settingsStage);
-        EditorTab tempTab = new EditorTab(editorPane, this);
-
-        TabFactory.addNewEditorTab(tempTab);
+        toolbar = new EditorToolBar(tabFactory, dialogFactory, dictionary, toolBarMenus,this, settingsStage);
+        tabFactory.addNewEditorTab(new File(Utils.getDefaultFileName()), Utils.getSampleText());
 
         BorderPane root = new BorderPane();
         root.setTop(toolbar);
-        root.setCenter(TabFactory.getTabPane());
+        root.setCenter(tabFactory.getTabPane());
         StackPane container = new StackPane();
         container.getChildren().add(root);
 
@@ -79,24 +79,22 @@ public class EditorStage extends Stage {
             editorPane.getWebView().setPrefSize(this.getWidth(), this.getHeight()-25);
         });
 
-        this.setOnCloseAction();
+        this.setOnCloseRequest(event -> setOnCloseAction(tabFactory, event));
 
     }
 
-    private void setOnCloseAction(){
-        this.setOnCloseRequest(e -> {
-            List<Tab> tabs = FXCollections.observableArrayList(TabFactory.getTabPane().getTabs());
+    private void setOnCloseAction(TabFactory tabFactory, Event event){
+            List<Tab> tabs = FXCollections.observableArrayList(tabFactory.getTabPane().getTabs());
             Collections.reverse(tabs);
             tabs.forEach(t -> {
                 EditorTab eTab = ((EditorTab) t);
                 if(!eTab.getEditorPane().exit(this)){
-                    e.consume();
+                    event.consume();
                 }else{
                     logger.debug("Closing tab {}", eTab.getEditorPane().getFile().getPath());
-                    TabFactory.getTabPane().getTabs().remove(eTab);
+                    tabFactory.getTabPane().getTabs().remove(eTab);
                 }
             });
-        });
     }
 
 }

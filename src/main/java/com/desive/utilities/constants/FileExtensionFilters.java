@@ -17,22 +17,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.desive.nodes.menus;
+package com.desive.utilities.constants;
 
-import com.desive.nodes.TabFactory;
-import com.desive.stages.dialogs.DialogFactory;
-import com.desive.utilities.Dictionary;
-import javafx.scene.control.MenuItem;
-import javafx.stage.Stage;
+import javafx.stage.FileChooser;
 
 /*
- Created by Jack DeSive on 11/2/2017 at 8:59 PM
+ Created by Jack DeSive on 10/24/2017 at 9:21 PM
 */
-public abstract class MdStyledPageMenuItem extends MenuItem {
+public class FileExtensionFilters {
 
-    protected MdStyledPageMenuItem() {
-        super();
-    }
+    public final static FileChooser.ExtensionFilter PDF = new FileChooser.ExtensionFilter("PDF files (*.pdf)", "*.pdf"),
+            MARKDOWN = new FileChooser.ExtensionFilter("Md files (*.md)", "*.md"),
+            DOCX = new FileChooser.ExtensionFilter("Docx files (*.docx)", "*.docx"),
+            HTML = new FileChooser.ExtensionFilter("HTML files (*.html)", "*.html"),
+            TEXT = new FileChooser.ExtensionFilter("Text files (*.txt)", "*.txt");
 
-    public abstract void getClickAction(final Dictionary dictionary, final Stage stage, final TabFactory tabFactory, final DialogFactory dialogFactory, final boolean cssStyle);
+
 }

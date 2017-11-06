@@ -116,7 +116,10 @@ public class Dictionary {
             DIALOG_OPEN_URL_TITLE = "Open from URL",
             DIALOG_OPEN_URL_CONTENT = "Enter a url to pull markdown from.",
             DIALOG_FILE_NOT_SAVED_TITLE = "File is not saved!",
-            DIALOG_FILE_NOT_SAVED_CONTENT = "Would you like to save this document?";
+            DIALOG_FILE_NOT_SAVED_CONTENT = "Would you like to save this document?",
+            DIALOG_BUTTON_YES_LABEL = "Yes",
+            DIALOG_BUTTON_NO_LABEL = "No",
+            DIALOG_BUTTON_CANCEL_LABEL = "Cancel";
 
     public Dictionary() {
         instance = this;

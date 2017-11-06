@@ -20,9 +20,8 @@
 package com.desive.nodes.menus;
 
 import com.desive.nodes.TabFactory;
+import com.desive.stages.dialogs.DialogFactory;
 import com.desive.utilities.Dictionary;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.control.MenuItem;
 import javafx.stage.Stage;
 
@@ -35,5 +34,5 @@ public abstract class MdPageMenuItem extends MenuItem {
         super(text);
     }
 
-    public abstract EventHandler<ActionEvent> getClickAction(final Dictionary dictionary, final Stage stage, final TabFactory tabFactory);
+    public abstract void getClickAction(final Dictionary dictionary, final Stage stage, final TabFactory tabFactory, final DialogFactory dialogFactory);
 }

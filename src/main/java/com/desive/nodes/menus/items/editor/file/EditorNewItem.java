@@ -19,38 +19,28 @@
 
 package com.desive.nodes.menus.items.editor.file;
 
-import com.desive.nodes.EditorPane;
 import com.desive.nodes.TabFactory;
-import com.desive.nodes.menus.MdPageMenuItem;
-import com.desive.nodes.tabs.EditorTab;
+import com.desive.nodes.menus.MdNewPageMenuItem;
 import com.desive.utilities.Dictionary;
 import com.desive.utilities.Utils;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.input.KeyCombination;
-import javafx.stage.Stage;
 
 import java.io.File;
 
 /*
  Created by Jack DeSive on 11/1/2017 at 9:54 PM
 */
-public class EditorNewItem extends MdPageMenuItem {
+public class EditorNewItem extends MdNewPageMenuItem {
 
-    public EditorNewItem(Dictionary dictionary, KeyCombination accelerator, Stage stage, TabFactory tabFactory) {
+    public EditorNewItem(Dictionary dictionary, KeyCombination accelerator, TabFactory tabFactory) {
         super(dictionary.TOOLBAR_EDITOR_NEW_ITEM);
         this.setAccelerator(accelerator);
-        this.setOnAction(this.getClickAction(dictionary, stage, tabFactory));
+        this.setOnAction(event -> getClickAction(tabFactory));
     }
 
     @Override
-    public EventHandler<ActionEvent> getClickAction(final Dictionary dictionary, final Stage stage, final TabFactory tabFactory) {
-        return event -> {
-            EditorPane editorPane = new EditorPane(dictionary, Utils.getNewPageText());
-            EditorTab newTab = new EditorTab(editorPane, stage);
-            newTab.getEditorPane().setFile(new File(Utils.getDefaultFileName()));
-            tabFactory.addNewEditorTab(newTab);
-        };
+    public void getClickAction(final TabFactory tabFactory) {
+        tabFactory.addNewEditorTab(new File(Utils.getDefaultFileName()), Utils.getNewPageText());
     }
 
 }

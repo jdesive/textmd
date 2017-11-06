@@ -22,11 +22,9 @@ package com.desive.nodes.menus.items.editor.file.imports;
 import com.desive.nodes.TabFactory;
 import com.desive.nodes.menus.MdPageMenuItem;
 import com.desive.nodes.tabs.EditorTab;
+import com.desive.stages.dialogs.DialogFactory;
 import com.desive.utilities.Dictionary;
 import com.desive.utilities.Http;
-import com.desive.utilities.Utils;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.input.KeyCombination;
 import javafx.stage.Stage;
@@ -39,36 +37,32 @@ import java.util.Optional;
 */
 public class EditorImportUrlItem extends MdPageMenuItem {
 
-    public EditorImportUrlItem(Dictionary dictionary, KeyCombination accelerator, Stage stage, TabFactory tabFactory) {
+    public EditorImportUrlItem(Dictionary dictionary, KeyCombination accelerator, Stage stage, TabFactory tabFactory, DialogFactory dialogFactory) {
         super(dictionary.TOOLBAR_EDITOR_IMPORT_URL_ITEM);
         this.setAccelerator(accelerator);
-        this.setOnAction(this.getClickAction(dictionary, stage, tabFactory));
+        this.setOnAction(event -> getClickAction(dictionary, stage, tabFactory, dialogFactory));
     }
 
     @Override
-    public EventHandler<ActionEvent> getClickAction(final Dictionary dictionary, final Stage stage, final TabFactory tabFactory) {
-        return event -> {
-            TextInputDialog input = Utils.getTextInputDialog(
-                    dictionary.DIALOG_IMPORT_URL_TITLE,
-                    dictionary.DIALOG_IMPORT_URL_CONTENT,
-                    stage
-            );
-            Optional<String> result = input.showAndWait();
-            result.ifPresent(url -> {
-                try {
-                    EditorTab tab = ((EditorTab)tabFactory.getSelectedTab());
-                    tab.getEditorPane().setContent(tab.getEditorPane().getContent() + "\n" + Http.request(url + "", null, null, null, "GET"));
-                } catch (IOException e1) {
-                    Utils.getExceptionDialogBox(
-                            dictionary.DIALOG_EXCEPTION_TITLE,
-                            dictionary.DIALOG_EXCEPTION_IMPORT_CONTENT,
-                            e1.getMessage(),
-                            e1,
-                            stage
-                    ).showAndWait();
-                }
-            });
-        };
+    public void getClickAction(final Dictionary dictionary, final Stage stage, final TabFactory tabFactory, final DialogFactory dialogFactory) {
+        TextInputDialog input = dialogFactory.buildEnterUrlDialogBox(
+                dictionary.DIALOG_IMPORT_URL_TITLE,
+                dictionary.DIALOG_IMPORT_URL_CONTENT
+        );
+        Optional<String> result = input.showAndWait();
+        result.ifPresent(url -> {
+            try {
+                EditorTab tab = ((EditorTab)tabFactory.getSelectedTab());
+                tab.getEditorPane().setContent(tab.getEditorPane().getContent() + "\n" + Http.request(url + "", null, null, null, "GET"));
+            } catch (IOException e1) {
+                dialogFactory.buildExceptionDialogBox(
+                        dictionary.DIALOG_EXCEPTION_TITLE,
+                        dictionary.DIALOG_EXCEPTION_IMPORT_CONTENT,
+                        e1.getMessage(),
+                        e1
+                ).showAndWait();
+            }
+        });
     }
 
 }

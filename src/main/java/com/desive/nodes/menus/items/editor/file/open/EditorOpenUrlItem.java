@@ -19,15 +19,12 @@
 
 package com.desive.nodes.menus.items.editor.file.open;
 
-import com.desive.nodes.EditorPane;
 import com.desive.nodes.TabFactory;
 import com.desive.nodes.menus.MdPageMenuItem;
-import com.desive.nodes.tabs.EditorTab;
+import com.desive.stages.dialogs.DialogFactory;
 import com.desive.utilities.Dictionary;
 import com.desive.utilities.Http;
 import com.desive.utilities.Utils;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.input.KeyCombination;
 import javafx.stage.Stage;
@@ -41,38 +38,34 @@ import java.util.Optional;
 */
 public class EditorOpenUrlItem extends MdPageMenuItem {
 
-    public EditorOpenUrlItem(Dictionary dictionary, KeyCombination accelerator, Stage stage, TabFactory tabFactory) {
+    public EditorOpenUrlItem(Dictionary dictionary, KeyCombination accelerator, Stage stage, TabFactory tabFactory, DialogFactory dialogFactory) {
         super(dictionary.TOOLBAR_EDITOR_OPEN_URL_ITEM);
         this.setAccelerator(accelerator);
-        this.setOnAction(this.getClickAction(dictionary, stage, tabFactory));
+        this.setOnAction(event -> getClickAction(dictionary, stage, tabFactory, dialogFactory));
     }
 
     @Override
-    public EventHandler<ActionEvent> getClickAction(final Dictionary dictionary, final Stage stage, final TabFactory tabFactory) {
-        return event -> {
-            TextInputDialog input = Utils.getTextInputDialog(
-                    dictionary.DIALOG_OPEN_URL_TITLE,
-                    dictionary.DIALOG_OPEN_URL_CONTENT,
-                    stage
-            );
-            Optional<String> result = input.showAndWait();
-            result.ifPresent(url -> {
-                try {
-                    EditorPane editorPane = new EditorPane(dictionary, Http.request(url + "", null, null, null, "GET"));
-                    EditorTab newTab = new EditorTab(editorPane, stage);
-                    newTab.getEditorPane().setFile(new File(Utils.getDefaultFileName()));
-                    tabFactory.addNewEditorTab(newTab);
-                } catch (IOException e1) {
-                    Utils.getExceptionDialogBox(
-                            dictionary.DIALOG_EXCEPTION_TITLE,
-                            dictionary.DIALOG_EXCEPTION_OPENING_MARKDOWN_URL_CONTENT,
-                            e1.getMessage(),
-                            e1,
-                            stage
-                    ).showAndWait();
-                }
-            });
-        };
+    public void getClickAction(final Dictionary dictionary, final Stage stage, final TabFactory tabFactory, final DialogFactory dialogFactory) {
+        TextInputDialog input = dialogFactory.buildEnterUrlDialogBox(
+                dictionary.DIALOG_OPEN_URL_TITLE,
+                dictionary.DIALOG_OPEN_URL_CONTENT
+        );
+        Optional<String> result = input.showAndWait();
+        result.ifPresent(url -> {
+            try {
+                tabFactory.addNewEditorTab(
+                        new File(Utils.getDefaultFileName()),
+                        Http.request(url + "", null, null, null, "GET")
+                );
+            } catch (IOException e1) {
+                dialogFactory.buildExceptionDialogBox(
+                        dictionary.DIALOG_EXCEPTION_TITLE,
+                        dictionary.DIALOG_EXCEPTION_OPENING_MARKDOWN_URL_CONTENT,
+                        e1.getMessage(),
+                        e1
+                ).showAndWait();
+            }
+        });
     }
 
 }

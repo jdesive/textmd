@@ -23,8 +23,6 @@ import com.desive.nodes.TabFactory;
 import com.desive.nodes.menus.MdMenuItem;
 import com.desive.nodes.tabs.EditorTab;
 import com.desive.utilities.Dictionary;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.input.KeyCombination;
 
 /*
@@ -35,12 +33,12 @@ public class EditorRefreshViewItem extends MdMenuItem {
     public EditorRefreshViewItem(Dictionary dictionary, KeyCombination accelerator, TabFactory tabFactory) {
         super(dictionary.TOOLBAR_EDITOR_REFRESH_VIEW_ITEM);
         this.setAccelerator(accelerator);
-        this.setOnAction(this.getClickAction(tabFactory));
+        this.setOnAction(event -> getClickAction(tabFactory));
     }
 
     @Override
-    public EventHandler<ActionEvent> getClickAction(final TabFactory tabFactory) {
-        return event -> ((EditorTab) tabFactory.getSelectedTab()).getEditorPane().refreshWebView();
+    public void getClickAction(final TabFactory tabFactory) {
+        ((EditorTab) tabFactory.getSelectedTab()).getEditorPane().refreshWebView();
     }
 
 }

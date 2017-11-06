@@ -23,8 +23,6 @@ import com.desive.nodes.TabFactory;
 import com.desive.nodes.menus.MdMenuItem;
 import com.desive.nodes.tabs.EditorTab;
 import com.desive.utilities.Dictionary;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 
 /*
  Created by Jack DeSive on 11/1/2017 at 9:54 PM
@@ -33,12 +31,12 @@ public class EditorPrettifyItem extends MdMenuItem {
 
     public EditorPrettifyItem(Dictionary dictionary, TabFactory tabFactory) {
         super(dictionary.TOOLBAR_EDITOR_PRETTIFY_ITEM);
-        this.setOnAction(this.getClickAction(tabFactory));
+        this.setOnAction(event -> getClickAction(tabFactory));
     }
 
     @Override
-    public EventHandler<ActionEvent> getClickAction(final TabFactory tabFactory) {
-        return event -> ((EditorTab) tabFactory.getSelectedTab()).getEditorPane().prettifyWebViewCode();
+    public void getClickAction(final TabFactory tabFactory) {
+        ((EditorTab) tabFactory.getSelectedTab()).getEditorPane().prettifyWebViewCode();
     }
 
 }

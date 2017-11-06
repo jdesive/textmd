@@ -21,12 +21,13 @@ package com.desive.nodes.tabs;
 
 import com.desive.utilities.Dictionary;
 import com.desive.utilities.Settings;
-import javafx.geometry.Pos;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
+
+import static javafx.geometry.Pos.CENTER;
 
 /*
  Created by Jack DeSive on 10/23/2017 at 10:00 PM
@@ -59,9 +60,9 @@ public class ViewSettingsTab extends SettingsTab {
 
     private void addRefreshRateBox(int col, int row) {
         HBox viewRefreshRateBox = new HBox();
-        viewRefreshRateBox.setAlignment(Pos.CENTER);
+        viewRefreshRateBox.setAlignment(CENTER);
         this.viewRefreshRateLabel.setTextFill(this.textColor);
-        this.viewRefreshRateLabel.setAlignment(Pos.CENTER);
+        this.viewRefreshRateLabel.setAlignment(CENTER);
         this.viewRefreshRateField.setPrefSize(25, 15);
         viewRefreshRateBox.getChildren().addAll(
                 this.viewRefreshRateLabel,

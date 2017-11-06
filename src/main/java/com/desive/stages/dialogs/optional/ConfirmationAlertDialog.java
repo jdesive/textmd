@@ -17,22 +17,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.desive.nodes.menus;
+package com.desive.stages.dialogs.optional;
 
-import com.desive.nodes.TabFactory;
-import com.desive.stages.dialogs.DialogFactory;
-import com.desive.utilities.Dictionary;
-import javafx.scene.control.MenuItem;
+import com.desive.stages.dialogs.AlertDialog;
+import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 
 /*
- Created by Jack DeSive on 11/2/2017 at 8:59 PM
+ Created by Jack DeSive on 11/4/2017 at 9:29 PM
 */
-public abstract class MdStyledPageMenuItem extends MenuItem {
+public class ConfirmationAlertDialog extends AlertDialog {
 
-    protected MdStyledPageMenuItem() {
-        super();
+    private String title;
+    private String content;
+    private Stage ownerStage;
+
+    public ConfirmationAlertDialog(String title, String content, Stage ownerStage) {
+        super(Alert.AlertType.INFORMATION);
+        this.title = title;
+        this.content = content;
+        this.ownerStage = ownerStage;
     }
 
-    public abstract void getClickAction(final Dictionary dictionary, final Stage stage, final TabFactory tabFactory, final DialogFactory dialogFactory, final boolean cssStyle);
+    @Override
+    public AlertDialog build() {
+        setTitle(title);
+        setHeaderText(null);
+        setContentText(content);
+        initOwner(ownerStage);
+        return this;
+    }
 }

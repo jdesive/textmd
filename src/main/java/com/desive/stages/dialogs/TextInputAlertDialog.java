@@ -17,22 +17,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.desive.nodes.menus;
+package com.desive.stages.dialogs;
 
-import com.desive.nodes.TabFactory;
-import com.desive.stages.dialogs.DialogFactory;
-import com.desive.utilities.Dictionary;
-import javafx.scene.control.MenuItem;
-import javafx.stage.Stage;
+import javafx.scene.control.TextInputDialog;
 
 /*
- Created by Jack DeSive on 11/2/2017 at 8:59 PM
+ Created by Jack DeSive on 11/4/2017 at 9:24 PM
 */
-public abstract class MdStyledPageMenuItem extends MenuItem {
+public abstract class TextInputAlertDialog extends TextInputDialog {
 
-    protected MdStyledPageMenuItem() {
-        super();
+    public TextInputAlertDialog(String defaultValue) {
+        super(defaultValue);
     }
 
-    public abstract void getClickAction(final Dictionary dictionary, final Stage stage, final TabFactory tabFactory, final DialogFactory dialogFactory, final boolean cssStyle);
+    public abstract TextInputDialog build();
+
 }

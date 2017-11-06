@@ -21,10 +21,11 @@ package com.desive.nodes;
 
 import com.desive.markdown.MarkdownHighligher;
 import com.desive.markdown.MarkdownParser;
+import com.desive.stages.dialogs.DialogFactory;
 import com.desive.utilities.Dictionary;
-import com.desive.utilities.FileExtensionFilters;
 import com.desive.utilities.Settings;
 import com.desive.utilities.Utils;
+import com.desive.utilities.constants.FileExtensionFilters;
 import com.vladsch.flexmark.pdf.converter.PdfConverterExtension;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -57,8 +58,6 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.IntFunction;
 
-//import java.util.Scanner;
-
 /*
  Created by Jack DeSive on 10/8/2017 at 2:12 PM
 */
@@ -73,10 +72,12 @@ public class EditorPane extends SplitPane {
     private AtomicBoolean saved = new AtomicBoolean(false), prettifyCode = new AtomicBoolean(false);
     private String currentHtml = "", currentHtmlWithStyle = "";
     private Subscription editorHightlightSubscription;
+    private DialogFactory dialogFactory;
 
-    public EditorPane(Dictionary dictionary, String content) {
+    public EditorPane(Dictionary dictionary, DialogFactory dialogFactory, String content) {
 
         this.dict = dictionary;
+        this.dialogFactory = dialogFactory;
 
         this.styleEditor("css/editor.css");
         this.styleWebView();
@@ -109,10 +110,10 @@ public class EditorPane extends SplitPane {
 
     public boolean exit(Stage primaryStage) {
         if(!saved.get()){
-            Optional<ButtonType> save = Utils.getYesNoDialogBox(file.getPath(),
+            Optional<ButtonType> save = dialogFactory.buildYesNoDialog(file.getPath(),
                     dict.DIALOG_FILE_NOT_SAVED_TITLE,
-                    dict.DIALOG_FILE_NOT_SAVED_CONTENT,
-                    primaryStage).showAndWait();
+                    dict.DIALOG_FILE_NOT_SAVED_CONTENT
+            ).showAndWait();
 
             if(save.isPresent())
                 return false;
@@ -124,12 +125,11 @@ public class EditorPane extends SplitPane {
                             return false;
                         }
                     } catch (IOException e1) {
-                        Utils.getExceptionDialogBox(
+                        dialogFactory.buildExceptionDialogBox(
                                 dict.DIALOG_EXCEPTION_TITLE,
                                 dict.DIALOG_EXCEPTION_SAVING_MARKDOWN_CONTENT,
                                 e1.getMessage(),
-                                e1,
-                                primaryStage
+                                e1
                         ).showAndWait();
                         return false;
                     }

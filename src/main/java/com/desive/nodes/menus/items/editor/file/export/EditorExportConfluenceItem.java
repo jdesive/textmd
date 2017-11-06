@@ -22,10 +22,8 @@ package com.desive.nodes.menus.items.editor.file.export;
 import com.desive.nodes.TabFactory;
 import com.desive.nodes.menus.MdPageMenuItem;
 import com.desive.nodes.tabs.EditorTab;
+import com.desive.stages.dialogs.DialogFactory;
 import com.desive.utilities.Dictionary;
-import com.desive.utilities.Utils;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -35,34 +33,30 @@ import java.io.IOException;
 */
 public class EditorExportConfluenceItem extends MdPageMenuItem {
 
-    public EditorExportConfluenceItem(Dictionary dictionary, Stage stage, TabFactory tabFactory) {
+    public EditorExportConfluenceItem(Dictionary dictionary, Stage stage, TabFactory tabFactory, DialogFactory dialogFactory) {
         super(dictionary.TOOLBAR_EDITOR_EXPORT_CONFLUENCE_ITEM);
 
-        this.setOnAction(this.getClickAction(dictionary, stage, tabFactory));
+        this.setOnAction(event -> getClickAction(dictionary, stage, tabFactory, dialogFactory));
     }
 
     @Override
-    public EventHandler<ActionEvent> getClickAction(final Dictionary dictionary, final Stage stage, final TabFactory tabFactory) {
-        return event -> {
-            EditorTab currTab = ((EditorTab) tabFactory.getSelectedTab());
-            try {
-                if(currTab.getEditorPane().saveConfluenceMarkup(stage)) {
-                    Utils.getConfirmationDialog(
-                            dictionary.DIALOG_EXPORT_SUCCESS_TITLE,
-                            dictionary.DIALOG_EXPORT_SUCCESS_CONFLUENCE_CONTENT,
-                            stage
-                    ).showAndWait();
-                }
-            } catch (IOException e1) {
-                Utils.getExceptionDialogBox(
-                        dictionary.DIALOG_EXCEPTION_TITLE,
-                        dictionary.DIALOG_EXCEPTION_EXPORT_CONFLUENCE_CONTENT,
-                        e1.getMessage(),
-                        e1,
-                        stage
+    public void getClickAction(final Dictionary dictionary, final Stage stage, final TabFactory tabFactory, final DialogFactory dialogFactory) {
+        EditorTab currTab = ((EditorTab) tabFactory.getSelectedTab());
+        try {
+            if (currTab.getEditorPane().saveConfluenceMarkup(stage)) {
+                dialogFactory.buildConfirmationDialogBox(
+                        dictionary.DIALOG_EXPORT_SUCCESS_TITLE,
+                        dictionary.DIALOG_EXPORT_SUCCESS_CONFLUENCE_CONTENT
                 ).showAndWait();
             }
-        };
+        } catch (IOException e1) {
+            dialogFactory.buildExceptionDialogBox(
+                    dictionary.DIALOG_EXCEPTION_TITLE,
+                    dictionary.DIALOG_EXCEPTION_EXPORT_CONFLUENCE_CONTENT,
+                    e1.getMessage(),
+                    e1
+            ).showAndWait();
+        }
     }
 
 }

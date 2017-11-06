@@ -20,8 +20,6 @@
 package com.desive.nodes.menus;
 
 import com.desive.nodes.TabFactory;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.control.MenuItem;
 
 /*
@@ -33,6 +31,6 @@ public abstract class MdMenuItem extends MenuItem {
         super(text);
     }
 
-    public abstract EventHandler<ActionEvent> getClickAction(final TabFactory tabFactory);
+    public abstract void getClickAction(final TabFactory tabFactory);
 
 }

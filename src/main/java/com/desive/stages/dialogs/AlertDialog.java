@@ -17,20 +17,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.desive.utilities;
+package com.desive.stages.dialogs;
 
-import javafx.stage.FileChooser;
+import javafx.scene.control.Alert;
 
 /*
- Created by Jack DeSive on 10/24/2017 at 9:21 PM
+ Created by Jack DeSive on 11/4/2017 at 2:12 PM
 */
-public class FileExtensionFilters {
+public abstract class AlertDialog extends Alert {
 
-    public final static FileChooser.ExtensionFilter PDF = new FileChooser.ExtensionFilter("PDF files (*.pdf)", "*.pdf"),
-            MARKDOWN = new FileChooser.ExtensionFilter("Md files (*.md)", "*.md"),
-            DOCX = new FileChooser.ExtensionFilter("Docx files (*.docx)", "*.docx"),
-            HTML = new FileChooser.ExtensionFilter("HTML files (*.html)", "*.html"),
-            TEXT = new FileChooser.ExtensionFilter("Text files (*.txt)", "*.txt");
+    public AlertDialog(AlertType alertType) {
+        super(alertType);
+    }
 
+    public abstract AlertDialog build();
 
 }

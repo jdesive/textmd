@@ -31,6 +31,8 @@ public class Settings {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(Settings.class);
 
+    private static TabFactory tabFactory;
+
     // Settings View
     public static boolean ALWAYS_PRETTIFY_CODE_VIEW = false;
     public static int VIEW_REFRESH_RATE = 1;
@@ -41,6 +43,10 @@ public class Settings {
     // General Settings
     public static boolean LOAD_FONTS_AT_RUNTIME = true;
 
+    public Settings(TabFactory tabFactoryParam) {
+        tabFactory = tabFactoryParam;
+    }
+
     public static void setAlwaysPrettifyCodeView(boolean value) {
         LOGGER.debug("Setting \'Always Prettify Code View\' to \'{}\'", value);
         ALWAYS_PRETTIFY_CODE_VIEW = value;
@@ -49,13 +55,13 @@ public class Settings {
     public static void setViewRefreshRate(int value) {
         LOGGER.debug("Setting \'View Refresh Rate\' to \'{}\'", value);
         VIEW_REFRESH_RATE = value;
-        ((EditorTab) TabFactory.getSelectedTab()).getEditorPane().createSyncTimer(value);
+        ((EditorTab) tabFactory.getSelectedTab()).getEditorPane().createSyncTimer(value);
     }
 
     public static void setEditorHighlightRefreshRate(int value) {
         LOGGER.debug("Setting \'Editor Highlight Refresh Rate\' to \'{}\'", value);
         EDITOR_HIGHLIGHT_REFRESH_RATE = value;
-        ((EditorTab) TabFactory.getSelectedTab()).getEditorPane().createEditorHighlightSubscription(value);
+        ((EditorTab) tabFactory.getSelectedTab()).getEditorPane().createEditorHighlightSubscription(value);
     }
 
     public static void setLoadFontsAtRuntime(boolean value) {
