@@ -19,11 +19,12 @@
 
 package com.desive.stages;
 
-import com.desive.nodes.EditorPane;
-import com.desive.nodes.EditorToolBar;
+import com.desive.markdown.MarkdownParser;
 import com.desive.nodes.TabFactory;
 import com.desive.nodes.menus.ToolBarMenus;
 import com.desive.nodes.tabs.EditorTab;
+import com.desive.nodes.toolbars.EditorMenuToolBar;
+import com.desive.nodes.toolbars.EditorToolBar;
 import com.desive.stages.dialogs.DialogFactory;
 import com.desive.utilities.Dictionary;
 import com.desive.utilities.Utils;
@@ -47,20 +48,26 @@ import java.util.List;
 */
 public class EditorStage extends Stage {
 
-    private EditorPane editorPane;
-    private EditorToolBar toolbar;
+    private EditorMenuToolBar menuToolbar;
+    private EditorToolBar toolBar;
+    private MarkdownParser markdownParser;
 
     private final Logger logger = LoggerFactory.getLogger(EditorStage.class);
 
     public EditorStage(Dictionary dictionary, TabFactory tabFactory, DialogFactory dialogFactory, Stage settingsStage) {
 
+        markdownParser = new MarkdownParser();
+        tabFactory.setMarkdownParser(markdownParser);
+
         ToolBarMenus toolBarMenus = new ToolBarMenus(dictionary);
-        toolbar = new EditorToolBar(tabFactory, dialogFactory, dictionary, toolBarMenus,this, settingsStage);
+        menuToolbar = new EditorMenuToolBar(tabFactory, dialogFactory, dictionary, toolBarMenus, markdownParser,this, settingsStage);
+        toolBar = new EditorToolBar(dictionary, tabFactory);
         tabFactory.addNewEditorTab(new File(Utils.getDefaultFileName()), Utils.getSampleText());
 
         BorderPane root = new BorderPane();
-        root.setTop(toolbar);
+        root.setTop(menuToolbar);
         root.setCenter(tabFactory.getTabPane());
+        root.setBottom(toolBar);
         StackPane container = new StackPane();
         container.getChildren().add(root);
 
@@ -73,17 +80,11 @@ public class EditorStage extends Stage {
         this.show();
         this.centerOnScreen();
 
-        this.widthProperty().addListener(event -> {
-            toolbar.setPrefSize(this.getWidth(), 25);
-            editorPane.getEditor().setPrefSize(this.getWidth(), this.getHeight()-25);
-            editorPane.getWebView().setPrefSize(this.getWidth(), this.getHeight()-25);
-        });
-
-        this.setOnCloseRequest(event -> setOnCloseAction(tabFactory, event));
+        this.setOnCloseRequest(event -> getOnCloseAction(tabFactory, event));
 
     }
 
-    private void setOnCloseAction(TabFactory tabFactory, Event event){
+    private void getOnCloseAction(TabFactory tabFactory, Event event){
             List<Tab> tabs = FXCollections.observableArrayList(tabFactory.getTabPane().getTabs());
             Collections.reverse(tabs);
             tabs.forEach(t -> {

@@ -19,6 +19,9 @@
 
 package com.desive.nodes;
 
+import com.desive.markdown.MarkdownParser;
+import com.desive.nodes.editor.EditorPane;
+import com.desive.nodes.editor.EditorTabPane;
 import com.desive.nodes.tabs.EditorTab;
 import com.desive.stages.dialogs.DialogFactory;
 import com.desive.utilities.Dictionary;
@@ -35,6 +38,7 @@ import java.util.Scanner;
 public class TabFactory {
 
     private EditorTabPane tabPane = new EditorTabPane();
+    private MarkdownParser markdownParser;
     private Dictionary dictionary;
     private DialogFactory dialogFactory;
     private Stage ownerStage;
@@ -50,7 +54,7 @@ public class TabFactory {
     }
 
     public void addNewEditorTab(File file, String fileContent) {
-        EditorPane editorPane = new EditorPane(dictionary, dialogFactory, fileContent);
+        EditorPane editorPane = new EditorPane(dictionary, dialogFactory, markdownParser, fileContent);
         EditorTab newTab = new EditorTab(editorPane, ownerStage);
         newTab.getEditorPane().setFile(file);
         addNewTab(newTab);
@@ -68,6 +72,10 @@ public class TabFactory {
 
     public EditorTabPane getTabPane() {
         return tabPane;
+    }
+
+    public void setMarkdownParser(MarkdownParser markdownParser) {
+        this.markdownParser = markdownParser;
     }
 
 }

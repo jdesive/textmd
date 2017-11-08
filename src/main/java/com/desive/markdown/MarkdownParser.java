@@ -21,10 +21,12 @@ package com.desive.markdown;
 
 import com.atlassian.renderer.wysiwyg.converter.DefaultWysiwygConverter;
 import com.desive.utilities.Utils;
+import com.google.common.collect.Lists;
+import com.vladsch.flexmark.Extension;
 import com.vladsch.flexmark.ast.util.TextCollectingVisitor;
 import com.vladsch.flexmark.ext.abbreviation.AbbreviationExtension;
 import com.vladsch.flexmark.ext.anchorlink.AnchorLinkExtension;
-import com.vladsch.flexmark.ext.autolink.AutolinkExtension;
+import com.vladsch.flexmark.ext.emoji.EmojiExtension;
 import com.vladsch.flexmark.ext.escaped.character.EscapedCharacterExtension;
 import com.vladsch.flexmark.ext.gfm.strikethrough.StrikethroughExtension;
 import com.vladsch.flexmark.ext.gfm.tasklist.TaskListExtension;
@@ -34,6 +36,7 @@ import com.vladsch.flexmark.html.HtmlRenderer;
 import com.vladsch.flexmark.jira.converter.JiraConverterExtension;
 import com.vladsch.flexmark.parser.Parser;
 import com.vladsch.flexmark.util.KeepType;
+import com.vladsch.flexmark.util.options.DataKey;
 import com.vladsch.flexmark.util.options.MutableDataHolder;
 import com.vladsch.flexmark.util.options.MutableDataSet;
 import com.vladsch.flexmark.youtrack.converter.YouTrackConverterExtension;
@@ -41,24 +44,31 @@ import org.docx4j.convert.in.xhtml.XHTMLImporterImpl;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
 import org.docx4j.openpackaging.parts.WordprocessingML.NumberingDefinitionsPart;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.JAXBException;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /*
  Created by Jack DeSive on 10/7/2017 at 9:30 PM
 */
 public class MarkdownParser {
 
-    public static final MutableDataHolder options = new MutableDataSet()
+    private final Logger logger = LoggerFactory.getLogger(MarkdownParser.class);
+
+    private DataKey<Iterable<Extension>> EXTENSIONS = Parser.EXTENSIONS;
+
+    public final MutableDataHolder options = new MutableDataSet()
             .set(Parser.REFERENCES_KEEP, KeepType.LAST)
             .set(Parser.PARSE_INNER_HTML_COMMENTS, true)
             .set(Parser.INDENTED_CODE_NO_TRAILING_BLANK_LINES, false)
 
             // Github Parser options
-            .set(Parser.LISTS_AUTO_LOOSE, false)
             .set(Parser.LISTS_AUTO_LOOSE, false)
             .set(Parser.LISTS_END_ON_DOUBLE_BLANK, true)
             .set(Parser.LISTS_BULLET_ITEM_INTERRUPTS_PARAGRAPH, false)
@@ -98,26 +108,74 @@ public class MarkdownParser {
             .set(TablesExtension.DISCARD_EXTRA_COLUMNS, true)
             .set(TablesExtension.HEADER_SEPARATOR_COLUMN_MATCH, true)
 
-            .set(Parser.EXTENSIONS, Arrays.asList(TablesExtension.create(), EscapedCharacterExtension.create(),
-                    AbbreviationExtension.create(), AutolinkExtension.create(), TaskListExtension.create(),
-                    WikiLinkExtension.create(), StrikethroughExtension.create(), AnchorLinkExtension.create()));
+            // Emoji Extensions
+            .set(EmojiExtension.ROOT_IMAGE_PATH, "assets/graphics/emojis/")
 
-    private static MutableDataHolder jiraOptions = new MutableDataSet()
+            .set(EXTENSIONS, Lists.newArrayList(Arrays.asList(
+                    EscapedCharacterExtension.create(),
+                    TablesExtension.create(),
+
+                    // Temp
+                    AbbreviationExtension.create(),
+                    AnchorLinkExtension.create(),
+                    TaskListExtension.create(),
+                    EmojiExtension.create(),
+                    WikiLinkExtension.create(),
+                    StrikethroughExtension.create()
+            )));
+
+    private MutableDataHolder jiraOptions = new MutableDataSet()
             .set(Parser.EXTENSIONS, Collections.singletonList(JiraConverterExtension.create()));
 
-    private static MutableDataHolder youtrackOptions = new MutableDataSet()
+    private MutableDataHolder youtrackOptions = new MutableDataSet()
             .set(Parser.EXTENSIONS, Collections.singletonList(YouTrackConverterExtension.create()));
 
-    private static Parser markdownParser = Parser.builder(options).build();
-    private static HtmlRenderer htmlRenderer = HtmlRenderer.builder(options).build();
-    private static DefaultWysiwygConverter confluenceConverter = new DefaultWysiwygConverter();
+/*            (TablesExtension.create(), EscapedCharacterExtension.create(),
+            AbbreviationExtension.create(), AutolinkExtension.create(), TaskListExtension.create(),
+            WikiLinkExtension.create(), StrikethroughExtension.create(), AnchorLinkExtension.create())*/
 
+    private Parser markdownParser = Parser.builder(options).build();
+    private HtmlRenderer htmlRenderer = HtmlRenderer.builder(options).build();
+    private DefaultWysiwygConverter confluenceConverter = new DefaultWysiwygConverter();
 
-    public static String convertMarkdownToHTML(String markdown){
+    public void setExtensions(List<Extension> extensions) {
+        options.remove(EXTENSIONS);
+        options.set(EXTENSIONS, extensions);
+        logger.debug("Resetting markdown parser extensions: {}", options.get(Parser.EXTENSIONS).toString());
+    }
+
+    public List<Extension> getExtensions() {
+        return (List<Extension>) options.get(Parser.EXTENSIONS);
+    }
+
+    public MutableDataHolder getOptions() {
+        return options;
+    }
+
+    public void addExtension(Extension extension) {
+        List<Extension> extensions = getExtensions();
+        if(!containsExtension(extension)) {
+            Collections.addAll(extensions, extension);
+            setExtensions(extensions);
+        }
+    }
+
+    private boolean containsExtension(final Extension extension) {
+        final AtomicBoolean flag = new AtomicBoolean(false);
+        getExtensions().forEach(ext -> {
+            if(ext.getClass().getName().equals(extension.getClass().getName())){
+                flag.set(true);
+            }
+        });
+        return flag.get();
+    }
+
+    public String convertToHTML(String markdown){
+        markdownParser = Parser.builder(options).build();
         return htmlRenderer.render(markdownParser.parse(markdown));
     }
 
-    public static void convertMarkdownToDocx(String markdown, File file) throws Docx4JException, JAXBException {
+    public void convertToDocx(String markdown, File file) throws Docx4JException, JAXBException {
         WordprocessingMLPackage wordMLPackage;
         wordMLPackage = WordprocessingMLPackage.createPackage();
         NumberingDefinitionsPart ndp = new NumberingDefinitionsPart();
@@ -127,27 +185,29 @@ public class MarkdownParser {
         xHTMLImporter.setHyperlinkStyle("Hyperlink");
         // Must be a properly formatted html doc.. No fragments
         wordMLPackage.getMainDocumentPart().getContent().addAll(
-                xHTMLImporter.convert(Utils.wrapWithHtmlDocType(convertMarkdownToHTML(markdown)),
+                xHTMLImporter.convert(Utils.wrapWithHtmlDocType(convertToHTML(markdown)),
                         null)
         );
         wordMLPackage.save(file);
     }
 
-    public static String convertMarkdownToJira(String markdown){
-        return htmlRenderer.withOptions(jiraOptions).render(markdownParser.parse(markdown));
+    public String convertToJira(String markdown){
+        markdownParser = Parser.builder(jiraOptions).build();
+        return htmlRenderer.render(markdownParser.parse(markdown));
     }
 
-    public static String convertMarkdownToYoutrack(String markdown){
-        return htmlRenderer.withOptions(youtrackOptions).render(markdownParser.parse(markdown));
+    public String convertToYoutrack(String markdown){
+        markdownParser = Parser.builder(youtrackOptions).build();
+        return htmlRenderer.render(markdownParser.parse(markdown));
     }
 
-    public static String convertMarkdownToText(String markdown){
+    public String convertToText(String markdown){
         TextCollectingVisitor textCollectingVisitor = new TextCollectingVisitor();
         return textCollectingVisitor.collectAndGetText(markdownParser.parse(markdown));
     }
 
-    public static String markdownToConfluenceMarkup(String markdown) {
-        return confluenceConverter.convertXHtmlToWikiMarkup(convertMarkdownToHTML(markdown));
+    public String markdownToConfluenceMarkup(String markdown) {
+        return confluenceConverter.convertXHtmlToWikiMarkup(convertToHTML(markdown));
     }
 
 }

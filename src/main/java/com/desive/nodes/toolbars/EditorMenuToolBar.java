@@ -17,11 +17,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.desive.nodes;
+package com.desive.nodes.toolbars;
 
+import com.desive.markdown.MarkdownParser;
+import com.desive.nodes.TabFactory;
 import com.desive.nodes.menus.ToolBarMenus;
 import com.desive.nodes.menus.items.editor.edit.EditorRedoItem;
 import com.desive.nodes.menus.items.editor.edit.EditorUndoItem;
+import com.desive.nodes.menus.items.editor.extensions.EditorExtAutoLinkItem;
 import com.desive.nodes.menus.items.editor.file.EditorExitItem;
 import com.desive.nodes.menus.items.editor.file.EditorNewItem;
 import com.desive.nodes.menus.items.editor.file.EditorSaveAsItem;
@@ -37,6 +40,7 @@ import com.desive.nodes.menus.items.editor.view.EditorRefreshViewItem;
 import com.desive.stages.dialogs.DialogFactory;
 import com.desive.utilities.Dictionary;
 import javafx.scene.control.MenuBar;
+import javafx.scene.control.SeparatorMenuItem;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,23 +50,26 @@ import static com.desive.utilities.constants.Shortcut.*;
 /*
  Created by Jack DeSive on 10/8/2017 at 1:56 PM
 */
-public class EditorToolBar extends MenuBar {
+public class EditorMenuToolBar extends MenuBar {
 
-    private final Logger logger = LoggerFactory.getLogger(EditorToolBar.class);
+    private final Logger logger = LoggerFactory.getLogger(EditorMenuToolBar.class);
 
-    public EditorToolBar(TabFactory tabFactory,
-                         DialogFactory dialogFactory,
-                         Dictionary dictionary,
-                         ToolBarMenus menus,
-                         Stage primaryStage,
-                         Stage settingsStage) {
+    public EditorMenuToolBar(TabFactory tabFactory,
+                             DialogFactory dialogFactory,
+                             Dictionary dictionary,
+                             ToolBarMenus menus,
+                             MarkdownParser markdownParser,
+                             Stage primaryStage,
+                             Stage settingsStage) {
 
         this.log(dictionary.TOOLBAR_EDITOR_FILE_MENU);
         menus.getEditorFileMenu().getItems().addAll(
                 new EditorNewItem(dictionary, NEW_FILE_EDITOR, tabFactory),
                 menus.getEditorOpenSubmenu(),
+                new SeparatorMenuItem(),
                 menus.getEditorImportSubmenu(),
                 menus.getEditorExportSubmenu(),
+                new SeparatorMenuItem(),
                 new EditorSaveItem(dictionary, SAVE_EDITOR, primaryStage, tabFactory, dialogFactory),
                 new EditorSaveAsItem(dictionary, SAVE_AS_EDITOR, primaryStage, tabFactory, dialogFactory),
                 new EditorExitItem(dictionary, primaryStage, tabFactory)
@@ -84,7 +91,14 @@ public class EditorToolBar extends MenuBar {
         menus.getEditorHelpMenu().getItems().addAll(
                 new EditorHelpPageItem(dictionary, tabFactory),
                 new EditorTestPageItem(dictionary, tabFactory),
+                new SeparatorMenuItem(),
                 new EditorSettingsItem(dictionary, OPEN_SETTINGS_STAGE, settingsStage)
+        );
+
+        this.log(dictionary.TOOLBAR_EDITOR_EXTENSIONS_MENU);
+        menus.getEditorExtensionsMenu().getItems().addAll(
+                new EditorExtAutoLinkItem(dictionary, markdownParser, true)
+                //new EditorExtAutoAnchorItem(dictionary, markdownParser, true)
         );
 
         this.log(dictionary.TOOLBAR_EDITOR_IMPORT_MENU);
@@ -116,6 +130,7 @@ public class EditorToolBar extends MenuBar {
                 menus.getEditorFileMenu(),
                 menus.getEditorEditMenu(),
                 menus.getEditorViewMenu(),
+                menus.getEditorExtensionsMenu(),
                 menus.getEditorHelpMenu()
         );
     }

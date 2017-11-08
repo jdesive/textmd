@@ -17,18 +17,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.desive.nodes;
+package com.desive.nodes.menus;
 
-import javafx.scene.control.TabPane;
+import com.desive.markdown.MarkdownParser;
+import javafx.scene.control.CheckMenuItem;
+import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 
 /*
- Created by Jack DeSive on 10/13/2017 at 7:55 PM
+ Created by Jack DeSive on 11/5/2017 at 10:54 PM
 */
-public class EditorTabPane extends TabPane {
+public abstract class MdExtensionMenuItem extends CheckMenuItem {
 
-    public EditorTabPane() {
+    private Label label;
 
-        this.setTabClosingPolicy(TabClosingPolicy.ALL_TABS);
+    public MdExtensionMenuItem(String text) {
+        super(null);
+
+        label = new Label(text);
+        setGraphic(label);
 
     }
+
+    protected abstract void getClickAction(final MarkdownParser markdownParser);
+
+    protected void setToolTip(Tooltip toolTip) {
+        label.setTooltip(toolTip);
+    }
+
 }

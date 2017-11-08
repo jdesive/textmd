@@ -19,7 +19,7 @@
 
 package com.desive.nodes.tabs;
 
-import com.desive.nodes.EditorPane;
+import com.desive.nodes.editor.EditorPane;
 import com.desive.utilities.Utils;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.control.Tab;

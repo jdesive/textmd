@@ -31,18 +31,22 @@ public class ToolBarMenus {
     private Menu EDITOR_EDIT_MENU;
     private Menu EDITOR_VIEW_MENU;
     private Menu EDITOR_HELP_MENU;
+    private Menu EDITOR_EXTENSIONS_MENU;
+
     private Menu EDITOR_IMPORT_SUBMENU;
     private Menu EDITOR_EXPORT_SUBMENU;
     private Menu EDITOR_OPEN_SUBMENU;
 
     public ToolBarMenus(Dictionary dictionary) {
-        this.EDITOR_FILE_MENU = new Menu(dictionary.TOOLBAR_EDITOR_FILE_MENU);
-        this.EDITOR_EDIT_MENU = new Menu(dictionary.TOOLBAR_EDITOR_EDIT_MENU);
-        this.EDITOR_VIEW_MENU = new Menu(dictionary.TOOLBAR_EDITOR_VIEW_MENU);
-        this.EDITOR_HELP_MENU = new Menu(dictionary.TOOLBAR_EDITOR_HELP_MENU);
-        this.EDITOR_OPEN_SUBMENU = new Menu(dictionary.TOOLBAR_EDITOR_OPEN_MENU);
-        this.EDITOR_IMPORT_SUBMENU = new Menu(dictionary.TOOLBAR_EDITOR_IMPORT_MENU);
-        this.EDITOR_EXPORT_SUBMENU = new Menu(dictionary.TOOLBAR_EDITOR_EXPORT_MENU);
+        EDITOR_FILE_MENU = new Menu(dictionary.TOOLBAR_EDITOR_FILE_MENU);
+        EDITOR_EDIT_MENU = new Menu(dictionary.TOOLBAR_EDITOR_EDIT_MENU);
+        EDITOR_VIEW_MENU = new Menu(dictionary.TOOLBAR_EDITOR_VIEW_MENU);
+        EDITOR_HELP_MENU = new Menu(dictionary.TOOLBAR_EDITOR_HELP_MENU);
+        EDITOR_EXTENSIONS_MENU = new Menu(dictionary.TOOLBAR_EDITOR_EXTENSIONS_MENU);
+
+        EDITOR_OPEN_SUBMENU = new Menu(dictionary.TOOLBAR_EDITOR_OPEN_MENU);
+        EDITOR_IMPORT_SUBMENU = new Menu(dictionary.TOOLBAR_EDITOR_IMPORT_MENU);
+        EDITOR_EXPORT_SUBMENU = new Menu(dictionary.TOOLBAR_EDITOR_EXPORT_MENU);
     }
 
     public Menu getEditorFileMenu() {
@@ -71,5 +75,9 @@ public class ToolBarMenus {
 
     public Menu getEditorOpenSubmenu() {
         return EDITOR_OPEN_SUBMENU;
+    }
+
+    public Menu getEditorExtensionsMenu() {
+        return EDITOR_EXTENSIONS_MENU;
     }
 }

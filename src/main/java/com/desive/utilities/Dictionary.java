@@ -27,7 +27,8 @@ public class Dictionary {
     private static Dictionary instance;
 
     // Editor Stage
-    public final String STAGE_EDITOR_TITLE = "TextMd - Editor";
+    public final String STAGE_EDITOR_TITLE = "TextMd - Editor",
+            STAGE_EDITOR_VIEW_SELECTOR_LABEL = "View: ";
 
     // Settings Stage
     public final String STAGE_SETTINGS_TITLE = "TextMd - Settings";
@@ -40,9 +41,10 @@ public class Dictionary {
             TOOLBAR_EDITOR_IMPORT_MENU = "Import",
             TOOLBAR_EDITOR_EXPORT_MENU = "Export",
             TOOLBAR_EDITOR_OPEN_MENU = "Open",
+            TOOLBAR_EDITOR_EXTENSIONS_MENU = "Extensions",
             TOOLBAR_EDITOR_SETTINGS_ITEM = "Settings",
-            TOOLBAR_EDITOR_PRETTIFY_ITEM = "Prettify Code",
-            TOOLBAR_EDITOR_REFRESH_VIEW_ITEM = "Refresh View",
+            TOOLBAR_EDITOR_PRETTIFY_ITEM = "Code Prettify",
+            TOOLBAR_EDITOR_REFRESH_VIEW_ITEM = "Refresh",
             TOOLBAR_EDITOR_UNDO_ITEM = "Undo",
             TOOLBAR_EDITOR_REDO_ITEM = "Redo",
             TOOLBAR_EDITOR_NEW_ITEM = "New",
@@ -63,14 +65,18 @@ public class Dictionary {
             TOOLBAR_EDITOR_OPEN_FILE_ITEM = "File",
             TOOLBAR_EDITOR_OPEN_URL_ITEM = "URL",
             TOOLBAR_EDITOR_OPEN_HELP_PAGE_ITEM = "Help Page",
-            TOOLBAR_EDITOR_OPEN_TEST_PAGE_ITEM = "Test Page";
+            TOOLBAR_EDITOR_OPEN_TEST_PAGE_ITEM = "Test Page",
+            TOOLBAR_EDITOR_EXTENSIONS_AUTO_LINK_ITEM = "Auto-Link URLs",
+            TOOLBAR_EDITOR_EXTENSIONS_AUTO_LINK_TOOLTIP = "Automatically hyperlink plain urls when rendering HTML",
+            TOOLBAR_EDITOR_EXTENSIONS_AUTO_ANCHOR_ITEM = "Auto-Anchor Headings",
+            TOOLBAR_EDITOR_EXTENSIONS_AUTO_ANCHOR_TOOLTIP = "Automatically add anchor links to headings";
 
     // Settings View Tab
     public final String SETTINGS_VIEW_REFRESH_RATE_LABEL_TOOLTIP = "How fast to refresh the HTML in the view",
             SETTINGS_VIEW_REFRESH_RATE_FIELD_TOOLTIP = "Default: 1 second(s)",
             SETTINGS_VIEW_REFRESH_RATE_LABEL = "View refresh rate:",
-            SETTINGS_VIEW_PRETTIFY_CODE_LABEL = "Always Prettify",
-            SETTINGS_VIEW_PRETTIFY_CODE_LABEL_TOOLTIP = "Use Google Prettify by default",
+            SETTINGS_VIEW_PRETTIFY_CODE_LABEL = "Always Code Prettify",
+            SETTINGS_VIEW_PRETTIFY_CODE_LABEL_TOOLTIP = "Use Google Code Prettify by default",
             SETTINGS_VIEW_TAB_HEADER_LABEL = "View",
             SETTINGS_APPLY_BUTTON_LABEL = "Apply",
             SETTINGS_RESET_BUTTON_LABEL = "Reset";

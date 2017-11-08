@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.desive.nodes;
+package com.desive.nodes.editor;
 
 import com.desive.markdown.MarkdownHighligher;
 import com.desive.markdown.MarkdownParser;
@@ -26,6 +26,7 @@ import com.desive.utilities.Dictionary;
 import com.desive.utilities.Settings;
 import com.desive.utilities.Utils;
 import com.desive.utilities.constants.FileExtensionFilters;
+import com.desive.views.EditorView;
 import com.vladsch.flexmark.pdf.converter.PdfConverterExtension;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -73,19 +74,24 @@ public class EditorPane extends SplitPane {
     private String currentHtml = "", currentHtmlWithStyle = "";
     private Subscription editorHightlightSubscription;
     private DialogFactory dialogFactory;
+    private MarkdownParser markdownParser;
 
-    public EditorPane(Dictionary dictionary, DialogFactory dialogFactory, String content) {
+    public EditorPane(Dictionary dictionary, DialogFactory dialogFactory, MarkdownParser markdownParser, String content) {
 
         this.dict = dictionary;
         this.dialogFactory = dialogFactory;
+        this.markdownParser = markdownParser;
 
         this.styleEditor("css/editor.css");
         this.styleWebView();
         this.setSyncViews();
         this.setContent(content);
         this.createEditorHighlightSubscription(Settings.EDITOR_HIGHLIGHT_REFRESH_RATE);
-        VirtualizedScrollPane editorScroller = new VirtualizedScrollPane<>(editor);
-        this.getItems().addAll(new StackPane(editorScroller), webView);
+        this.getItems().addAll(getEditorWithScrollbar(), webView);
+    }
+
+    private StackPane getEditorWithScrollbar() {
+        return new StackPane(new VirtualizedScrollPane<>(getEditor()));
     }
 
     public CodeArea getEditor() {
@@ -108,6 +114,22 @@ public class EditorPane extends SplitPane {
         return saved.get();
     }
 
+    public void setView(EditorView view) {
+        getItems().clear();
+        switch (view) {
+            case CODE_ONLY:
+                getItems().add(getEditorWithScrollbar());
+                break;
+            case VIEW_ONLY:
+                getItems().add(getWebView());
+                break;
+            case SPLIT_VIEW:
+                getItems().addAll(getEditorWithScrollbar(), getWebView());
+                break;
+            default:
+        }
+    }
+
     public boolean exit(Stage primaryStage) {
         if(!saved.get()){
             Optional<ButtonType> save = dialogFactory.buildYesNoDialog(file.getPath(),
@@ -115,7 +137,7 @@ public class EditorPane extends SplitPane {
                     dict.DIALOG_FILE_NOT_SAVED_CONTENT
             ).showAndWait();
 
-            if(save.isPresent())
+            if(!save.isPresent())
                 return false;
 
             switch (save.get().getButtonData()){
@@ -184,7 +206,7 @@ public class EditorPane extends SplitPane {
         fileChooser.getExtensionFilters().add(FileExtensionFilters.DOCX);
         File file = fileChooser.showSaveDialog(primaryStage);
         if(file != null){
-            MarkdownParser.convertMarkdownToDocx(editor.getText(), file);
+            markdownParser.convertToDocx(editor.getText(), file);
             return true;
         }
         return false;
@@ -199,8 +221,9 @@ public class EditorPane extends SplitPane {
         if(file != null){
             PdfConverterExtension.exportToPdf(
                     file.getAbsolutePath(),
-                    MarkdownParser.convertMarkdownToHTML(Utils.wrapWithHtmlDocType(style ? currentHtmlWithStyle : currentHtml)),
-                    "", MarkdownParser.options
+                    markdownParser.convertToHTML(Utils.wrapWithHtmlDocType(style ? currentHtmlWithStyle : currentHtml)),
+                    "",
+                    markdownParser.getOptions()
             );
             return true;
         }
@@ -211,7 +234,7 @@ public class EditorPane extends SplitPane {
         return save(
                 primaryStage,
                 FileExtensionFilters.TEXT,
-                MarkdownParser.convertMarkdownToJira(editor.getText())
+                markdownParser.convertToJira(editor.getText())
         );
     }
 
@@ -219,7 +242,7 @@ public class EditorPane extends SplitPane {
         return save(
                 primaryStage,
                 FileExtensionFilters.TEXT,
-                MarkdownParser.convertMarkdownToYoutrack(editor.getText())
+                markdownParser.convertToYoutrack(editor.getText())
         );
     }
 
@@ -227,7 +250,7 @@ public class EditorPane extends SplitPane {
         return save(
                 primaryStage,
                 FileExtensionFilters.TEXT,
-                MarkdownParser.convertMarkdownToText(editor.getText())
+                markdownParser.convertToText(editor.getText())
         );
     }
 
@@ -235,7 +258,7 @@ public class EditorPane extends SplitPane {
         return save(
                 primaryStage,
                 FileExtensionFilters.TEXT,
-                MarkdownParser.markdownToConfluenceMarkup(editor.getText())
+                markdownParser.markdownToConfluenceMarkup(editor.getText())
         );
     }
 
@@ -257,7 +280,7 @@ public class EditorPane extends SplitPane {
 
     public void setContent(String content){
         editor.replaceText(0, editor.getText().length(), content);
-        webEngine.loadContent(MarkdownParser.convertMarkdownToHTML(content));
+        webEngine.loadContent(markdownParser.convertToHTML(content));
         MarkdownHighligher.computeHighlighting(editor.getText(), editor);
     }
 
@@ -322,7 +345,7 @@ public class EditorPane extends SplitPane {
 
     public void createSyncTimer(int duration){
         covertTask = new Timeline(new KeyFrame(javafx.util.Duration.seconds(duration), (event2) -> {
-            String html = MarkdownParser.convertMarkdownToHTML(editor.getText());
+            String html = markdownParser.convertToHTML(editor.getText());
             webEngine.loadContent(html);
             currentHtml = html;
             covertTask.stop();
@@ -330,7 +353,6 @@ public class EditorPane extends SplitPane {
     }
 
     public void createEditorHighlightSubscription(int value) {
-
         if(editorHightlightSubscription != null)
             editorHightlightSubscription.unsubscribe();
 
