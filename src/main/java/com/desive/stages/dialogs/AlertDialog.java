@@ -28,6 +28,7 @@ public abstract class AlertDialog extends Alert {
 
     public AlertDialog(AlertType alertType) {
         super(alertType);
+        getDialogPane().getStylesheets().add("css/dialogs.css");
     }
 
     public abstract AlertDialog build();

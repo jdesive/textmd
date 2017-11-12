@@ -20,6 +20,7 @@
 package com.desive.stages.dialogs.exceptions;
 
 import com.desive.stages.dialogs.AlertDialog;
+import com.desive.utilities.Utils;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
@@ -48,6 +49,7 @@ public class ExceptionAlertDialog extends AlertDialog {
         this.message = message;
         this.exception = exception;
         this.ownerStage = ownerStage;
+        getDialogPane().getStyleClass().add("exception");
     }
 
     @Override
@@ -57,6 +59,7 @@ public class ExceptionAlertDialog extends AlertDialog {
         TextArea textArea = new TextArea();
         GridPane expContent = new GridPane();
         Label label = new Label("Stacktrace:");
+        label.setTextFill(Utils.getDefaultTextColor());
         initOwner(ownerStage);
         setTitle(title);
         setHeaderText(header);

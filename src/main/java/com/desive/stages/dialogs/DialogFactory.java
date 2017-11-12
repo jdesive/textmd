@@ -20,7 +20,7 @@
 package com.desive.stages.dialogs;
 
 import com.desive.stages.dialogs.exceptions.ExceptionAlertDialog;
-import com.desive.stages.dialogs.input.EnterUrlAlertDialog;
+import com.desive.stages.dialogs.input.EnterTextAlertDialog;
 import com.desive.stages.dialogs.optional.ConfirmationAlertDialog;
 import com.desive.stages.dialogs.optional.YesNoAlertDialog;
 import com.desive.utilities.Dictionary;
@@ -57,7 +57,7 @@ public class DialogFactory {
     }
 
     public TextInputDialog buildEnterUrlDialogBox(String title, String header) {
-        return new EnterUrlAlertDialog(title, header, ownerStage).build();
+        return new EnterTextAlertDialog(title, header, ownerStage).build();
     }
 
 }

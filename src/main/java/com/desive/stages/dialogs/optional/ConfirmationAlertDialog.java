@@ -37,6 +37,7 @@ public class ConfirmationAlertDialog extends AlertDialog {
         this.title = title;
         this.content = content;
         this.ownerStage = ownerStage;
+        getDialogPane().getStyleClass().add("confirmation");
     }
 
     @Override

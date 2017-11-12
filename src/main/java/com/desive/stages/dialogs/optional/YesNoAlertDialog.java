@@ -44,6 +44,7 @@ public class YesNoAlertDialog extends AlertDialog {
         this.content = content;
         this.dictionary = dictionary;
         this.ownerStage = ownerStage;
+        getDialogPane().getStyleClass().add("yesno");
     }
 
     @Override

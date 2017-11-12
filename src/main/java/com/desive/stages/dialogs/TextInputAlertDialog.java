@@ -28,6 +28,7 @@ public abstract class TextInputAlertDialog extends TextInputDialog {
 
     public TextInputAlertDialog(String defaultValue) {
         super(defaultValue);
+        getDialogPane().getStylesheets().add("css/dialogs.css");
     }
 
     public abstract TextInputDialog build();

@@ -23,7 +23,7 @@ Horizontal Rules
 
 ### Extensions
 [Strikethrough] To write in ~~Strikethrough~~ text you surround the text with two tildes  
-[Auto-Link] You can alos create hyperlinks by pasting the link https://link.com
+[Auto-Link] You can also create hyperlinks by pasting the link https://link.com
 
 ## Lists
 1. Item 1

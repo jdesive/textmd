@@ -1,0 +1,41 @@
+/*
+ * Copyright (C) 2017  TextMd
+ *
+ * This file is part of TextMd.
+ *
+ * TextMd is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/* Styles for all backgrounds and text */
+.exception, .exception > .button-bar > .container, .exception:header .header-panel, .exception:header .header-panel .label, .exception > .button-bar > .container > .details-button,
+.url, .url > .button-bar > .container, .url:header .header-panel, .url:header .header-panel .label,
+.confirmation, .confirmation > .button-bar > .container, .confirmation:header .header-panel, .confirmation > .content.label,
+.yesno, .yesno > .button-bar > .container, .yesno:header .header-panel, .yesno:header .header-panel .label, .yesno > .label.content {
+    -fx-background-color: #2B2B2B;
+    -fx-text-fill: #f8f8f2;
+    -fx-fill: #f8f8f2;
+}
+
+/* Styles for all dialog buttons */
+.dialog-pane > .button-bar > .container > .button {
+    -fx-background-color: #545454;
+    -fx-background-radius: 30;
+    -fx-background-insets: 0,1,2,3,0;
+    -fx-text-fill: #f8f8f2;
+    -fx-padding: 5 20 5 20;
+}
+
+.url > .button-bar > .container > .button:hover {
+    -fx-background-color: #474747;
+}

@@ -26,24 +26,24 @@ import javafx.stage.Stage;
 /*
  Created by Jack DeSive on 11/4/2017 at 9:23 PM
 */
-public class EnterUrlAlertDialog extends TextInputAlertDialog{
+public class EnterTextAlertDialog extends TextInputAlertDialog{
 
     private String title;
     private String header;
     private Stage ownerStage;
 
-    public EnterUrlAlertDialog(String title, String header, Stage ownerStage) {
+    public EnterTextAlertDialog(String title, String header, Stage ownerStage) {
         super("");
         this.title = title;
         this.header = header;
         this.ownerStage = ownerStage;
+        getDialogPane().getStyleClass().add("url");
     }
 
     @Override
     public TextInputDialog build() {
         setTitle(title);
         setHeaderText(header);
-        setContentText("URL:");
         initOwner(ownerStage);
         return this;
     }
