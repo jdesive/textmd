@@ -28,7 +28,10 @@ public class Dictionary {
 
     // Editor Stage
     public final String STAGE_EDITOR_TITLE = "TextMd - Editor",
-            STAGE_EDITOR_VIEW_SELECTOR_LABEL = "View: ";
+            STAGE_EDITOR_VIEW_SELECTOR_LABEL = "View: ",
+            STAGE_EDITOR_VIEW_CODE_TOOLTIP = "Show editor only",
+            STAGE_EDITOR_VIEW_VIEW_TOOLTIP = "Show view only",
+            STAGE_EDITOR_VIEW_SPLIT_TOOLTIP = "Show split view";
 
     // Settings Stage
     public final String STAGE_SETTINGS_TITLE = "TextMd - Settings";

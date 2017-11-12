@@ -20,13 +20,14 @@
 package com.desive.nodes.editor.toolbar;
 
 import com.desive.nodes.TabFactory;
+import com.desive.nodes.editor.ImageViewPane;
 import com.desive.nodes.tabs.EditorTab;
 import com.desive.utilities.Dictionary;
 import com.desive.views.EditorView;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 
 import java.util.Arrays;
@@ -36,7 +37,7 @@ import java.util.Arrays;
 */
 public class ViewSelectorPane extends HBox {
 
-    private ImageView code, view, split;
+    private ImageViewPane code, view, split;
     private Label label;
     private TabFactory tabFactory;
 
@@ -51,19 +52,19 @@ public class ViewSelectorPane extends HBox {
         labelContainer.getChildren().add(label);
 
 
-        code = new ImageView(new Image("assets/icons/editor_code_view_icon.png"));
-        view = new ImageView(new Image("assets/icons/editor_webview_view_icon.png"));
-        split = new ImageView(new Image("assets/icons/editor_split_view_icon.png"));
+        code = new ImageViewPane(new Image("assets/icons/editor_code_view_icon.png"));
+        view = new ImageViewPane(new Image("assets/icons/editor_webview_view_icon.png"));
+        split = new ImageViewPane(new Image("assets/icons/editor_split_view_icon.png"));
+
+        code.setTooltip(new Tooltip(dictionary.STAGE_EDITOR_VIEW_CODE_TOOLTIP));
+        view.setTooltip(new Tooltip(dictionary.STAGE_EDITOR_VIEW_VIEW_TOOLTIP));
+        split.setTooltip(new Tooltip(dictionary.STAGE_EDITOR_VIEW_SPLIT_TOOLTIP));
 
         setImageSizes(25, 25, code, view, split);
 
         code.setOnMouseClicked(event -> switchEditorPaneView(EditorView.CODE_ONLY));
         view.setOnMouseClicked(event -> switchEditorPaneView(EditorView.VIEW_ONLY));
         split.setOnMouseClicked(event -> switchEditorPaneView(EditorView.SPLIT_VIEW));
-
-        code.getStyleClass().add("toolbar-button");
-        view.getStyleClass().add("toolbar-button");
-        split.getStyleClass().add("toolbar-button");
 
         getChildren().addAll(
                 labelContainer,
@@ -77,10 +78,10 @@ public class ViewSelectorPane extends HBox {
         ((EditorTab) tabFactory.getSelectedTab()).getEditorPane().setView(view);
     }
 
-    private void setImageSizes(double width, double height, ImageView... views) {
+    private void setImageSizes(double width, double height, ImageViewPane... views) {
         Arrays.asList(views).forEach(view -> {
-            view.setFitHeight(height);
-            view.setFitWidth(width);
+            view.getImageView().setFitHeight(height);
+            view.getImageView().setFitWidth(width);
         });
     }
 
