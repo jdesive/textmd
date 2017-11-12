@@ -21,10 +21,10 @@ package com.desive.stages;
 
 import com.desive.markdown.MarkdownParser;
 import com.desive.nodes.TabFactory;
-import com.desive.nodes.menus.ToolBarMenus;
 import com.desive.nodes.tabs.EditorTab;
 import com.desive.nodes.toolbars.EditorMenuToolBar;
 import com.desive.nodes.toolbars.EditorToolBar;
+import com.desive.nodes.toolbars.menus.ToolBarMenus;
 import com.desive.stages.dialogs.DialogFactory;
 import com.desive.utilities.Dictionary;
 import com.desive.utilities.Settings;

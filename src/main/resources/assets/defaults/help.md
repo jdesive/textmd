@@ -10,16 +10,20 @@
 To write a paragraph you just type like normal.
 
 To write in **Bold** text you surround the text you want to be bold with two asterisks.  
-To write in *Italic* text you surround the text with one asterisks.
-To write `inline-code` you surround the text with a accent.
+To write in *Italic* text you surround the text with one asterisks.  
+To write `inline-code` you surround the text with a accent.  
 
-To [hyperlink](https://link.com) some text
+To [hyperlink](https://link.com) some text  
 To add an image ![Alt Text](http://via.placeholder.com/50x50)
 
 
 Horizontal Rules
 ***
 ******************
+
+### Extensions
+[Strikethrough] To write in ~~Strikethrough~~ text you surround the text with two tildes  
+[Auto-Link] You can alos create hyperlinks by pasting the link https://link.com
 
 ## Lists
 1. Item 1
@@ -29,6 +33,13 @@ Horizontal Rules
 * Item 1
 * Item 2
 * Item 3
+
+### Extensions
+[Task List]
+
+- [x] Task 1
+- [ ] Task 2
+- [x] Task 3
 
 ## Code
 Java:

@@ -91,6 +91,10 @@ public class TabFactory {
         return tabPane;
     }
 
+    public void refreshSelectedTabView() {
+        ((EditorTab) getSelectedTab()).getEditorPane().refreshWebView();
+    }
+
     public void setMarkdownParser(MarkdownParser markdownParser) {
         this.markdownParser = markdownParser;
     }

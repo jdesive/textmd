@@ -21,22 +21,24 @@ package com.desive.nodes.toolbars;
 
 import com.desive.markdown.MarkdownParser;
 import com.desive.nodes.TabFactory;
-import com.desive.nodes.menus.ToolBarMenus;
-import com.desive.nodes.menus.items.editor.edit.EditorRedoItem;
-import com.desive.nodes.menus.items.editor.edit.EditorUndoItem;
-import com.desive.nodes.menus.items.editor.extensions.EditorExtAutoLinkItem;
-import com.desive.nodes.menus.items.editor.file.EditorExitItem;
-import com.desive.nodes.menus.items.editor.file.EditorNewItem;
-import com.desive.nodes.menus.items.editor.file.EditorSaveAsItem;
-import com.desive.nodes.menus.items.editor.file.EditorSaveItem;
-import com.desive.nodes.menus.items.editor.file.export.*;
-import com.desive.nodes.menus.items.editor.file.open.EditorOpenFileItem;
-import com.desive.nodes.menus.items.editor.file.open.EditorOpenUrlItem;
-import com.desive.nodes.menus.items.editor.help.EditorHelpPageItem;
-import com.desive.nodes.menus.items.editor.help.EditorSettingsItem;
-import com.desive.nodes.menus.items.editor.help.EditorTestPageItem;
-import com.desive.nodes.menus.items.editor.view.EditorPrettifyItem;
-import com.desive.nodes.menus.items.editor.view.EditorRefreshViewItem;
+import com.desive.nodes.toolbars.menus.ToolBarMenus;
+import com.desive.nodes.toolbars.menus.items.editor.edit.EditorRedoItem;
+import com.desive.nodes.toolbars.menus.items.editor.edit.EditorUndoItem;
+import com.desive.nodes.toolbars.menus.items.editor.file.EditorExitItem;
+import com.desive.nodes.toolbars.menus.items.editor.file.EditorNewItem;
+import com.desive.nodes.toolbars.menus.items.editor.file.EditorSaveAsItem;
+import com.desive.nodes.toolbars.menus.items.editor.file.EditorSaveItem;
+import com.desive.nodes.toolbars.menus.items.editor.file.export.*;
+import com.desive.nodes.toolbars.menus.items.editor.file.imports.EditorImportFileItem;
+import com.desive.nodes.toolbars.menus.items.editor.file.imports.EditorImportUrlItem;
+import com.desive.nodes.toolbars.menus.items.editor.file.open.EditorOpenFileItem;
+import com.desive.nodes.toolbars.menus.items.editor.file.open.EditorOpenUrlItem;
+import com.desive.nodes.toolbars.menus.items.editor.help.EditorHelpPageItem;
+import com.desive.nodes.toolbars.menus.items.editor.help.EditorSettingsItem;
+import com.desive.nodes.toolbars.menus.items.editor.help.EditorTestPageItem;
+import com.desive.nodes.toolbars.menus.items.editor.view.EditorPrettifyItem;
+import com.desive.nodes.toolbars.menus.items.editor.view.EditorRefreshViewItem;
+import com.desive.nodes.toolbars.menus.items.editor.view.extensions.*;
 import com.desive.stages.dialogs.DialogFactory;
 import com.desive.utilities.Dictionary;
 import javafx.scene.control.MenuBar;
@@ -99,14 +101,27 @@ public class EditorMenuToolBar extends MenuBar {
 
         this.log(dictionary.TOOLBAR_EDITOR_EXTENSIONS_MENU);
         menus.getEditorExtensionsMenu().getItems().addAll(
-                new EditorExtAutoLinkItem(dictionary, markdownParser, true)
-                //new EditorExtAutoAnchorItem(dictionary, markdownParser, true)
+                //Enabled by default
+                new EditorExtAbbreviationItem(dictionary, markdownParser, tabFactory, true),
+                new EditorExtAnchorLinkItem(dictionary, markdownParser, tabFactory, true),
+                new EditorExtAutoLinkItem(dictionary, markdownParser,tabFactory, true),
+                new EditorExtTablesItem(dictionary, markdownParser, tabFactory, true),
+                new EditorExtTaskListItem(dictionary, markdownParser, tabFactory, true),
+                new EditorExtStrikethroughSubscriptItem(dictionary, markdownParser, tabFactory, true),
+
+                // Not enabled by default
+                new EditorExtGFMUsersItem(dictionary, markdownParser, tabFactory, false),
+                new EditorExtGFMIssuesItem(dictionary, markdownParser, tabFactory, false),
+                new EditorExtSuperscriptItem(dictionary, markdownParser, tabFactory, false),
+                new EditorExtTableOfContentsItem(dictionary, markdownParser, tabFactory, false),
+                new EditorExtWikiLinkItem(dictionary, markdownParser, tabFactory, false)
+
         );
 
         this.log(dictionary.TOOLBAR_EDITOR_IMPORT_MENU);
         menus.getEditorImportSubmenu().getItems().addAll(
-                new EditorOpenFileItem(dictionary, IMPORT_FILE_EDITOR, primaryStage, tabFactory, dialogFactory),
-                new EditorOpenUrlItem(dictionary, IMPORT_URL_EDITOR, primaryStage, tabFactory, dialogFactory)
+                new EditorImportFileItem(dictionary, IMPORT_FILE_EDITOR, primaryStage, tabFactory, dialogFactory),
+                new EditorImportUrlItem(dictionary, IMPORT_URL_EDITOR, primaryStage, tabFactory, dialogFactory)
         );
 
         this.log(dictionary.TOOLBAR_EDITOR_EXPORT_MENU);

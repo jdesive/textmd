@@ -26,9 +26,7 @@ import com.vladsch.flexmark.Extension;
 import com.vladsch.flexmark.ast.util.TextCollectingVisitor;
 import com.vladsch.flexmark.ext.abbreviation.AbbreviationExtension;
 import com.vladsch.flexmark.ext.anchorlink.AnchorLinkExtension;
-import com.vladsch.flexmark.ext.emoji.EmojiExtension;
 import com.vladsch.flexmark.ext.escaped.character.EscapedCharacterExtension;
-import com.vladsch.flexmark.ext.gfm.strikethrough.StrikethroughExtension;
 import com.vladsch.flexmark.ext.gfm.tasklist.TaskListExtension;
 import com.vladsch.flexmark.ext.tables.TablesExtension;
 import com.vladsch.flexmark.ext.wikilink.WikiLinkExtension;
@@ -92,9 +90,9 @@ public class MarkdownParser {
 
             // Misc. Extensions
             .set(AbbreviationExtension.ABBREVIATIONS_KEEP, KeepType.LAST)
-            .set(TaskListExtension.ITEM_DONE_MARKER, "<span class=\"taskitem\">X</span>")
-            .set(TaskListExtension.ITEM_NOT_DONE_MARKER, "<span class=\"taskitem\">O</span>")
-            .set(WikiLinkExtension.DISABLE_RENDERING, true)
+            .set(TaskListExtension.ITEM_DONE_MARKER, "<input type=\"checkbox\" class=\"task-list-item-checkbox\" checked=\"checked\" disabled=\"disabled\" />")
+            .set(TaskListExtension.ITEM_NOT_DONE_MARKER, "<input type=\"checkbox\" class=\"task-list-item-checkbox\" disabled=\"disabled\" />")
+            .set(WikiLinkExtension.DISABLE_RENDERING, false)
             .set(AnchorLinkExtension.ANCHORLINKS_SET_ID, true)
             .set(AnchorLinkExtension.ANCHORLINKS_ANCHOR_CLASS, "anchor")
             .set(AnchorLinkExtension.ANCHORLINKS_SET_NAME, true)
@@ -108,20 +106,8 @@ public class MarkdownParser {
             .set(TablesExtension.DISCARD_EXTRA_COLUMNS, true)
             .set(TablesExtension.HEADER_SEPARATOR_COLUMN_MATCH, true)
 
-            // Emoji Extensions
-            .set(EmojiExtension.ROOT_IMAGE_PATH, "assets/graphics/emojis/")
-
             .set(EXTENSIONS, Lists.newArrayList(Arrays.asList(
-                    EscapedCharacterExtension.create(),
-                    TablesExtension.create(),
-
-                    // Temp
-                    AbbreviationExtension.create(),
-                    AnchorLinkExtension.create(),
-                    TaskListExtension.create(),
-                    EmojiExtension.create(),
-                    WikiLinkExtension.create(),
-                    StrikethroughExtension.create()
+                    EscapedCharacterExtension.create()
             )));
 
     private MutableDataHolder jiraOptions = new MutableDataSet()
@@ -129,10 +115,6 @@ public class MarkdownParser {
 
     private MutableDataHolder youtrackOptions = new MutableDataSet()
             .set(Parser.EXTENSIONS, Collections.singletonList(YouTrackConverterExtension.create()));
-
-/*            (TablesExtension.create(), EscapedCharacterExtension.create(),
-            AbbreviationExtension.create(), AutolinkExtension.create(), TaskListExtension.create(),
-            WikiLinkExtension.create(), StrikethroughExtension.create(), AnchorLinkExtension.create())*/
 
     private Parser markdownParser = Parser.builder(options).build();
     private HtmlRenderer htmlRenderer = HtmlRenderer.builder(options).build();
@@ -172,6 +154,7 @@ public class MarkdownParser {
 
     public String convertToHTML(String markdown){
         markdownParser = Parser.builder(options).build();
+        htmlRenderer = HtmlRenderer.builder(options).build();
         return htmlRenderer.render(markdownParser.parse(markdown));
     }
 

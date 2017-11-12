@@ -49,14 +49,6 @@ public class VirtualWebView extends StackPane implements Virtualized{
         return webView.getEngine();
     }
 
-    public void setScrollXValue(double x) {
-        webView.getEngine().executeScript(String.format("document.documentElement.scrollLeft = document.body.scrollLeft = %s;", String.valueOf(x)));
-    }
-
-    public void setScrollYValue(double y) {
-        webView.getEngine().executeScript(String.format("document.documentElement.scrollTop = document.body.scrollTop = %s;", String.valueOf(y)));
-    }
-
     @Override
     public Val<Double> totalWidthEstimateProperty() {
         return totalWidth;

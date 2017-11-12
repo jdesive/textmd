@@ -377,18 +377,7 @@ public class EditorPane extends SplitPane {
 
     private void syncScrollbars() {
 
-        System.out.println(editorScrollPane.estimatedScrollYProperty().getValue() + " = " + viewScrollPane.totalHeightEstimateProperty().getValue());
-        editorScrollPane.estimatedScrollYProperty().addListener((observable, oldValue, newValue) -> {
-            webView.setScrollYValue(newValue <= viewScrollPane.totalHeightEstimateProperty().getValue() ? newValue : viewScrollPane.totalHeightEstimateProperty().getValue());
-            System.out.println(newValue + " = " + viewScrollPane.totalHeightEstimateProperty().getValue());
-        });
-        editorScrollPane.estimatedScrollXProperty().addListener((observable, oldValue, newValue) -> {
-            webView.setScrollXValue(newValue <= viewScrollPane.totalWidthEstimateProperty().getValue() ? newValue : viewScrollPane.totalWidthEstimateProperty().getValue());
-            System.out.println(newValue + " = " + viewScrollPane.totalWidthEstimateProperty().getValue());
-        });
-
-        //editorScrollPane.estimatedScrollXProperty().values().feedTo(viewScrollPane.estimatedScrollXProperty());
-        //viewScrollPane.estimatedScrollXProperty().values().feedTo(editorScrollPane.estimatedScrollXProperty());
+        //TODO: learn how to sync the scroll bars. at any cost...
     }
 
 
