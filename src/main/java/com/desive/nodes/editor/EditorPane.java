@@ -21,11 +21,13 @@ package com.desive.nodes.editor;
 
 import com.desive.markdown.MarkdownHighligher;
 import com.desive.markdown.MarkdownParser;
+import com.desive.nodes.toolbars.EditorToolBar;
 import com.desive.stages.dialogs.DialogFactory;
 import com.desive.utilities.Dictionary;
 import com.desive.utilities.Settings;
 import com.desive.utilities.Utils;
 import com.desive.utilities.constants.FileExtensionFilters;
+import com.desive.utilities.constants.Timer;
 import com.desive.views.EditorView;
 import com.vladsch.flexmark.pdf.converter.PdfConverterExtension;
 import javafx.animation.Animation;
@@ -66,7 +68,7 @@ public class EditorPane extends SplitPane {
 
     private Dictionary dict;
     private CodeArea editor = new CodeArea("");
-    private WebView webView = new WebView();
+    private VirtualWebView webView = new VirtualWebView(new WebView());
     private WebEngine webEngine = webView.getEngine();
     private Timeline covertTask = null;
     private File file = new File(Utils.getDefaultFileName());
@@ -75,31 +77,46 @@ public class EditorPane extends SplitPane {
     private Subscription editorHightlightSubscription;
     private DialogFactory dialogFactory;
     private MarkdownParser markdownParser;
+    private EditorToolBar editorToolBar;
 
-    public EditorPane(Dictionary dictionary, DialogFactory dialogFactory, MarkdownParser markdownParser, String content) {
+    private Timer timer = new Timer();
+
+    private VirtualizedScrollPane<CodeArea> editorScrollPane = new VirtualizedScrollPane<>(getEditor());
+    private VirtualizedScrollPane<VirtualWebView> viewScrollPane = new VirtualizedScrollPane<>(webView);
+
+    public EditorPane(Dictionary dictionary,
+                      DialogFactory dialogFactory,
+                      MarkdownParser markdownParser,
+                      EditorToolBar editorToolBar,
+                      String content) {
 
         this.dict = dictionary;
         this.dialogFactory = dialogFactory;
         this.markdownParser = markdownParser;
+        this.editorToolBar = editorToolBar;
 
         this.styleEditor("css/editor.css");
         this.styleWebView();
         this.setSyncViews();
         this.setContent(content);
         this.createEditorHighlightSubscription(Settings.EDITOR_HIGHLIGHT_REFRESH_RATE);
-        this.getItems().addAll(getEditorWithScrollbar(), webView);
+        this.getItems().addAll(getEditorWithScrollbar(), getWebViewWithScrollbar());
+
+        syncScrollbars();
     }
 
     private StackPane getEditorWithScrollbar() {
-        return new StackPane(new VirtualizedScrollPane<>(getEditor()));
+        //return new StackPane(new EditorScrollPane(getEditor()));
+        return new StackPane(editorScrollPane);
     }
 
     public CodeArea getEditor() {
         return editor;
     }
 
-    public WebView getWebView() {
-        return webView;
+    public StackPane getWebViewWithScrollbar() {
+        //return new StackPane(new EditorViewScrollPane(webView));
+        return new StackPane(viewScrollPane);
     }
 
     public File getFile() {
@@ -121,13 +138,14 @@ public class EditorPane extends SplitPane {
                 getItems().add(getEditorWithScrollbar());
                 break;
             case VIEW_ONLY:
-                getItems().add(getWebView());
+                getItems().add(getWebViewWithScrollbar());
                 break;
             case SPLIT_VIEW:
-                getItems().addAll(getEditorWithScrollbar(), getWebView());
+                getItems().addAll(getEditorWithScrollbar(), getWebViewWithScrollbar());
                 break;
             default:
         }
+        editorToolBar.setActionText("View set to " + view.getName());
     }
 
     public boolean exit(Stage primaryStage) {
@@ -168,9 +186,11 @@ public class EditorPane extends SplitPane {
 
     public boolean save(Stage primaryStage) throws IOException {
         if(file.exists()){
+            timer.start();
             PrintWriter writer = new PrintWriter(new FileWriter(file));
             writer.print(editor.getText());
             writer.close();
+            editorToolBar.setActionText("Successfully saved file \'" + file.getName() + "\' in " + timer.end());
             return true;
         }else{
             return saveAs(primaryStage);
@@ -195,7 +215,8 @@ public class EditorPane extends SplitPane {
         return save(
                 primaryStage,
                 FileExtensionFilters.HTML,
-                Utils.wrapWithHtmlDocType(style ? currentHtmlWithStyle : currentHtml)
+                Utils.wrapWithHtmlDocType(style ? currentHtmlWithStyle : currentHtml),
+                "Successfully exported html file"
         );
     }
 
@@ -206,7 +227,9 @@ public class EditorPane extends SplitPane {
         fileChooser.getExtensionFilters().add(FileExtensionFilters.DOCX);
         File file = fileChooser.showSaveDialog(primaryStage);
         if(file != null){
+            timer.start();
             markdownParser.convertToDocx(editor.getText(), file);
+            editorToolBar.setActionText("Successfully exported docx file \'" + file.getName() + "\' in " + timer.end());
             return true;
         }
         return false;
@@ -219,12 +242,14 @@ public class EditorPane extends SplitPane {
         fileChooser.getExtensionFilters().add(FileExtensionFilters.PDF);
         File file = fileChooser.showSaveDialog(primaryStage);
         if(file != null){
+            timer.start();
             PdfConverterExtension.exportToPdf(
                     file.getAbsolutePath(),
                     markdownParser.convertToHTML(Utils.wrapWithHtmlDocType(style ? currentHtmlWithStyle : currentHtml)),
                     "",
                     markdownParser.getOptions()
             );
+            editorToolBar.setActionText("Successfully exported pdf file \'" + file.getName() + "\' in " + timer.end());
             return true;
         }
         return false;
@@ -234,7 +259,8 @@ public class EditorPane extends SplitPane {
         return save(
                 primaryStage,
                 FileExtensionFilters.TEXT,
-                markdownParser.convertToJira(editor.getText())
+                markdownParser.convertToJira(editor.getText()),
+                "Successfully exported jira file"
         );
     }
 
@@ -242,7 +268,8 @@ public class EditorPane extends SplitPane {
         return save(
                 primaryStage,
                 FileExtensionFilters.TEXT,
-                markdownParser.convertToYoutrack(editor.getText())
+                markdownParser.convertToYoutrack(editor.getText()),
+                "Successfully exported youtrack file"
         );
     }
 
@@ -250,7 +277,8 @@ public class EditorPane extends SplitPane {
         return save(
                 primaryStage,
                 FileExtensionFilters.TEXT,
-                markdownParser.convertToText(editor.getText())
+                markdownParser.convertToText(editor.getText()),
+                "Successfully exported plain text file"
         );
     }
 
@@ -258,20 +286,23 @@ public class EditorPane extends SplitPane {
         return save(
                 primaryStage,
                 FileExtensionFilters.TEXT,
-                markdownParser.markdownToConfluenceMarkup(editor.getText())
+                markdownParser.markdownToConfluenceMarkup(editor.getText()),
+                "Successfully exported confluence markup file"
         );
     }
 
-    private boolean save(Stage primaryStage, FileChooser.ExtensionFilter ext, String content) throws IOException{
+    private boolean save(Stage primaryStage, FileChooser.ExtensionFilter ext, String content, String actionText) throws IOException{
         FileChooser fileChooser = new FileChooser();
         fileChooser.setInitialDirectory(file.getParentFile());
         fileChooser.setInitialFileName(file.getName().split("\\.")[0] + ext.getExtensions().stream().findFirst().get().replace("*", ""));
         fileChooser.getExtensionFilters().add(ext);
         File file = fileChooser.showSaveDialog(primaryStage);
         if(file != null){
+            timer.start();
             PrintWriter writer = new PrintWriter(new FileWriter(file));
             writer.print(content);
             writer.close();
+            editorToolBar.setActionText(actionText + " in " + timer.end());
             return true;
         }
         return false;
@@ -295,6 +326,7 @@ public class EditorPane extends SplitPane {
             prettifyCode.set(true);
         }
         this.refreshWebView();
+        editorToolBar.setActionText("Enabled Code Prettify for current file \'" + file.getName() + "\'");
     }
 
     public void refreshWebView(){
@@ -331,7 +363,7 @@ public class EditorPane extends SplitPane {
         });
     }
 
-    private void setSyncViews(){
+    private void setSyncViews() {
         editor.textProperty().addListener((obs, oldValue, newValue) -> {
             if(covertTask == null || covertTask.getStatus().equals(Animation.Status.STOPPED)){
                 createSyncTimer(Settings.VIEW_REFRESH_RATE);
@@ -343,12 +375,32 @@ public class EditorPane extends SplitPane {
         });
     }
 
-    public void createSyncTimer(int duration){
+    private void syncScrollbars() {
+
+        System.out.println(editorScrollPane.estimatedScrollYProperty().getValue() + " = " + viewScrollPane.totalHeightEstimateProperty().getValue());
+        editorScrollPane.estimatedScrollYProperty().addListener((observable, oldValue, newValue) -> {
+            webView.setScrollYValue(newValue <= viewScrollPane.totalHeightEstimateProperty().getValue() ? newValue : viewScrollPane.totalHeightEstimateProperty().getValue());
+            System.out.println(newValue + " = " + viewScrollPane.totalHeightEstimateProperty().getValue());
+        });
+        editorScrollPane.estimatedScrollXProperty().addListener((observable, oldValue, newValue) -> {
+            webView.setScrollXValue(newValue <= viewScrollPane.totalWidthEstimateProperty().getValue() ? newValue : viewScrollPane.totalWidthEstimateProperty().getValue());
+            System.out.println(newValue + " = " + viewScrollPane.totalWidthEstimateProperty().getValue());
+        });
+
+        //editorScrollPane.estimatedScrollXProperty().values().feedTo(viewScrollPane.estimatedScrollXProperty());
+        //viewScrollPane.estimatedScrollXProperty().values().feedTo(editorScrollPane.estimatedScrollXProperty());
+    }
+
+
+
+    public void createSyncTimer(int duration) {
         covertTask = new Timeline(new KeyFrame(javafx.util.Duration.seconds(duration), (event2) -> {
+            timer.start();
             String html = markdownParser.convertToHTML(editor.getText());
             webEngine.loadContent(html);
             currentHtml = html;
             covertTask.stop();
+            editorToolBar.setActionText("Refreshed view successfully in " + timer.end() + "ms");
         }));
     }
 

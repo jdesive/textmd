@@ -38,7 +38,7 @@ public class EditorTestPageItem extends MdNewPageMenuItem {
 
     @Override
     public void getClickAction(final TabFactory tabFactory) {
-        tabFactory.addNewEditorTab(new File(Utils.getTestPageFileName()), Utils.getTestText());
+        tabFactory.createAndAddNewEditorTab(new File(Utils.getTestPageFileName()), Utils.getTestText());
     }
 
 }

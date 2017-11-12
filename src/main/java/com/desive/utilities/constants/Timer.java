@@ -17,23 +17,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.desive.views;
+package com.desive.utilities.constants;
+
+import java.time.LocalDateTime;
+
+import static java.time.Duration.between;
 
 /*
- Created by Jack DeSive on 11/7/2017 at 9:30 PM
+ Created by Jack DeSive on 11/11/2017 at 2:55 AM
 */
-public enum EditorView {
-    CODE_ONLY("Code Only"),
-    VIEW_ONLY("View Only"),
-    SPLIT_VIEW("Split view");
+public class Timer {
 
-    private String name;
+    private LocalDateTime startDateTime, endDateTime;
 
-    EditorView(String name) {
-        this.name = name;
+    // Calling start will reset if the timer has already been started
+    public void start() {
+        startDateTime = LocalDateTime.now();
+        endDateTime = LocalDateTime.now();
     }
 
-    public String getName() {
-        return name;
+    public long end() {
+        endDateTime = LocalDateTime.now();
+        return between(startDateTime, endDateTime).toMillis();
     }
+
+
+
 }

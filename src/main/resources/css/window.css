@@ -31,7 +31,7 @@
     -fx-text-fill: #f8f8f2;
 }
 
-.context-menu .separator *.line{
+.context-menu .separator *.line {
     -fx-border-color: #464A4D;
     -fx-border-style: solid;
     -fx-border-width: 0 0 1 0;
@@ -71,9 +71,14 @@
     -fx-background-radius: 5em;
 }
 
-.scroll-bar .corner {
+.virtualized-scroll-pane .corner {
     -fx-background-color: #3C3D3F;
 }
+
+.virtualized-scroll-pane .styled-text-area {
+    -fx-background-insets: 0px;
+}
+
 
 .split-pane:horizontal .split-pane-divider {
     -fx-background-color: #545454;

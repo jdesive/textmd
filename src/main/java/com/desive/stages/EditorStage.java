@@ -27,7 +27,7 @@ import com.desive.nodes.toolbars.EditorMenuToolBar;
 import com.desive.nodes.toolbars.EditorToolBar;
 import com.desive.stages.dialogs.DialogFactory;
 import com.desive.utilities.Dictionary;
-import com.desive.utilities.Utils;
+import com.desive.utilities.Settings;
 import javafx.collections.FXCollections;
 import javafx.event.Event;
 import javafx.scene.Scene;
@@ -39,7 +39,6 @@ import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
@@ -51,25 +50,31 @@ public class EditorStage extends Stage {
     private EditorMenuToolBar menuToolbar;
     private EditorToolBar toolBar;
     private MarkdownParser markdownParser;
+    private TabFactory tabFactory;
+
+    private Settings settings;
 
     private final Logger logger = LoggerFactory.getLogger(EditorStage.class);
 
-    public EditorStage(Dictionary dictionary, TabFactory tabFactory, DialogFactory dialogFactory, Stage settingsStage) {
+    public EditorStage(Dictionary dictionary, DialogFactory dialogFactory, Stage settingsStage) {
 
         markdownParser = new MarkdownParser();
+        tabFactory = new TabFactory(dictionary, dialogFactory, this);
+
+        settings = new Settings(tabFactory);
+
         tabFactory.setMarkdownParser(markdownParser);
 
         ToolBarMenus toolBarMenus = new ToolBarMenus(dictionary);
         menuToolbar = new EditorMenuToolBar(tabFactory, dialogFactory, dictionary, toolBarMenus, markdownParser,this, settingsStage);
         toolBar = new EditorToolBar(dictionary, tabFactory);
-        tabFactory.addNewEditorTab(new File(Utils.getDefaultFileName()), Utils.getSampleText());
+        tabFactory.setEditorToolBar(toolBar);
+        //tabFactory.createAndAddNewEditorTab(new File(Utils.getDefaultFileName()), Utils.getSampleText());
 
-        BorderPane root = new BorderPane();
+        BorderPane root = new BorderPane(tabFactory.getTabPane());
         root.setTop(menuToolbar);
-        root.setCenter(tabFactory.getTabPane());
         root.setBottom(toolBar);
-        StackPane container = new StackPane();
-        container.getChildren().add(root);
+        StackPane container = new StackPane(root);
 
         Scene scene = new Scene(container, 800, 800);
         scene.getStylesheets().add("css/window.css");
@@ -82,6 +87,13 @@ public class EditorStage extends Stage {
 
         this.setOnCloseRequest(event -> getOnCloseAction(tabFactory, event));
 
+    }
+
+    /*
+    TODO: Find a better way to pass toolbar to tab factory. Maybe we can initialize TabFactory here? Haven't looked at all
+     */
+    public EditorToolBar getToolBar() {
+        return toolBar;
     }
 
     private void getOnCloseAction(TabFactory tabFactory, Event event){

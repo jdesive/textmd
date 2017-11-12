@@ -38,7 +38,7 @@ public class EditorHelpPageItem extends MdNewPageMenuItem {
 
     @Override
     public void getClickAction(final TabFactory tabFactory) {
-        tabFactory.addNewEditorTab(new File(Utils.getHelpPageFileName()), Utils.getHelpText());
+        tabFactory.createAndAddNewEditorTab(new File(Utils.getHelpPageFileName()), Utils.getHelpText());
     }
 
 }

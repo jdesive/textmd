@@ -40,7 +40,7 @@ public class EditorNewItem extends MdNewPageMenuItem {
 
     @Override
     public void getClickAction(final TabFactory tabFactory) {
-        tabFactory.addNewEditorTab(new File(Utils.getDefaultFileName()), Utils.getNewPageText());
+        tabFactory.createAndAddNewEditorTab(new File(Utils.getDefaultFileName()), Utils.getNewPageText());
     }
 
 }

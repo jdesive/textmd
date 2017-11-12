@@ -53,7 +53,7 @@ public class EditorOpenUrlItem extends MdPageMenuItem {
         Optional<String> result = input.showAndWait();
         result.ifPresent(url -> {
             try {
-                tabFactory.addNewEditorTab(
+                tabFactory.createAndAddNewEditorTab(
                         new File(Utils.getDefaultFileName()),
                         Http.request(url + "", null, null, null, "GET")
                 );

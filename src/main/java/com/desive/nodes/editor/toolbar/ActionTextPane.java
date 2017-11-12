@@ -17,23 +17,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.desive.views;
+package com.desive.nodes.editor.toolbar;
+
+import com.desive.utilities.Utils;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.Label;
+import javafx.scene.layout.StackPane;
 
 /*
- Created by Jack DeSive on 11/7/2017 at 9:30 PM
+ Created by Jack DeSive on 11/11/2017 at 2:40 AM
 */
-public enum EditorView {
-    CODE_ONLY("Code Only"),
-    VIEW_ONLY("View Only"),
-    SPLIT_VIEW("Split view");
+public class ActionTextPane extends StackPane {
 
-    private String name;
+    private Label actionText;
 
-    EditorView(String name) {
-        this.name = name;
+    public ActionTextPane() {
+
+        actionText = new Label("Test");
+        actionText.setTextFill(Utils.getDefaultTextColor());
+        actionText.setAlignment(Pos.CENTER);
+        actionText.setPadding(new Insets(0, 0, 0, 15));
+        getChildren().add(actionText);
+        setAlignment(Pos.CENTER);
+
     }
 
-    public String getName() {
-        return name;
+    public void setActionText(String text) {
+        actionText.setText(text);
     }
+
 }

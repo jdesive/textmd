@@ -84,7 +84,9 @@ public class EditorMenuToolBar extends MenuBar {
         this.log(dictionary.TOOLBAR_EDITOR_VIEW_MENU);
         menus.getEditorViewMenu().getItems().addAll(
                 new EditorRefreshViewItem(dictionary, REFRESH_EDITOR_VIEW, tabFactory),
-                new EditorPrettifyItem(dictionary, tabFactory)
+                new EditorPrettifyItem(dictionary, tabFactory),
+                new SeparatorMenuItem(),
+                menus.getEditorExtensionsMenu()
         );
 
         this.log(dictionary.TOOLBAR_EDITOR_HELP_MENU);
@@ -130,7 +132,6 @@ public class EditorMenuToolBar extends MenuBar {
                 menus.getEditorFileMenu(),
                 menus.getEditorEditMenu(),
                 menus.getEditorViewMenu(),
-                menus.getEditorExtensionsMenu(),
                 menus.getEditorHelpMenu()
         );
     }

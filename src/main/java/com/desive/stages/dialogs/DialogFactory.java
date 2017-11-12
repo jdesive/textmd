@@ -53,7 +53,7 @@ public class DialogFactory {
     }
 
     public AlertDialog buildConfirmationDialogBox(String title, String content) {
-        return new ConfirmationAlertDialog(title, content, ownerStage);
+        return new ConfirmationAlertDialog(title, content, ownerStage).build();
     }
 
     public TextInputDialog buildEnterUrlDialogBox(String title, String header) {

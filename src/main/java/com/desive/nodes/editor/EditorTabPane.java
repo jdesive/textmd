@@ -19,16 +19,25 @@
 
 package com.desive.nodes.editor;
 
+import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+
+import static javafx.scene.control.TabPane.TabClosingPolicy.ALL_TABS;
 
 /*
  Created by Jack DeSive on 10/13/2017 at 7:55 PM
 */
-public class EditorTabPane extends TabPane {
+public class EditorTabPane extends TabPane{
 
     public EditorTabPane() {
 
-        this.setTabClosingPolicy(TabClosingPolicy.ALL_TABS);
+        setTabClosingPolicy(ALL_TABS);
 
     }
+
+    public void addTab(Tab tab) {
+        getTabs().add(tab);
+        getSelectionModel().select(tab);
+    }
+
 }

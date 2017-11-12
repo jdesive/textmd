@@ -19,7 +19,6 @@
 
 package com.desive;
 
-import com.desive.nodes.TabFactory;
 import com.desive.stages.EditorStage;
 import com.desive.stages.SettingsStage;
 import com.desive.stages.dialogs.DialogFactory;
@@ -40,17 +39,7 @@ import java.io.IOException;
 */
 public class TextMd extends Application{
 
-    private Settings settings;
-    private Dictionary languageDictionary;
     private Fonts fonts;
-    private Http http;
-
-    private TabFactory tabFactory;
-    private DialogFactory dialogFactory;
-
-    private EditorStage editorStage;
-    private SettingsStage settingsStage;
-
     private String ARTIFACT_ID = null, VERSION = null;
     private final Logger logger = LoggerFactory.getLogger(TextMd.class);
 
@@ -58,12 +47,10 @@ public class TextMd extends Application{
     public void start(Stage primaryStage) throws Exception {
         primaryStage.close(); // Throw away the default stage
 
-        languageDictionary = new Dictionary();
-        http = new Http();
+        Dictionary languageDictionary = new Dictionary();
+        Http http = new Http();
         fonts = new Fonts();
-        tabFactory = new TabFactory(languageDictionary, dialogFactory, primaryStage);
-        dialogFactory = new DialogFactory(languageDictionary);
-        settings = new Settings(tabFactory);
+        DialogFactory dialogFactory = new DialogFactory(languageDictionary);
 
         loadUtilities();
         loadPomVariables();
@@ -71,8 +58,8 @@ public class TextMd extends Application{
 
         logger.info("Starting {} {}" , ARTIFACT_ID, VERSION);
 
-        settingsStage = new SettingsStage(languageDictionary);
-        editorStage = new EditorStage(languageDictionary, tabFactory, dialogFactory, settingsStage);
+        SettingsStage settingsStage = new SettingsStage(languageDictionary);
+        EditorStage editorStage = new EditorStage(languageDictionary, dialogFactory, settingsStage);
         settingsStage.initOwner(editorStage);
         dialogFactory.initOwner(editorStage);
 
@@ -108,7 +95,6 @@ public class TextMd extends Application{
 
     private void loadUtilities(){
         new Utils();
-        new Dictionary();
     }
 
     public static void main(String[] args) {

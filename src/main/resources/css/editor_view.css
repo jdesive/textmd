@@ -1,47 +1,72 @@
+/*
+ * Copyright (C) 2017  TextMd
+ *
+ * This file is part of TextMd.
+ *
+ * TextMd is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 a {
-  background-color: #3B3F42;
-  font-family: 'Courier Primal', 'Courier Regular';
-  color: #90b8e0;
-  text-decoration: none;
+    background-color: #3B3F42;
+    font-family: 'Courier Primal', 'Courier Regular', monospace;
+    color: #90b8e0;
+    text-decoration: none;
 }
 
 a:hover {
-  text-decoration: underline;
+    text-decoration: underline;
 }
 
 blockquote {
-  padding: 1px;
-  background-color: #545454;
+    padding: 1px;
+    background-color: #545454;
 }
 
 body {
-  background-color: #3B3F42;
-  font-family: 'Courier Primal', 'Courier Regular';
-  color: #f8f8f2;
+    background-color: #3B3F42;
+    font-family: 'Courier Primal', 'Courier Regular', monospace;
+    color: #f8f8f2;
 }
 
 p code, li code {
-  background-color: rgba(44, 44, 44, 0.4);
-  padding: 0px 3px 0px 3px;
-  border-radius: 2px;
+    background-color: rgba(44, 44, 44, 0.4);
+    padding: 0px 3px 0px 3px;
+    border-radius: 2px;
 }
 
 pre {
-  background-color: ${code.background};
+    background-color: ${code.background};
 }
 
 pre, table {
-  overflow: scroll;
-  padding: 10px;
+    overflow: scroll;
+    padding: 10px;
 }
 
 pre, table, blockquote {
-  font-family: 'Courier Primal', 'Courier Regular';
-  color: #f8f8f2;
-  border-radius: 2px;
-  width: 97%;
+    font-family: 'Courier Primal', 'Courier Regular', monospace;
+    color: #f8f8f2;
+    border-radius: 2px;
+    width: 97%;
 }
 
 table {
-  background-color: #545454;
+    background-color: #545454;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    width: auto\9; /* ie8 */
 }

@@ -49,7 +49,7 @@ public class EditorOpenFileItem extends MdPageMenuItem {
         File file = fileChooser.showOpenDialog(stage);
         if(file != null){
             try {
-                tabFactory.addNewEditorTab(file);
+                tabFactory.createAndAddNewEditorTab(file);
             } catch (FileNotFoundException e1) {
                 dialogFactory.buildExceptionDialogBox(
                         dictionary.DIALOG_EXCEPTION_TITLE,

@@ -19,6 +19,7 @@
 
 package com.desive.nodes.tabs;
 
+import com.desive.nodes.TabFactory;
 import com.desive.nodes.editor.EditorPane;
 import com.desive.utilities.Utils;
 import javafx.geometry.NodeOrientation;
@@ -38,15 +39,16 @@ public class EditorTab extends Tab {
 
     private EditorPane editorPane;
 
-    public EditorTab(EditorPane editorPane, Stage primaryStage) {
+    public EditorTab(EditorPane editorPane, TabFactory tabFactory, Stage primaryStage) {
 
         this.editorPane = editorPane;
 
         this.setOnCloseRequest(e -> {
-            if(getEditorPane().exit(primaryStage))
+            if(getEditorPane().exit(primaryStage)) {
                 logger.debug("Closing tab {}", getEditorPane().getFile().getPath());
-            else
+            }else {
                 e.consume();
+            }
         });
 
         this.setContent(this.editorPane);

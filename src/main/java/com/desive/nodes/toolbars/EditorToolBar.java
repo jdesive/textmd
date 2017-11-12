@@ -20,6 +20,7 @@
 package com.desive.nodes.toolbars;
 
 import com.desive.nodes.TabFactory;
+import com.desive.nodes.editor.toolbar.ActionTextPane;
 import com.desive.nodes.editor.toolbar.ViewSelectorPane;
 import com.desive.utilities.Dictionary;
 import javafx.scene.layout.BorderPane;
@@ -29,12 +30,21 @@ import javafx.scene.layout.BorderPane;
 */
 public class EditorToolBar extends BorderPane{
 
+    private ActionTextPane actionTextPane;
+
     public EditorToolBar(Dictionary dictionary, TabFactory tabFactory) {
 
         setPrefHeight(20.0);
         getStyleClass().add("toolbar");
 
-        setRight(new ViewSelectorPane(dictionary, tabFactory));
+        actionTextPane = new ActionTextPane();
 
+        setRight(new ViewSelectorPane(dictionary, tabFactory));
+        setLeft(actionTextPane);
     }
+
+    public void setActionText(String text) {
+        actionTextPane.setActionText(text);
+    }
+
 }

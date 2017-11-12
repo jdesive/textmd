@@ -40,7 +40,7 @@ public class EditorExportConfluenceItem extends MdPageMenuItem {
     }
 
     @Override
-    public void getClickAction(final Dictionary dictionary, final Stage stage, final TabFactory tabFactory, final DialogFactory dialogFactory) {
+    public void getClickAction(final Dictionary dictionary, final Stage stage, final TabFactory tabFactory, DialogFactory dialogFactory) {
         EditorTab currTab = ((EditorTab) tabFactory.getSelectedTab());
         try {
             if (currTab.getEditorPane().saveConfluenceMarkup(stage)) {

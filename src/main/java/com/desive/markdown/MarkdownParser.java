@@ -85,8 +85,8 @@ public class MarkdownParser {
             .set(HtmlRenderer.PERCENT_ENCODE_URLS, true)
             .set(HtmlRenderer.SUPPRESS_HTML_BLOCKS, false)
             .set(HtmlRenderer.SUPPRESS_INLINE_HTML, false)
-            .set(HtmlRenderer.SOFT_BREAK, "<br />\n")
-            .set(HtmlRenderer.HARD_BREAK, "<br />\n<br />\n")
+            .set(HtmlRenderer.SOFT_BREAK, "")
+            .set(HtmlRenderer.HARD_BREAK, "<br />\n")
             .set(HtmlRenderer.FENCED_CODE_LANGUAGE_CLASS_PREFIX, "prettyprint lang-")
             .set(HtmlRenderer.RENDER_HEADER_ID, true)
 
