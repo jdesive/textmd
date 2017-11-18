@@ -27,14 +27,14 @@ public class Dictionary {
     private static Dictionary instance;
 
     // Editor Stage
-    public final String STAGE_EDITOR_TITLE = "TextMd - Editor",
-            STAGE_EDITOR_VIEW_SELECTOR_LABEL = "View: ",
+    public String STAGE_EDITOR_TITLE = ""; // Set in constructor
+    public final String STAGE_EDITOR_VIEW_SELECTOR_LABEL = "View: ",
             STAGE_EDITOR_VIEW_CODE_TOOLTIP = "Show editor only",
             STAGE_EDITOR_VIEW_VIEW_TOOLTIP = "Show view only",
             STAGE_EDITOR_VIEW_SPLIT_TOOLTIP = "Show split view";
 
     // Settings Stage
-    public final String STAGE_SETTINGS_TITLE = "TextMd - Settings";
+    public final String STAGE_SETTINGS_TITLE = "Settings";
 
     // Editor Toolbar
     public final String TOOLBAR_EDITOR_FILE_MENU = "File",
@@ -148,7 +148,8 @@ public class Dictionary {
             DIALOG_BUTTON_NO_LABEL = "No",
             DIALOG_BUTTON_CANCEL_LABEL = "Cancel";
 
-    public Dictionary() {
+    public Dictionary(String name) {
+        STAGE_EDITOR_TITLE = name;
         instance = this;
     }
 

@@ -34,29 +34,32 @@ import org.slf4j.LoggerFactory;
 import java.io.FileReader;
 import java.io.IOException;
 
+import static java.lang.String.join;
+
 /*
  Created by Jack DeSive on 10/7/2017 at 9:28 PM
 */
 public class TextMd extends Application{
 
     private Fonts fonts;
-    private String ARTIFACT_ID = null, VERSION = null;
+    private String ARTIFACT_ID = null, VERSION = null, NAME = null, GROUPID = null;
     private final Logger logger = LoggerFactory.getLogger(TextMd.class);
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         primaryStage.close(); // Throw away the default stage
 
-        Dictionary languageDictionary = new Dictionary();
+        loadPomVariables();
+
+        Dictionary languageDictionary = new Dictionary(NAME);
         Http http = new Http();
         fonts = new Fonts();
         DialogFactory dialogFactory = new DialogFactory(languageDictionary);
 
         loadUtilities();
-        loadPomVariables();
         loadFonts();
 
-        logger.info("Starting {} {}" , ARTIFACT_ID, VERSION);
+        logger.info("Starting {} v{}" , join(".", GROUPID, ARTIFACT_ID), VERSION);
 
         SettingsStage settingsStage = new SettingsStage(languageDictionary);
         EditorStage editorStage = new EditorStage(languageDictionary, dialogFactory, settingsStage);
@@ -88,6 +91,8 @@ public class TextMd extends Application{
             Model model = reader.read(new FileReader("pom.xml"));
             ARTIFACT_ID = model.getArtifactId();
             VERSION = model.getVersion();
+            NAME = model.getName();
+            GROUPID = model.getGroupId();
         } catch (IOException | XmlPullParserException e) {
             e.printStackTrace();
         }
@@ -95,6 +100,7 @@ public class TextMd extends Application{
 
     private void loadUtilities(){
         new Utils();
+        System.setProperty("javax.xml.parsers.SAXParserFactory", "com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl"); // Fix xerces SAXParserFactory for language tool
     }
 
     public static void main(String[] args) {

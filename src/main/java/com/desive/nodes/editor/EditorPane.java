@@ -21,18 +21,23 @@ package com.desive.nodes.editor;
 
 import com.desive.markdown.MarkdownHighligher;
 import com.desive.markdown.MarkdownParser;
+import com.desive.markdown.syntax.SyntaxHighlighter;
+import com.desive.nodes.editor.toolbar.LineNumberPane;
 import com.desive.nodes.toolbars.EditorToolBar;
 import com.desive.stages.dialogs.DialogFactory;
 import com.desive.utilities.Dictionary;
 import com.desive.utilities.Settings;
+import com.desive.utilities.Spellcheck;
 import com.desive.utilities.Utils;
 import com.desive.utilities.constants.FileExtensionFilters;
 import com.desive.utilities.constants.Timer;
 import com.desive.views.EditorView;
+import com.google.common.collect.Maps;
 import com.vladsch.flexmark.pdf.converter.PdfConverterExtension;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.concurrent.Worker;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.SplitPane;
@@ -45,6 +50,8 @@ import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.fxmisc.flowless.VirtualizedScrollPane;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
+import org.jetbrains.annotations.NotNull;
+import org.languagetool.rules.RuleMatch;
 import org.reactfx.Subscription;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -57,6 +64,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.Duration;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.IntFunction;
@@ -67,22 +76,27 @@ import java.util.function.IntFunction;
 public class EditorPane extends SplitPane {
 
     private Dictionary dict;
+    private DialogFactory dialogFactory;
+    private MarkdownParser markdownParser;
+    private EditorToolBar editorToolBar;
+    private Spellcheck spellcheck = new Spellcheck();
+
     private CodeArea editor = new CodeArea("");
     private VirtualWebView webView = new VirtualWebView(new WebView());
     private WebEngine webEngine = webView.getEngine();
+    private VirtualizedScrollPane<CodeArea> editorScrollPane = new VirtualizedScrollPane<>(getEditor());
+    private VirtualizedScrollPane<VirtualWebView> viewScrollPane = new VirtualizedScrollPane<>(webView);
+
+    private Timer timer = new Timer();
     private Timeline covertTask = null;
     private File file = new File(Utils.getDefaultFileName());
     private AtomicBoolean saved = new AtomicBoolean(false), prettifyCode = new AtomicBoolean(false);
     private String currentHtml = "", currentHtmlWithStyle = "";
     private Subscription editorHightlightSubscription;
-    private DialogFactory dialogFactory;
-    private MarkdownParser markdownParser;
-    private EditorToolBar editorToolBar;
+    private HashMap<String, List<String>> misspellingSuggestions = Maps.newHashMap();
 
-    private Timer timer = new Timer();
+    private SyntaxHighlighter highlighter = new SyntaxHighlighter();
 
-    private VirtualizedScrollPane<CodeArea> editorScrollPane = new VirtualizedScrollPane<>(getEditor());
-    private VirtualizedScrollPane<VirtualWebView> viewScrollPane = new VirtualizedScrollPane<>(webView);
 
     public EditorPane(Dictionary dictionary,
                       DialogFactory dialogFactory,
@@ -95,28 +109,31 @@ public class EditorPane extends SplitPane {
         this.markdownParser = markdownParser;
         this.editorToolBar = editorToolBar;
 
-        this.styleEditor("css/editor.css");
+        this.styleEditor();
         this.styleWebView();
         this.setSyncViews();
         this.setContent(content);
         this.createEditorHighlightSubscription(Settings.EDITOR_HIGHLIGHT_REFRESH_RATE);
         this.getItems().addAll(getEditorWithScrollbar(), getWebViewWithScrollbar());
 
+        getEditor().caretColumnProperty().addListener(event -> LineNumberPane.resetPosition(this));
+        getEditor().caretPositionProperty().addListener(event -> LineNumberPane.resetPosition(this));
+
         syncScrollbars();
     }
 
+    @NotNull
     private StackPane getEditorWithScrollbar() {
-        //return new StackPane(new EditorScrollPane(getEditor()));
         return new StackPane(editorScrollPane);
+    }
+
+    @NotNull
+    private StackPane getWebViewWithScrollbar() {
+        return new StackPane(viewScrollPane);
     }
 
     public CodeArea getEditor() {
         return editor;
-    }
-
-    public StackPane getWebViewWithScrollbar() {
-        //return new StackPane(new EditorViewScrollPane(webView));
-        return new StackPane(viewScrollPane);
     }
 
     public File getFile() {
@@ -127,7 +144,7 @@ public class EditorPane extends SplitPane {
         this.file = file;
     }
 
-    public boolean isSaved() {
+    private boolean isSaved() {
         return saved.get();
     }
 
@@ -149,7 +166,7 @@ public class EditorPane extends SplitPane {
     }
 
     public boolean exit(Stage primaryStage) {
-        if(!saved.get()){
+        if(!isSaved()){
             Optional<ButtonType> save = dialogFactory.buildYesNoDialog(file.getPath(),
                     dict.DIALOG_FILE_NOT_SAVED_TITLE,
                     dict.DIALOG_FILE_NOT_SAVED_CONTENT
@@ -190,7 +207,8 @@ public class EditorPane extends SplitPane {
             PrintWriter writer = new PrintWriter(new FileWriter(file));
             writer.print(editor.getText());
             writer.close();
-            editorToolBar.setActionText("Successfully saved file \'" + file.getName() + "\' in " + timer.end());
+            editorToolBar.setActionText("Successfully saved file \'" + file.getName() + "\' in " + timer.end() + "ms");
+            saved.set(true);
             return true;
         }else{
             return saveAs(primaryStage);
@@ -205,8 +223,9 @@ public class EditorPane extends SplitPane {
         File file = fileChooser.showSaveDialog(primaryStage);
         if(file != null){
             this.file = file;
-            boolean newFile = this.file.createNewFile();
-            return newFile && this.save(primaryStage);
+            this.file.createNewFile();
+            save(primaryStage);
+            return true;
         }
         return false;
     }
@@ -229,7 +248,7 @@ public class EditorPane extends SplitPane {
         if(file != null){
             timer.start();
             markdownParser.convertToDocx(editor.getText(), file);
-            editorToolBar.setActionText("Successfully exported docx file \'" + file.getName() + "\' in " + timer.end());
+            editorToolBar.setActionText("Successfully exported docx file \'" + file.getName() + "\' in " + timer.end() + "ms");
             return true;
         }
         return false;
@@ -249,7 +268,7 @@ public class EditorPane extends SplitPane {
                     "",
                     markdownParser.getOptions()
             );
-            editorToolBar.setActionText("Successfully exported pdf file \'" + file.getName() + "\' in " + timer.end());
+            editorToolBar.setActionText("Successfully exported pdf file \'" + file.getName() + "\' in " + timer.end() + "ms");
             return true;
         }
         return false;
@@ -302,7 +321,7 @@ public class EditorPane extends SplitPane {
             PrintWriter writer = new PrintWriter(new FileWriter(file));
             writer.print(content);
             writer.close();
-            editorToolBar.setActionText(actionText + " in " + timer.end());
+            editorToolBar.setActionText(actionText + " in " + timer.end() + "ms");
             return true;
         }
         return false;
@@ -312,7 +331,8 @@ public class EditorPane extends SplitPane {
     public void setContent(String content){
         editor.replaceText(0, editor.getText().length(), content);
         webEngine.loadContent(markdownParser.convertToHTML(content));
-        MarkdownHighligher.computeHighlighting(editor.getText(), editor);
+        //MarkdownHighligher.computeHighlighting(editor.getText(), editor);
+        highlighter.compute2(getContent(), editor);
     }
 
     public String getContent(){
@@ -326,15 +346,35 @@ public class EditorPane extends SplitPane {
             prettifyCode.set(true);
         }
         this.refreshWebView();
-        editorToolBar.setActionText("Enabled Code Prettify for current file \'" + file.getName() + "\'");
+        editorToolBar.setActionText("Enabled Code Prettify for current document \'" + file.getName() + "\'");
     }
 
     public void refreshWebView(){
         covertTask.playFrom(javafx.util.Duration.seconds(Settings.VIEW_REFRESH_RATE));
     }
 
-    private void styleEditor(String stylesheet){
-        editor.getStylesheets().add(stylesheet);
+    public boolean spellcheckDocument() {
+        editorToolBar.setActionText("Spell checking document \'" + file.getName() + "\'");
+        Platform.runLater(() -> {
+            try {
+                timer.start();
+                List<RuleMatch> matches = spellcheck.check(getContent());
+                MarkdownHighligher.computeSpellcheckHighlighting(matches, this);
+                editorToolBar.setActionText("Found " + matches.size() + " misspellings in the document \'" + file.getName() + "\' (" + timer.end() + "ms)");
+            } catch (IOException e) {
+                e.printStackTrace(); // TODO: Exception Dialog
+            }
+        });
+
+        return true;
+    }
+
+    public HashMap<String, List<String>> getMisspellingSuggestions() {
+        return misspellingSuggestions;
+    }
+
+    private void styleEditor(){
+        editor.getStylesheets().add("css/editor.css");
         IntFunction<String> format = (digits -> " %" + digits + "d\t");
         editor.setParagraphGraphicFactory(LineNumberFactory.get(editor, format));
     }
@@ -351,6 +391,19 @@ public class EditorPane extends SplitPane {
                     scriptNode.setAttribute("src", "https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js");
                     head.appendChild(scriptNode);
                 }
+
+                //JavascriptSpellCheck
+                Element spellNode = doc.createElement("script");
+                spellNode.setAttribute("type", "text/javascript");
+                String loc = getClass().getClassLoader().getResource("spellcheck/include.js").getFile();
+                spellNode.setAttribute("src", loc.substring(1, loc.length()));
+                head.appendChild(spellNode);
+
+                Element spellExecNode = doc.createElement("script");
+                spellExecNode.setAttribute("type", "text/javascript");
+                spellExecNode.setTextContent("$Spelling.BinSpellCheckFields(body)");
+                head.appendChild(spellExecNode);
+                //$Spelling.BinSpellCheckFields(Fields)
 
                 // Inject css styles
                 Element styleNode = doc.createElement("style");
@@ -397,12 +450,15 @@ public class EditorPane extends SplitPane {
         if(editorHightlightSubscription != null)
             editorHightlightSubscription.unsubscribe();
 
-        editorHightlightSubscription = editor.richChanges()
+        editorHightlightSubscription = editor.plainTextChanges()
                 .filter(ch -> !ch.getInserted().equals(ch.getRemoved()))
                 .successionEnds(Duration.ofMillis(value))
                 .subscribe(change -> {
                     saved.set(false);
-                    MarkdownHighligher.computeHighlighting(editor.getText(), editor);
+                    timer.start();
+                    //MarkdownHighligher.computeHighlighting(editor.getText(), editor);
+                    highlighter.compute2(getContent(), editor);
+                    editorToolBar.setActionText("Computed highlighting in " + timer.end() + "ms");
                 });
     }
 

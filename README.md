@@ -1,36 +1,39 @@
 # TextMd Markdown Editor
-A markdown editor written in Java with a dark theme to reduce eye strain. TextMd also supports exporting to
-multiple different file types, see *Markdown Export Types* for more info.
+A Markdown editor written in Java with a mix-match of my favorite features from different editors. 
+
+TextMd uses a rich text editor for editing your Markdown documents. This provides you with markdown highlighting while you write and a live rendering 
+of your document as you type. The editor supports many extensions to help support any Markdown variate you may need. 
+
+There are many export types supported including PDF, Microsoft Word, and HTML. ( [Full list](#markdown-export-types) ) Please note that not all export types support extensions.
 
 ## Features
-* Simple Markdown highlighting (a little buggy...)
-* Tab view for opening multiple files
+* Simple Markdown highlighting
+* Tabular view
 * Open from url
-* Export Markdown to different file types
-* Split view with live rendering 
-* Hotkeys
-* Source-code snippet formatter 
+* Export Markdown to multiple file types
+* Split view & live HTML rendering 
+* Source-code snippet formatter ( [Code-Prettify](https://github.com/google/code-prettify) )
 
-![Main Page](https://i.imgur.com/Qfr9PoP.png)
+![Main Page](https://i.imgur.com/7Mk5iBn.png)
 
 ## Markdown Export Types
-* Docx
+* Microsoft Word Document (Docx)
 * PDF or PDF/CSS (With editors style)
 * HTML or HTML/CSS (With editors style)
 * Plain Text
-* JIRA Formatted Text
-* Confluence Markup Text
+* JIRA & Confluence Formatted Text
 * YouTrack Formatted Text
 
-## Dependencies
-* [Flexmark](https://github.com/vsch/flexmark-java) 0.27.0
-* [RichTextFX](https://github.com/FXMisc/RichTextFX) v0.7-M3 
-* [Code-Prettify](https://github.com/google/code-prettify) 2013-03-04^
+## How to install
+
+### Dependencies
 * [Maven](https://maven.apache.org/download.cgi) 3.5.2^
+  * [Flexmark](https://github.com/vsch/flexmark-java) 0.27.0
+  * [RichTextFX](https://github.com/FXMisc/RichTextFX) v0.7-M3 
 * [Git](https://git-scm.com/downloads) 2.14.3^
 * [Java](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) 1.8
 
-## How to install
+### Source
 Must have *Java*, *Maven* and *Git* installed to continue.
 
 * Clone this repo to your computer

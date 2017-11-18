@@ -21,9 +21,12 @@ package com.desive.nodes.toolbars;
 
 import com.desive.nodes.TabFactory;
 import com.desive.nodes.editor.toolbar.ActionTextPane;
+import com.desive.nodes.editor.toolbar.LineNumberPane;
+import com.desive.nodes.editor.toolbar.SpellcheckPane;
 import com.desive.nodes.editor.toolbar.ViewSelectorPane;
 import com.desive.utilities.Dictionary;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 
 /*
  Created by Jack DeSive on 11/7/2017 at 9:30 PM
@@ -32,6 +35,8 @@ public class EditorToolBar extends BorderPane{
 
     private ActionTextPane actionTextPane;
 
+    private HBox rightBox = new HBox(15);
+
     public EditorToolBar(Dictionary dictionary, TabFactory tabFactory) {
 
         setPrefHeight(20.0);
@@ -39,7 +44,13 @@ public class EditorToolBar extends BorderPane{
 
         actionTextPane = new ActionTextPane();
 
-        setRight(new ViewSelectorPane(dictionary, tabFactory));
+        rightBox.getChildren().addAll(
+                new LineNumberPane(),
+                new SpellcheckPane(dictionary, tabFactory),
+                new ViewSelectorPane(dictionary, tabFactory)
+        );
+
+        setRight(rightBox);
         setLeft(actionTextPane);
     }
 

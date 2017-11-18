@@ -31,6 +31,10 @@ public class ImageViewPane extends Label {
 
     private ImageView imageView;
 
+    public ImageViewPane() {
+        setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+    }
+
     public ImageViewPane(Image image) {
 
         setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
@@ -40,5 +44,10 @@ public class ImageViewPane extends Label {
 
     public ImageView getImageView() {
         return imageView;
+    }
+
+    public void setImage(Image image) {
+        imageView = new ImageView(image);
+        setGraphic(imageView);
     }
 }

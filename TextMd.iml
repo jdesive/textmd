@@ -65,8 +65,6 @@
     <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpclient:4.5.2" level="project" />
     <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpcore:4.4.4" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.7.3" level="project" />
-    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.7.3" level="project" />
-    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.7.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.xmlgraphics:xmlgraphics-commons:2.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.avalon.framework:avalon-framework-api:4.3.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.avalon.framework:avalon-framework-impl:4.3.1" level="project" />
@@ -76,7 +74,6 @@
     <orderEntry type="library" name="Maven: org.antlr:antlr-runtime:3.5.2" level="project" />
     <orderEntry type="library" name="Maven: org.antlr:stringtemplate:3.2.1" level="project" />
     <orderEntry type="library" name="Maven: antlr:antlr:2.7.7" level="project" />
-    <orderEntry type="library" name="Maven: com.google.guava:guava:19.0" level="project" />
     <orderEntry type="library" name="Maven: com.thedeanda:lorem:2.0" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.21" level="project" />
     <orderEntry type="library" name="Maven: junit:junit:4.12" level="project" />
@@ -109,5 +106,66 @@
     <orderEntry type="library" name="Maven: org.apache.maven:maven-model:3.3.9" level="project" />
     <orderEntry type="library" name="Maven: org.codehaus.plexus:plexus-utils:3.0.22" level="project" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.4" level="project" />
+    <orderEntry type="library" name="Maven: org.languagetool:languagetool-core:3.9" level="project" />
+    <orderEntry type="library" name="Maven: com.google.guava:guava:21.0" level="project" />
+    <orderEntry type="library" name="Maven: net.java.dev.jna:jna:4.4.0" level="project" />
+    <orderEntry type="library" name="Maven: org.carrot2:morfologik-fsa:2.1.4" level="project" />
+    <orderEntry type="library" name="Maven: org.carrot2:morfologik-fsa-builders:2.1.4" level="project" />
+    <orderEntry type="library" name="Maven: org.carrot2:morfologik-speller:2.1.4" level="project" />
+    <orderEntry type="library" name="Maven: org.carrot2:morfologik-stemming:2.1.4" level="project" />
+    <orderEntry type="library" name="Maven: com.carrotsearch:hppc:0.7.2" level="project" />
+    <orderEntry type="library" name="Maven: net.loomchild:segment:2.0.0" level="project" />
+    <orderEntry type="library" name="Maven: com.optimaize.languagedetector:language-detector:0.6" level="project" />
+    <orderEntry type="library" name="Maven: net.arnx:jsonic:1.2.11" level="project" />
+    <orderEntry type="library" name="Maven: com.intellij:annotations:12.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.lucene:lucene-core:5.5.4" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.lucene:lucene-backward-codecs:5.5.4" level="project" />
+    <orderEntry type="library" name="Maven: edu.berkeley.nlp:berkeleylm:1.1.2" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.8.4" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.8.0" level="project" />
+    <orderEntry type="library" name="Maven: org.languagetool:language-all:3.9" level="project" />
+    <orderEntry type="library" name="Maven: org.languagetool:language-en:3.9" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.opennlp:opennlp-tools:1.7.2" level="project" />
+    <orderEntry type="library" name="Maven: edu.washington.cs.knowitall:opennlp-tokenize-models:1.5" level="project" />
+    <orderEntry type="library" name="Maven: edu.washington.cs.knowitall:opennlp-postag-models:1.5" level="project" />
+    <orderEntry type="library" name="Maven: edu.washington.cs.knowitall:opennlp-chunk-models:1.5" level="project" />
+    <orderEntry type="library" name="Maven: org.languagetool:language-fa:3.9" level="project" />
+    <orderEntry type="library" name="Maven: org.languagetool:language-fr:3.9" level="project" />
+    <orderEntry type="library" name="Maven: org.languagetool:hunspell-native-libs:2.9" level="project" />
+    <orderEntry type="library" name="Maven: org.languagetool:language-de:3.9" level="project" />
+    <orderEntry type="library" name="Maven: de.danielnaber:german-pos-dict:1.1" level="project" />
+    <orderEntry type="library" name="Maven: edu.washington.cs.knowitall:openregex:1.1.1" level="project" />
+    <orderEntry type="library" name="Maven: de.danielnaber:jwordsplitter:4.2" level="project" />
+    <orderEntry type="library" name="Maven: org.languagetool:language-de-DE-x-simple-language:3.9" level="project" />
+    <orderEntry type="library" name="Maven: org.languagetool:language-pl:3.9" level="project" />
+    <orderEntry type="library" name="Maven: org.languagetool:language-ca:3.9" level="project" />
+    <orderEntry type="library" name="Maven: org.softcatala:catalan-pos-dict:1.5" level="project" />
+    <orderEntry type="library" name="Maven: org.languagetool:language-it:3.9" level="project" />
+    <orderEntry type="library" name="Maven: org.languagetool:language-br:3.9" level="project" />
+    <orderEntry type="library" name="Maven: org.languagetool:language-nl:3.9" level="project" />
+    <orderEntry type="library" name="Maven: org.languagetool:language-pt:3.9" level="project" />
+    <orderEntry type="library" name="Maven: org.languagetool:language-ru:3.9" level="project" />
+    <orderEntry type="library" name="Maven: org.languagetool:language-ast:3.9" level="project" />
+    <orderEntry type="library" name="Maven: org.languagetool:language-be:3.9" level="project" />
+    <orderEntry type="library" name="Maven: org.languagetool:language-zh:3.9" level="project" />
+    <orderEntry type="library" name="Maven: com.googlecode.ictclas4j:ictclas4j:1.0.1" level="project" />
+    <orderEntry type="library" name="Maven: com.google.code:cjftransform:1.0.1" level="project" />
+    <orderEntry type="library" name="Maven: org.languagetool:language-da:3.9" level="project" />
+    <orderEntry type="library" name="Maven: org.languagetool:language-eo:3.9" level="project" />
+    <orderEntry type="library" name="Maven: org.languagetool:language-gl:3.9" level="project" />
+    <orderEntry type="library" name="Maven: org.languagetool:language-el:3.9" level="project" />
+    <orderEntry type="library" name="Maven: org.ioperm:morphology-el:1.0.0" level="project" />
+    <orderEntry type="library" name="Maven: org.languagetool:language-ja:3.9" level="project" />
+    <orderEntry type="library" name="Maven: com.github.lucene-gosen:lucene-gosen:ipadic:6.2.1" level="project" />
+    <orderEntry type="library" name="Maven: org.languagetool:language-km:3.9" level="project" />
+    <orderEntry type="library" name="Maven: org.languagetool:language-ro:3.9" level="project" />
+    <orderEntry type="library" name="Maven: org.languagetool:language-sk:3.9" level="project" />
+    <orderEntry type="library" name="Maven: org.languagetool:language-sl:3.9" level="project" />
+    <orderEntry type="library" name="Maven: org.languagetool:language-es:3.9" level="project" />
+    <orderEntry type="library" name="Maven: org.languagetool:language-sv:3.9" level="project" />
+    <orderEntry type="library" name="Maven: org.languagetool:language-ta:3.9" level="project" />
+    <orderEntry type="library" name="Maven: org.languagetool:language-tl:3.9" level="project" />
+    <orderEntry type="library" name="Maven: org.languagetool:language-uk:3.9" level="project" />
+    <orderEntry type="library" name="Maven: ua.net.nlp:morfologik-ukrainian-lt:3.9.0" level="project" />
   </component>
 </module>

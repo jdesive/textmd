@@ -19,12 +19,15 @@
 
 package com.desive.markdown;
 
+import com.desive.nodes.editor.EditorPane;
+import com.google.common.collect.Lists;
 import org.fxmisc.richtext.CodeArea;
+import org.languagetool.rules.RuleMatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
-import java.util.Set;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -33,7 +36,7 @@ import java.util.regex.Pattern;
 */
 public class MarkdownHighligher {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MarkdownHighligher.class);
+    private static final Logger logger = LoggerFactory.getLogger(MarkdownHighligher.class);
 
     private static final String HEADING_1_PATTERN = "(^# (.*))";
     private static final String HEADING_2_PATTERN = "(^## (.*))";
@@ -71,8 +74,11 @@ public class MarkdownHighligher {
 
     public static void computeHighlighting(String text, CodeArea parent) {
         Matcher matcher = HIGHLIGHTING_PATTERN.matcher(text);
+
+        List<StyleIndex> styleChanges = Lists.newArrayList();
+
         while(matcher.find()) {
-            Set<String> classes = Collections.EMPTY_SET;
+
             String styleClass =
                     matcher.group("HRULE") != null ? "hrule" :
                     matcher.group("HEADING1") != null ? "heading1" :
@@ -89,11 +95,42 @@ public class MarkdownHighligher {
                     matcher.group("LINK") != null ? "link" :
                     matcher.group("CODE") != null ? "code" :
                     null;
-            if(classes != null) {
-                parent.setStyle(matcher.start(), matcher.end(), Collections.singleton(styleClass));
-                LOGGER.debug("Found " + styleClass + ": " + matcher.group() + " at " + matcher.start() + " to " + matcher.end());
-            }
+            parent.setStyle(matcher.start(), matcher.end(), Collections.singleton(styleClass));
+
+            /*StyleIndex index = new StyleIndex(matcher.start(), matcher.end());
+            index.addStyle(styleClass);
+            styleChanges.add(index);*/
+
         }
+    }
+
+    public static void computeSpellcheckHighlighting(List<RuleMatch> matches, EditorPane parent) {
+
+    }
+
+    static class StyleIndex {
+        int start;
+        int end;
+
+        List<String> styleClasses = Lists.newArrayList();
+
+        StyleIndex(int start, int end) {
+            this.start = start;
+            this.end = end;
+        }
+
+        public int getStart() {
+            return start;
+        }
+
+        public int getEnd() {
+            return end;
+        }
+
+        public void addStyle(String clazz) {
+            styleClasses.add(clazz);
+        }
+
     }
 
 }

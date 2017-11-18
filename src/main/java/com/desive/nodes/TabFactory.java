@@ -87,12 +87,23 @@ public class TabFactory {
         return tabPane.getSelectionModel().getSelectedItem();
     }
 
+    private EditorTab getSelectedEditorTab() {
+        if(getSelectedTab() instanceof EditorTab) {
+            return ((EditorTab) getSelectedTab());
+        }
+        return null;
+    }
+
     public TabPane getTabPane() {
         return tabPane;
     }
 
     public void refreshSelectedTabView() {
-        ((EditorTab) getSelectedTab()).getEditorPane().refreshWebView();
+        getSelectedEditorTab().getEditorPane().refreshWebView();
+    }
+
+    public boolean spellcheckSelectedTab() {
+        return getSelectedEditorTab().getEditorPane().spellcheckDocument();
     }
 
     public void setMarkdownParser(MarkdownParser markdownParser) {
