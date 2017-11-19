@@ -27,7 +27,6 @@ import com.desive.utilities.Dictionary;
 import com.desive.utilities.Http;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.input.KeyCombination;
-import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -37,14 +36,14 @@ import java.util.Optional;
 */
 public class EditorImportUrlItem extends MdPageMenuItem {
 
-    public EditorImportUrlItem(Dictionary dictionary, KeyCombination accelerator, Stage stage, TabFactory tabFactory, DialogFactory dialogFactory) {
+    public EditorImportUrlItem(Dictionary dictionary, KeyCombination accelerator, TabFactory tabFactory, DialogFactory dialogFactory) {
         super(dictionary.TOOLBAR_EDITOR_IMPORT_URL_ITEM);
         this.setAccelerator(accelerator);
-        this.setOnAction(event -> getClickAction(dictionary, stage, tabFactory, dialogFactory));
+        this.setOnAction(event -> getClickAction(dictionary, tabFactory, dialogFactory));
     }
 
     @Override
-    public void getClickAction(final Dictionary dictionary, final Stage stage, final TabFactory tabFactory, final DialogFactory dialogFactory) {
+    public void getClickAction(final Dictionary dictionary, final TabFactory tabFactory, final DialogFactory dialogFactory) {
         TextInputDialog input = dialogFactory.buildEnterUrlDialogBox(
                 dictionary.DIALOG_IMPORT_URL_TITLE,
                 dictionary.DIALOG_IMPORT_URL_CONTENT

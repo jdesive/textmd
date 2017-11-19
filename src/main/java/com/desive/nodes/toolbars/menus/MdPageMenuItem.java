@@ -23,7 +23,6 @@ import com.desive.nodes.TabFactory;
 import com.desive.stages.dialogs.DialogFactory;
 import com.desive.utilities.Dictionary;
 import javafx.scene.control.MenuItem;
-import javafx.stage.Stage;
 
 /*
  Created by Jack DeSive on 11/2/2017 at 8:59 PM
@@ -34,5 +33,5 @@ public abstract class MdPageMenuItem extends MenuItem {
         super(text);
     }
 
-    public abstract void getClickAction(final Dictionary dictionary, final Stage stage, final TabFactory tabFactory, final DialogFactory dialogFactory);
+    public abstract void getClickAction(final Dictionary dictionary, final TabFactory tabFactory, final DialogFactory dialogFactory);
 }

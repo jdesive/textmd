@@ -24,7 +24,6 @@ import com.desive.nodes.tabs.EditorTab;
 import com.desive.nodes.toolbars.menus.MdStyledPageMenuItem;
 import com.desive.stages.dialogs.DialogFactory;
 import com.desive.utilities.Dictionary;
-import javafx.stage.Stage;
 
 import java.io.IOException;
 
@@ -33,18 +32,18 @@ import java.io.IOException;
 */
 public class EditorExportPdfItem extends MdStyledPageMenuItem {
 
-    public EditorExportPdfItem(Dictionary dictionary, Stage stage, TabFactory tabFactory, DialogFactory dialogFactory, boolean cssStyle) {
+    public EditorExportPdfItem(Dictionary dictionary, TabFactory tabFactory, DialogFactory dialogFactory, boolean cssStyle) {
 
         if(cssStyle)
             this.setText(dictionary.TOOLBAR_EDITOR_EXPORT_PDF_CSS_ITEM);
         else
             this.setText(dictionary.TOOLBAR_EDITOR_EXPORT_PDF_ITEM);
 
-        this.setOnAction(event -> getClickAction(dictionary, stage, tabFactory, dialogFactory, cssStyle));
+        this.setOnAction(event -> getClickAction(dictionary, tabFactory, dialogFactory, cssStyle));
     }
 
     @Override
-    public void getClickAction(final Dictionary dictionary, final Stage stage, final TabFactory tabFactory, final DialogFactory dialogFactory, final boolean cssStyle) {
+    public void getClickAction(final Dictionary dictionary, final TabFactory tabFactory, final DialogFactory dialogFactory, final boolean cssStyle) {
         EditorTab currTab = ((EditorTab) tabFactory.getSelectedTab());
         try {
             if (currTab.getEditorPane().savePdf(cssStyle)) {

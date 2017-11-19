@@ -25,7 +25,6 @@ import com.desive.nodes.toolbars.menus.MdPageMenuItem;
 import com.desive.stages.dialogs.DialogFactory;
 import com.desive.utilities.Dictionary;
 import javafx.scene.input.KeyCombination;
-import javafx.stage.Stage;
 
 import java.io.IOException;
 
@@ -34,14 +33,14 @@ import java.io.IOException;
 */
 public class EditorSaveItem extends MdPageMenuItem {
 
-    public EditorSaveItem(Dictionary dictionary, KeyCombination accelerator, Stage stage, TabFactory tabFactory, DialogFactory dialogFactory) {
+    public EditorSaveItem(Dictionary dictionary, KeyCombination accelerator, TabFactory tabFactory, DialogFactory dialogFactory) {
         super(dictionary.TOOLBAR_EDITOR_SAVE_ITEM);
         this.setAccelerator(accelerator);
-        this.setOnAction(event -> getClickAction(dictionary, stage, tabFactory, dialogFactory));
+        this.setOnAction(event -> getClickAction(dictionary, tabFactory, dialogFactory));
     }
 
     @Override
-    public void getClickAction(final Dictionary dictionary, final Stage stage, final TabFactory tabFactory, final DialogFactory dialogFactory) {
+    public void getClickAction(final Dictionary dictionary, final TabFactory tabFactory, final DialogFactory dialogFactory) {
         EditorTab currTab = ((EditorTab) tabFactory.getSelectedTab());
         try {
             currTab.getEditorPane().save();

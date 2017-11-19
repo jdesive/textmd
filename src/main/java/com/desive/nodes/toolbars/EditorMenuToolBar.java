@@ -72,8 +72,8 @@ public class EditorMenuToolBar extends MenuBar {
                 menus.getEditorImportSubmenu(),
                 menus.getEditorExportSubmenu(),
                 new SeparatorMenuItem(),
-                new EditorSaveItem(dictionary, SAVE_EDITOR, primaryStage, tabFactory, dialogFactory),
-                new EditorSaveAsItem(dictionary, SAVE_AS_EDITOR, primaryStage, tabFactory, dialogFactory),
+                new EditorSaveItem(dictionary, SAVE_EDITOR, tabFactory, dialogFactory),
+                new EditorSaveAsItem(dictionary, SAVE_AS_EDITOR, tabFactory, dialogFactory),
                 new EditorExitItem(dictionary, primaryStage, tabFactory)
         );
 
@@ -121,19 +121,20 @@ public class EditorMenuToolBar extends MenuBar {
         this.log(dictionary.TOOLBAR_EDITOR_IMPORT_MENU);
         menus.getEditorImportSubmenu().getItems().addAll(
                 new EditorImportFileItem(dictionary, IMPORT_FILE_EDITOR, primaryStage, tabFactory, dialogFactory),
-                new EditorImportUrlItem(dictionary, IMPORT_URL_EDITOR, primaryStage, tabFactory, dialogFactory)
+                new EditorImportUrlItem(dictionary, IMPORT_URL_EDITOR, tabFactory, dialogFactory)
         );
 
         this.log(dictionary.TOOLBAR_EDITOR_EXPORT_MENU);
         menus.getEditorExportSubmenu().getItems().addAll(
-                new EditorExportDocxItem(dictionary, primaryStage, tabFactory, dialogFactory), // Docx
-                new EditorExportPdfItem(dictionary, primaryStage, tabFactory, dialogFactory, true), // PDF/CSS
-                new EditorExportJiraItem(dictionary, primaryStage, tabFactory, dialogFactory), // JIRA
-                new EditorExportConfluenceItem(dictionary, primaryStage, tabFactory, dialogFactory), // Confluence
-                new EditorExportYoutrackItem(dictionary, primaryStage, tabFactory, dialogFactory), // Youtrack
-                new EditorExportPlainTextItem(dictionary, primaryStage, tabFactory, dialogFactory), // Plain Text
-                new EditorExportHtmlItem(dictionary, primaryStage, tabFactory, dialogFactory, false), // HTML
-                new EditorExportHtmlItem(dictionary, primaryStage, tabFactory, dialogFactory, true) // HTML/CSS
+                new EditorExportDocxItem(dictionary, tabFactory, dialogFactory), // Docx
+                new EditorExportPdfItem(dictionary, tabFactory, dialogFactory, true), // PDF/CSS
+                new EditorExportPdfItem(dictionary, tabFactory, dialogFactory, false), // PDF
+                new EditorExportJiraItem(dictionary, tabFactory, dialogFactory), // JIRA
+                new EditorExportConfluenceItem(dictionary, tabFactory, dialogFactory), // Confluence
+                new EditorExportYoutrackItem(dictionary, tabFactory, dialogFactory), // Youtrack
+                new EditorExportPlainTextItem(dictionary, tabFactory, dialogFactory), // Plain Text
+                new EditorExportHtmlItem(dictionary, tabFactory, dialogFactory, false), // HTML
+                new EditorExportHtmlItem(dictionary, tabFactory, dialogFactory, true) // HTML/CSS
         );
 
         this.log(dictionary.TOOLBAR_EDITOR_OPEN_MENU);

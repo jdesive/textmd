@@ -20,7 +20,7 @@
 package com.desive.nodes.toolbars.menus.items.editor.file.open;
 
 import com.desive.nodes.TabFactory;
-import com.desive.nodes.toolbars.menus.MdPageMenuItem;
+import com.desive.nodes.toolbars.menus.items.editor.MdOpenPageMenuItem;
 import com.desive.stages.dialogs.DialogFactory;
 import com.desive.utilities.Dictionary;
 import com.desive.utilities.constants.FileExtensionFilters;
@@ -34,7 +34,7 @@ import java.io.FileNotFoundException;
 /*
  Created by Jack DeSive on 11/1/2017 at 9:54 PM
 */
-public class EditorOpenFileItem extends MdPageMenuItem {
+public class EditorOpenFileItem extends MdOpenPageMenuItem {
 
     public EditorOpenFileItem(Dictionary dictionary, KeyCombination accelerator, Stage stage, TabFactory tabFactory, DialogFactory dialogFactory) {
         super(dictionary.TOOLBAR_EDITOR_OPEN_FILE_ITEM);
