@@ -51,6 +51,10 @@ public class LineNumberPane extends HBox {
 
 
     public static void resetPosition(EditorPane editor){
+
+        if(editor == null)
+            return;
+
         TwoDimensional.Position pos = editor.getEditor().offsetToPosition(editor.getEditor().getCaretPosition(), TwoDimensional.Bias.Backward);
 
         paragraghNumber.setText(String.valueOf(pos.getMajor()));

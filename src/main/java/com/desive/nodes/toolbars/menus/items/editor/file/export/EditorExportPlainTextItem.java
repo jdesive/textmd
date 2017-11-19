@@ -43,7 +43,7 @@ public class EditorExportPlainTextItem extends MdPageMenuItem {
     public void getClickAction(final Dictionary dictionary, final Stage stage, final TabFactory tabFactory, final DialogFactory dialogFactory) {
         EditorTab currTab = ((EditorTab) tabFactory.getSelectedTab());
         try {
-            if(currTab.getEditorPane().saveText(stage)) {
+            if(currTab.getEditorPane().saveText()) {
                 dialogFactory.buildConfirmationDialogBox(
                         dictionary.DIALOG_EXPORT_SUCCESS_TITLE,
                         dictionary.DIALOG_EXPORT_SUCCESS_PLAIN_TEXT_CONTENT

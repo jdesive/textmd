@@ -57,7 +57,7 @@ public class EditorExitItem extends MenuItem {
             tabs.forEach(t -> {
                 if(close.get()){
                     EditorTab eTab = ((EditorTab) t);
-                    if(!eTab.getEditorPane().exit(stage)){
+                    if(!eTab.getEditorPane().exit()){
                         close.set(false);
                         return;
                     }else{

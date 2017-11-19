@@ -44,7 +44,7 @@ public class EditorSaveItem extends MdPageMenuItem {
     public void getClickAction(final Dictionary dictionary, final Stage stage, final TabFactory tabFactory, final DialogFactory dialogFactory) {
         EditorTab currTab = ((EditorTab) tabFactory.getSelectedTab());
         try {
-            currTab.getEditorPane().save(stage);
+            currTab.getEditorPane().save();
         } catch (IOException e1) {
             dialogFactory.buildExceptionDialogBox(
                     dictionary.DIALOG_EXCEPTION_TITLE,

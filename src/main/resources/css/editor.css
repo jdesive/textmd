@@ -138,7 +138,7 @@
 Tag Style Classes
  */
 .code-area .heading-tag {
-    -fx-fill: purple;
+    -fx-fill: #90559e;
 }
 
 .code-area .bold-tag {

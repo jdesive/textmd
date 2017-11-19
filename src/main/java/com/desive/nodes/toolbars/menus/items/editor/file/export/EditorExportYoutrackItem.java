@@ -43,7 +43,7 @@ public class EditorExportYoutrackItem extends MdPageMenuItem {
     public void getClickAction(final Dictionary dictionary, final Stage stage, final TabFactory tabFactory, final DialogFactory dialogFactory) {
         EditorTab currTab = ((EditorTab) tabFactory.getSelectedTab());
         try {
-            if(currTab.getEditorPane().saveYoutrack(stage)) {
+            if(currTab.getEditorPane().saveYoutrack()) {
                 dialogFactory.buildConfirmationDialogBox(
                         dictionary.DIALOG_EXPORT_SUCCESS_TITLE,
                         dictionary.DIALOG_EXPORT_SUCCESS_YOUTRACK_CONTENT

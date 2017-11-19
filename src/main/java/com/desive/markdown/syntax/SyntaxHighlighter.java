@@ -20,7 +20,6 @@
 package com.desive.markdown.syntax;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Streams;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.model.StyleSpan;
@@ -28,7 +27,10 @@ import org.fxmisc.richtext.model.StyleSpans;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -47,116 +49,6 @@ public class SyntaxHighlighter {
     }
 
     public void compute(String text, CodeArea parent) {
-        Matcher matcher = getHighlightingPattern().matcher(text);
-        HashMap<HighlightMatch, String> matches = Maps.newHashMap();
-        List<HighlightStyle> styles = Lists.newArrayList();
-
-        logger.debug("Computing markdown syntax highlighting");
-
-
-        // Use the existing regex's to fetch the groups and stick the values and group in a hashmap
-        while(matcher.find()){
-            String styleClass =
-                    matcher.group("HRULE") != null ? "hrule" :
-                    matcher.group("HEADING1") != null ? "heading1" :
-                    matcher.group("HEADING2") != null ? "heading2" :
-                    matcher.group("HEADING3") != null ? "heading3" :
-                    matcher.group("HEADING4") != null ? "heading4" :
-                    matcher.group("HEADING5") != null ? "heading5" :
-                    matcher.group("HEADING6") != null ? "heading6" :
-                    matcher.group("BOLD") != null ? "bold" :
-                    matcher.group("ITALICS") != null ? "italics" :
-                    matcher.group("STRIKE") != null ? "strikethrough" :
-                    matcher.group("INLINECODE") != null ? "inline-code" :
-                    matcher.group("IMAGE") != null ? "image" :
-                    matcher.group("LINK") != null ? "link" :
-                    matcher.group("CODE") != null ? "code" :
-                    null;
-
-            matches.put(new HighlightMatch(matcher.start(), matcher.end()), styleClass);
-            logger.debug("Found parent style match \'{}\' at {} to {}", styleClass, matcher.start(), matcher.end());
-
-        }
-
-        // loop above hashmap
-        matches.forEach((k, v) -> {
-            switch (v) {
-                case "hrule":
-                    // do nothing
-                    styles.add(new HighlightStyle(k.getStart(), k.getEnd(), "hrule"));
-                    break;
-                case "heading1":
-                case "heading2":
-                case "heading3":
-                case "heading4":
-                case "heading5":
-                case "heading6":
-                    String str = getText(k.getStart(), k.getEnd(), parent);
-                    HighlightStyle style = new HighlightStyle(k.getStart(), k.getEnd(), v);
-
-                    Matcher match = Pattern.compile(HEADING_TAG.getPattern()).matcher(str);
-                    while (match.find()){
-                        style.addChild(new HighlightStyle(match.start() + k.getStart(), match.end() + k.getStart(),"tag"));
-                        logger.debug("Found child style class \'tag\' at {} to {}", (match.start() + k.getStart()), (match.end() + k.getStart()));
-                    }
-
-                    styles.add(style);
-                    break;
-                case "bold":
-                    styles.add(new HighlightStyle(k.getStart(), k.getEnd(), "bold"));
-                    break;
-                case "italics":
-                    styles.add(new HighlightStyle(k.getStart(), k.getEnd(), "italics"));
-                    break;
-                case "strikethrough":
-                    styles.add(new HighlightStyle(k.getStart(), k.getEnd(), "strikethrough"));
-                    break;
-                case "inline-code":
-                    styles.add(new HighlightStyle(k.getStart(), k.getEnd(), "inline-code"));
-                    break;
-                case "image":
-                    styles.add(new HighlightStyle(k.getStart(), k.getEnd(), "image"));
-                    break;
-                case "link":
-                    styles.add(new HighlightStyle(k.getStart(), k.getEnd(), "link"));
-                    break;
-                case "code":
-                    styles.add(new HighlightStyle(k.getStart(), k.getEnd(), "code"));
-                    break;
-                default:
-                    
-            }
-        });
-
-        // switch case groups
-
-        // Now run regex on the value to style the individual spans
-
-
-        styles.forEach(style -> {
-            if(style.children.isEmpty()) {
-                parent.setStyle(style.start, style.end, Lists.newArrayList(style.styleClasses));
-                logger.debug("Set parent style class \'{}\' at {} to {}", style.styleClasses, style.start, style.end);
-            }else{
-
-                parent.setStyle(style.start, style.end, Lists.newArrayList(style.styleClasses));
-                logger.debug("Set parent style class \'{}\' at {} to {}", style.styleClasses, style.start, style.end);
-                // has children... need to use the merge method to apply child styles to parent
-                style.children.forEach(child -> {
-                    parent.getStyleSpans(child.start, child.end).append(new StyleSpan<>(
-                            Arrays.asList(child.styleClasses),
-                            (child.end - child.start)
-                    ));
-                    logger.debug("Set child style class \'{}\' at {} to {}", child.styleClasses, child.start, child.end);
-                });
-                // parent first tho
-
-            }
-        });
-
-    }
-
-    public void compute2(String text, CodeArea parent) {
 
         Matcher matcher = getHighlightingPattern().matcher(text);
 
@@ -280,29 +172,8 @@ public class SyntaxHighlighter {
             this.start = start;
             this.end = end;
         }
-
-        void addChild(HighlightStyle style) {
-            children.add(style);
-        }
-
     }
 
-    class HighlightMatch {
-        int start, end;
-
-        public HighlightMatch(int start, int end) {
-            this.start = start;
-            this.end = end;
-        }
-
-        public int getStart() {
-            return start;
-        }
-
-        public int getEnd() {
-            return end;
-        }
-    }
 
     enum Patterns {
 

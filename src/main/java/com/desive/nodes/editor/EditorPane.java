@@ -19,6 +19,7 @@
 
 package com.desive.nodes.editor;
 
+import com.desive.editor.file.FileFactory;
 import com.desive.markdown.MarkdownHighligher;
 import com.desive.markdown.MarkdownParser;
 import com.desive.markdown.syntax.SyntaxHighlighter;
@@ -29,11 +30,9 @@ import com.desive.utilities.Dictionary;
 import com.desive.utilities.Settings;
 import com.desive.utilities.Spellcheck;
 import com.desive.utilities.Utils;
-import com.desive.utilities.constants.FileExtensionFilters;
 import com.desive.utilities.constants.Timer;
 import com.desive.views.EditorView;
 import com.google.common.collect.Maps;
-import com.vladsch.flexmark.pdf.converter.PdfConverterExtension;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -44,12 +43,12 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.fxmisc.flowless.VirtualizedScrollPane;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.languagetool.rules.RuleMatch;
 import org.reactfx.Subscription;
@@ -60,9 +59,7 @@ import org.w3c.dom.Text;
 
 import javax.xml.bind.JAXBException;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
@@ -97,17 +94,20 @@ public class EditorPane extends SplitPane {
 
     private SyntaxHighlighter highlighter = new SyntaxHighlighter();
 
+    private FileFactory fileFactory;
 
     public EditorPane(Dictionary dictionary,
                       DialogFactory dialogFactory,
                       MarkdownParser markdownParser,
                       EditorToolBar editorToolBar,
+                      Stage primaryStage,
                       String content) {
 
         this.dict = dictionary;
         this.dialogFactory = dialogFactory;
         this.markdownParser = markdownParser;
         this.editorToolBar = editorToolBar;
+        this.fileFactory = new FileFactory(primaryStage, editorToolBar);
 
         this.styleEditor();
         this.styleWebView();
@@ -119,7 +119,7 @@ public class EditorPane extends SplitPane {
         getEditor().caretColumnProperty().addListener(event -> LineNumberPane.resetPosition(this));
         getEditor().caretPositionProperty().addListener(event -> LineNumberPane.resetPosition(this));
 
-        syncScrollbars();
+        //syncScrollbars(); - Not implemented yet
     }
 
     @NotNull
@@ -144,8 +144,46 @@ public class EditorPane extends SplitPane {
         this.file = file;
     }
 
+    @Contract(pure = true)
     private boolean isSaved() {
         return saved.get();
+    }
+
+    public boolean save() throws IOException {
+        saved.set(true);
+        return fileFactory.markdown().save(file, getContent());
+    }
+
+    public boolean saveAs() throws IOException {
+        return fileFactory.markdown().saveAs(file, getContent());
+    }
+
+    public boolean saveHtml(boolean style) throws IOException {
+        return fileFactory.html().save(file, style ? currentHtmlWithStyle : currentHtml);
+    }
+
+    public boolean saveDocx() throws IOException, Docx4JException, JAXBException {
+        return fileFactory.office().saveDocx(getContent(), file, markdownParser);
+    }
+
+    public boolean savePdf(boolean style) throws IOException{
+        return fileFactory.pdf().save(file, markdownParser, style ? currentHtmlWithStyle : currentHtml);
+    }
+
+    public boolean saveJira() throws IOException{
+        return fileFactory.jira().save(file, markdownParser, getContent());
+    }
+
+    public boolean saveYoutrack() throws IOException{
+        return fileFactory.youtrack().save(file, markdownParser, getContent());
+    }
+
+    public boolean saveText() throws IOException{
+        return fileFactory.plainText().save(file, markdownParser, getContent());
+    }
+
+    public boolean saveConfluenceMarkup() throws IOException{
+        return fileFactory.confluence().save(file, markdownParser, getContent());
     }
 
     public void setView(EditorView view) {
@@ -165,7 +203,7 @@ public class EditorPane extends SplitPane {
         editorToolBar.setActionText("View set to " + view.getName());
     }
 
-    public boolean exit(Stage primaryStage) {
+    public boolean exit() {
         if(!isSaved()){
             Optional<ButtonType> save = dialogFactory.buildYesNoDialog(file.getPath(),
                     dict.DIALOG_FILE_NOT_SAVED_TITLE,
@@ -178,7 +216,7 @@ public class EditorPane extends SplitPane {
             switch (save.get().getButtonData()){
                 case YES:
                     try {
-                        if(!save(primaryStage)){
+                        if(!save()){
                             return false;
                         }
                     } catch (IOException e1) {
@@ -201,138 +239,10 @@ public class EditorPane extends SplitPane {
         return true;
     }
 
-    public boolean save(Stage primaryStage) throws IOException {
-        if(file.exists()){
-            timer.start();
-            PrintWriter writer = new PrintWriter(new FileWriter(file));
-            writer.print(editor.getText());
-            writer.close();
-            editorToolBar.setActionText("Successfully saved file \'" + file.getName() + "\' in " + timer.end() + "ms");
-            saved.set(true);
-            return true;
-        }else{
-            return saveAs(primaryStage);
-        }
-    }
-
-    public boolean saveAs(Stage primaryStage) throws IOException {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setInitialDirectory(file.getParentFile());
-        fileChooser.setInitialFileName(file.getName());
-        fileChooser.getExtensionFilters().add(FileExtensionFilters.MARKDOWN);
-        File file = fileChooser.showSaveDialog(primaryStage);
-        if(file != null){
-            this.file = file;
-            this.file.createNewFile();
-            save(primaryStage);
-            return true;
-        }
-        return false;
-    }
-
-    public boolean saveHtml(Stage primaryStage, boolean style) throws IOException {
-        return save(
-                primaryStage,
-                FileExtensionFilters.HTML,
-                Utils.wrapWithHtmlDocType(style ? currentHtmlWithStyle : currentHtml),
-                "Successfully exported html file"
-        );
-    }
-
-    public boolean saveDocx(Stage primaryStage) throws IOException, Docx4JException, JAXBException {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setInitialDirectory(file.getParentFile());
-        fileChooser.setInitialFileName(file.getName().split("\\.")[0] + ".docx");
-        fileChooser.getExtensionFilters().add(FileExtensionFilters.DOCX);
-        File file = fileChooser.showSaveDialog(primaryStage);
-        if(file != null){
-            timer.start();
-            markdownParser.convertToDocx(editor.getText(), file);
-            editorToolBar.setActionText("Successfully exported docx file \'" + file.getName() + "\' in " + timer.end() + "ms");
-            return true;
-        }
-        return false;
-    }
-
-    public boolean savePdf(Stage primaryStage, boolean style) throws IOException{
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setInitialDirectory(file.getParentFile());
-        fileChooser.setInitialFileName(file.getName().split("\\.")[0] + ".pdf");
-        fileChooser.getExtensionFilters().add(FileExtensionFilters.PDF);
-        File file = fileChooser.showSaveDialog(primaryStage);
-        if(file != null){
-            timer.start();
-            PdfConverterExtension.exportToPdf(
-                    file.getAbsolutePath(),
-                    markdownParser.convertToHTML(Utils.wrapWithHtmlDocType(style ? currentHtmlWithStyle : currentHtml)),
-                    "",
-                    markdownParser.getOptions()
-            );
-            editorToolBar.setActionText("Successfully exported pdf file \'" + file.getName() + "\' in " + timer.end() + "ms");
-            return true;
-        }
-        return false;
-    }
-
-    public boolean saveJira(Stage primaryStage) throws IOException{
-        return save(
-                primaryStage,
-                FileExtensionFilters.TEXT,
-                markdownParser.convertToJira(editor.getText()),
-                "Successfully exported jira file"
-        );
-    }
-
-    public boolean saveYoutrack(Stage primaryStage) throws IOException{
-        return save(
-                primaryStage,
-                FileExtensionFilters.TEXT,
-                markdownParser.convertToYoutrack(editor.getText()),
-                "Successfully exported youtrack file"
-        );
-    }
-
-    public boolean saveText(Stage primaryStage) throws IOException{
-        return save(
-                primaryStage,
-                FileExtensionFilters.TEXT,
-                markdownParser.convertToText(editor.getText()),
-                "Successfully exported plain text file"
-        );
-    }
-
-    public boolean saveConfluenceMarkup(Stage primaryStage) throws IOException{
-        return save(
-                primaryStage,
-                FileExtensionFilters.TEXT,
-                markdownParser.markdownToConfluenceMarkup(editor.getText()),
-                "Successfully exported confluence markup file"
-        );
-    }
-
-    private boolean save(Stage primaryStage, FileChooser.ExtensionFilter ext, String content, String actionText) throws IOException{
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setInitialDirectory(file.getParentFile());
-        fileChooser.setInitialFileName(file.getName().split("\\.")[0] + ext.getExtensions().stream().findFirst().get().replace("*", ""));
-        fileChooser.getExtensionFilters().add(ext);
-        File file = fileChooser.showSaveDialog(primaryStage);
-        if(file != null){
-            timer.start();
-            PrintWriter writer = new PrintWriter(new FileWriter(file));
-            writer.print(content);
-            writer.close();
-            editorToolBar.setActionText(actionText + " in " + timer.end() + "ms");
-            return true;
-        }
-        return false;
-    }
-
-
     public void setContent(String content){
         editor.replaceText(0, editor.getText().length(), content);
         webEngine.loadContent(markdownParser.convertToHTML(content));
-        //MarkdownHighligher.computeHighlighting(editor.getText(), editor);
-        highlighter.compute2(getContent(), editor);
+        highlighter.compute(getContent(), editor);
     }
 
     public String getContent(){
@@ -392,19 +302,6 @@ public class EditorPane extends SplitPane {
                     head.appendChild(scriptNode);
                 }
 
-                //JavascriptSpellCheck
-                Element spellNode = doc.createElement("script");
-                spellNode.setAttribute("type", "text/javascript");
-                String loc = getClass().getClassLoader().getResource("spellcheck/include.js").getFile();
-                spellNode.setAttribute("src", loc.substring(1, loc.length()));
-                head.appendChild(spellNode);
-
-                Element spellExecNode = doc.createElement("script");
-                spellExecNode.setAttribute("type", "text/javascript");
-                spellExecNode.setTextContent("$Spelling.BinSpellCheckFields(body)");
-                head.appendChild(spellExecNode);
-                //$Spelling.BinSpellCheckFields(Fields)
-
                 // Inject css styles
                 Element styleNode = doc.createElement("style");
                 Text styleContent = doc.createTextNode(Utils.getWebViewCss(prettifyCode.get() || Settings.ALWAYS_PRETTIFY_CODE_VIEW ? "#f2f2f2" : "#545454"));
@@ -446,18 +343,17 @@ public class EditorPane extends SplitPane {
         }));
     }
 
-    public void createEditorHighlightSubscription(int value) {
+    public void createEditorHighlightSubscription(int duration) {
         if(editorHightlightSubscription != null)
             editorHightlightSubscription.unsubscribe();
 
         editorHightlightSubscription = editor.plainTextChanges()
                 .filter(ch -> !ch.getInserted().equals(ch.getRemoved()))
-                .successionEnds(Duration.ofMillis(value))
+                .successionEnds(Duration.ofMillis(duration))
                 .subscribe(change -> {
                     saved.set(false);
                     timer.start();
-                    //MarkdownHighligher.computeHighlighting(editor.getText(), editor);
-                    highlighter.compute2(getContent(), editor);
+                    highlighter.compute(getContent(), editor);
                     editorToolBar.setActionText("Computed highlighting in " + timer.end() + "ms");
                 });
     }

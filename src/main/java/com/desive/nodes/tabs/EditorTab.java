@@ -19,14 +19,12 @@
 
 package com.desive.nodes.tabs;
 
-import com.desive.nodes.TabFactory;
 import com.desive.nodes.editor.EditorPane;
 import com.desive.utilities.Utils;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.control.Tab;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,12 +37,12 @@ public class EditorTab extends Tab {
 
     private EditorPane editorPane;
 
-    public EditorTab(EditorPane editorPane, TabFactory tabFactory, Stage primaryStage) {
+    public EditorTab(EditorPane editorPane) {
 
         this.editorPane = editorPane;
 
         this.setOnCloseRequest(e -> {
-            if(getEditorPane().exit(primaryStage)) {
+            if(getEditorPane().exit()) {
                 logger.debug("Closing tab {}", getEditorPane().getFile().getPath());
             }else {
                 e.consume();

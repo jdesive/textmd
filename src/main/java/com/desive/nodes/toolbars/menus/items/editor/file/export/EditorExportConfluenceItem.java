@@ -43,7 +43,7 @@ public class EditorExportConfluenceItem extends MdPageMenuItem {
     public void getClickAction(final Dictionary dictionary, final Stage stage, final TabFactory tabFactory, DialogFactory dialogFactory) {
         EditorTab currTab = ((EditorTab) tabFactory.getSelectedTab());
         try {
-            if (currTab.getEditorPane().saveConfluenceMarkup(stage)) {
+            if (currTab.getEditorPane().saveConfluenceMarkup()) {
                 dialogFactory.buildConfirmationDialogBox(
                         dictionary.DIALOG_EXPORT_SUCCESS_TITLE,
                         dictionary.DIALOG_EXPORT_SUCCESS_CONFLUENCE_CONTENT

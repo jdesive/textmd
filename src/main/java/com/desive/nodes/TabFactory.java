@@ -22,6 +22,7 @@ package com.desive.nodes;
 import com.desive.markdown.MarkdownParser;
 import com.desive.nodes.editor.EditorPane;
 import com.desive.nodes.editor.EditorTabPane;
+import com.desive.nodes.editor.toolbar.LineNumberPane;
 import com.desive.nodes.tabs.EditorTab;
 import com.desive.nodes.toolbars.EditorToolBar;
 import com.desive.stages.dialogs.DialogFactory;
@@ -55,10 +56,14 @@ public class TabFactory {
     private final static Logger logger = LoggerFactory.getLogger(TabFactory.class);
 
     public TabFactory(Dictionary dictionary, DialogFactory dialogFactory, Stage ownerStage) {
-       this.dictionary = dictionary;
-       this.dialogFactory = dialogFactory;
-       this.ownerStage = ownerStage;
-       addSampleEditorTab(); // temp
+        this.dictionary = dictionary;
+        this.dialogFactory = dialogFactory;
+        this.ownerStage = ownerStage;
+        addSampleEditorTab(); // temp
+
+        // Reset the caret position pane on tab select
+        tabPane.getSelectionModel().selectedItemProperty().addListener((ov, oldTab, newTab) -> LineNumberPane.resetPosition(newTab != null ? ((EditorTab) newTab).getEditorPane() : null));
+
     }
 
     public void createAndAddNewEditorTab(File file) throws FileNotFoundException {
@@ -72,8 +77,8 @@ public class TabFactory {
             return;
         }
 
-        EditorPane editorPane = new EditorPane(dictionary, dialogFactory, markdownParser, editorToolBar, fileContent);
-        EditorTab newTab = new EditorTab(editorPane, this, ownerStage);
+        EditorPane editorPane = new EditorPane(dictionary, dialogFactory, markdownParser, editorToolBar, ownerStage, fileContent);
+        EditorTab newTab = new EditorTab(editorPane);
         newTab.getEditorPane().setFile(file);
         addEditorTab(newTab);
     }

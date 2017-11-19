@@ -101,7 +101,7 @@ public class EditorStage extends Stage {
             Collections.reverse(tabs);
             tabs.forEach(t -> {
                 EditorTab eTab = ((EditorTab) t);
-                if(!eTab.getEditorPane().exit(this)){
+                if(!eTab.getEditorPane().exit()){
                     event.consume();
                 }else{
                     logger.debug("Closing tab {}", eTab.getEditorPane().getFile().getPath());

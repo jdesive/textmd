@@ -47,7 +47,7 @@ public class EditorExportPdfItem extends MdStyledPageMenuItem {
     public void getClickAction(final Dictionary dictionary, final Stage stage, final TabFactory tabFactory, final DialogFactory dialogFactory, final boolean cssStyle) {
         EditorTab currTab = ((EditorTab) tabFactory.getSelectedTab());
         try {
-            if (currTab.getEditorPane().savePdf(stage, cssStyle)) {
+            if (currTab.getEditorPane().savePdf(cssStyle)) {
                 dialogFactory.buildConfirmationDialogBox(
                         dictionary.DIALOG_EXPORT_SUCCESS_TITLE,
                         cssStyle ? dictionary.DIALOG_EXPORT_SUCCESS_PDF_CSS_CONTENT : dictionary.DIALOG_EXPORT_SUCCESS_PDF_CONTENT
