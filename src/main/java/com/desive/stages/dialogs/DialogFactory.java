@@ -23,7 +23,7 @@ import com.desive.stages.dialogs.exceptions.ExceptionAlertDialog;
 import com.desive.stages.dialogs.input.EnterTextAlertDialog;
 import com.desive.stages.dialogs.optional.ConfirmationAlertDialog;
 import com.desive.stages.dialogs.optional.YesNoAlertDialog;
-import com.desive.utilities.Dictionary;
+import com.desive.utilities.constants.Dictionary;
 import javafx.scene.control.TextInputDialog;
 import javafx.stage.Stage;
 

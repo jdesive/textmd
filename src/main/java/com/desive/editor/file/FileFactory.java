@@ -20,7 +20,7 @@
 package com.desive.editor.file;
 
 import com.desive.editor.file.export.*;
-import com.desive.nodes.toolbars.EditorToolBar;
+import com.desive.nodes.editor.toolbars.EditorToolBar;
 import javafx.stage.Stage;
 
 /*

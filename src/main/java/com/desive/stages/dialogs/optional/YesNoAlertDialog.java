@@ -20,7 +20,7 @@
 package com.desive.stages.dialogs.optional;
 
 import com.desive.stages.dialogs.AlertDialog;
-import com.desive.utilities.Dictionary;
+import com.desive.utilities.constants.Dictionary;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;

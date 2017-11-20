@@ -19,7 +19,7 @@
 
 package com.desive.editor.file;
 
-import com.desive.nodes.toolbars.EditorToolBar;
+import com.desive.nodes.editor.toolbars.EditorToolBar;
 import com.desive.utilities.constants.FileExtensionFilters;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -28,6 +28,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /*
  Created by Jack DeSive on 11/18/2017 at 6:27 PM
@@ -38,20 +39,21 @@ public class SaveMarkdown extends SaveMachine{
         super(primaryStage, toolbar);
     }
 
-    public boolean save(File file, String content) throws IOException {
+    public boolean save(File file, String content, AtomicBoolean saved) throws IOException {
         if(file.exists()){
             timer.start();
             PrintWriter writer = new PrintWriter(new FileWriter(file));
             writer.print(content);
             writer.close();
             toolbar.setActionText("Successfully saved file \'" + file.getName() + "\' in " + timer.end() + "ms");
+            saved.set(true);
             return true;
         }else{
-            return saveAs(file, content);
+            return saveAs(file, content, saved);
         }
     }
 
-    public boolean saveAs(File contentFile, String content) throws IOException {
+    public boolean saveAs(File contentFile, String content, AtomicBoolean saved) throws IOException {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setInitialDirectory(contentFile.getParentFile());
         fileChooser.setInitialFileName(contentFile.getName());
@@ -60,7 +62,7 @@ public class SaveMarkdown extends SaveMachine{
         if(file != null){
             contentFile = file;
             contentFile.createNewFile();
-            save(contentFile, content);
+            save(contentFile, content, saved);
             return true;
         }
         return false;

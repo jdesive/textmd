@@ -19,8 +19,8 @@
 
 package com.desive.stages;
 
-import com.desive.nodes.SettingsTabPane;
-import com.desive.utilities.Dictionary;
+import com.desive.nodes.settings.SettingsTabPane;
+import com.desive.utilities.constants.Dictionary;
 import javafx.scene.Scene;
 import javafx.scene.control.TabPane;
 import javafx.scene.image.Image;

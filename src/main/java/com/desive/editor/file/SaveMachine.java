@@ -19,7 +19,7 @@
 
 package com.desive.editor.file;
 
-import com.desive.nodes.toolbars.EditorToolBar;
+import com.desive.nodes.editor.toolbars.EditorToolBar;
 import com.desive.utilities.constants.Timer;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;

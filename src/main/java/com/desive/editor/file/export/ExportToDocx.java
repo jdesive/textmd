@@ -21,7 +21,7 @@ package com.desive.editor.file.export;
 
 import com.desive.editor.file.SaveMachine;
 import com.desive.markdown.MarkdownParser;
-import com.desive.nodes.toolbars.EditorToolBar;
+import com.desive.nodes.editor.toolbars.EditorToolBar;
 import com.desive.utilities.constants.FileExtensionFilters;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;

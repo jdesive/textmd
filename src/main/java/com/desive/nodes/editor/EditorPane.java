@@ -20,23 +20,24 @@
 package com.desive.nodes.editor;
 
 import com.desive.editor.file.FileFactory;
+import com.desive.editor.views.EditorView;
 import com.desive.markdown.MarkdownHighligher;
 import com.desive.markdown.MarkdownParser;
 import com.desive.markdown.syntax.SyntaxHighlighter;
-import com.desive.nodes.editor.toolbar.LineNumberPane;
-import com.desive.nodes.toolbars.EditorToolBar;
+import com.desive.nodes.editor.toolbars.EditorToolBar;
+import com.desive.nodes.editor.toolbars.nodes.CaretPositionPane;
 import com.desive.stages.dialogs.DialogFactory;
-import com.desive.utilities.Dictionary;
 import com.desive.utilities.Settings;
 import com.desive.utilities.Spellcheck;
 import com.desive.utilities.Utils;
+import com.desive.utilities.constants.Dictionary;
 import com.desive.utilities.constants.Timer;
-import com.desive.views.EditorView;
 import com.google.common.collect.Maps;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.beans.InvalidationListener;
 import javafx.concurrent.Worker;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.SplitPane;
@@ -77,24 +78,24 @@ public class EditorPane extends SplitPane {
     private MarkdownParser markdownParser;
     private EditorToolBar editorToolBar;
     private Spellcheck spellcheck = new Spellcheck();
+    private FileFactory fileFactory;
 
     private CodeArea editor = new CodeArea("");
     private VirtualWebView webView = new VirtualWebView(new WebView());
     private WebEngine webEngine = webView.getEngine();
     private VirtualizedScrollPane<CodeArea> editorScrollPane = new VirtualizedScrollPane<>(getEditor());
     private VirtualizedScrollPane<VirtualWebView> viewScrollPane = new VirtualizedScrollPane<>(webView);
+    private SyntaxHighlighter highlighter = new SyntaxHighlighter();
 
     private Timer timer = new Timer();
     private Timeline covertTask = null;
     private File file = new File(Utils.getDefaultFileName());
     private AtomicBoolean saved = new AtomicBoolean(false), prettifyCode = new AtomicBoolean(false);
     private String currentHtml = "", currentHtmlWithStyle = "";
-    private Subscription editorHightlightSubscription;
     private HashMap<String, List<String>> misspellingSuggestions = Maps.newHashMap();
 
-    private SyntaxHighlighter highlighter = new SyntaxHighlighter();
-
-    private FileFactory fileFactory;
+    private Subscription editorHighlightSubscription;
+    private InvalidationListener caretPositionListener;
 
     public EditorPane(Dictionary dictionary,
                       DialogFactory dialogFactory,
@@ -109,15 +110,16 @@ public class EditorPane extends SplitPane {
         this.editorToolBar = editorToolBar;
         this.fileFactory = new FileFactory(primaryStage, editorToolBar);
 
-        this.styleEditor();
-        this.styleWebView();
-        this.setSyncViews();
-        this.setContent(content);
-        this.createEditorHighlightSubscription(Settings.EDITOR_HIGHLIGHT_REFRESH_RATE);
-        this.getItems().addAll(getEditorWithScrollbar(), getWebViewWithScrollbar());
+        styleEditor();
+        styleWebView();
+        setSyncViews();
+        setContent(content);
+        createEditorHighlightSubscription(Settings.EDITOR_HIGHLIGHT_REFRESH_RATE);
+        getItems().addAll(getEditorWithScrollbar(), getWebViewWithScrollbar());
 
-        getEditor().caretColumnProperty().addListener(event -> LineNumberPane.resetPosition(this));
-        getEditor().caretPositionProperty().addListener(event -> LineNumberPane.resetPosition(this));
+        caretPositionListener = event -> CaretPositionPane.resetPosition(this);
+        getEditor().caretColumnProperty().addListener(caretPositionListener);
+        getEditor().caretPositionProperty().addListener(caretPositionListener);
 
         //syncScrollbars(); - Not implemented yet
     }
@@ -150,12 +152,11 @@ public class EditorPane extends SplitPane {
     }
 
     public boolean save() throws IOException {
-        saved.set(true);
-        return fileFactory.markdown().save(file, getContent());
+        return fileFactory.markdown().save(file, getContent(), saved);
     }
 
     public boolean saveAs() throws IOException {
-        return fileFactory.markdown().saveAs(file, getContent());
+        return fileFactory.markdown().saveAs(file, getContent(), saved);
     }
 
     public boolean saveHtml(boolean style) throws IOException {
@@ -236,6 +237,8 @@ public class EditorPane extends SplitPane {
                     return false;
             }
         }
+        getEditor().caretPositionProperty().removeListener(caretPositionListener);
+        getEditor().caretColumnProperty().removeListener(caretPositionListener);
         return true;
     }
 
@@ -326,11 +329,8 @@ public class EditorPane extends SplitPane {
     }
 
     private void syncScrollbars() {
-
         //TODO: learn how to sync the scroll bars. at any cost...
     }
-
-
 
     public void createSyncTimer(int duration) {
         covertTask = new Timeline(new KeyFrame(javafx.util.Duration.seconds(duration), (event2) -> {
@@ -344,10 +344,10 @@ public class EditorPane extends SplitPane {
     }
 
     public void createEditorHighlightSubscription(int duration) {
-        if(editorHightlightSubscription != null)
-            editorHightlightSubscription.unsubscribe();
+        if(editorHighlightSubscription != null)
+            editorHighlightSubscription.unsubscribe();
 
-        editorHightlightSubscription = editor.plainTextChanges()
+        editorHighlightSubscription = editor.plainTextChanges()
                 .filter(ch -> !ch.getInserted().equals(ch.getRemoved()))
                 .successionEnds(Duration.ofMillis(duration))
                 .subscribe(change -> {

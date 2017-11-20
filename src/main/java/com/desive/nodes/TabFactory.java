@@ -22,12 +22,12 @@ package com.desive.nodes;
 import com.desive.markdown.MarkdownParser;
 import com.desive.nodes.editor.EditorPane;
 import com.desive.nodes.editor.EditorTabPane;
-import com.desive.nodes.editor.toolbar.LineNumberPane;
-import com.desive.nodes.tabs.EditorTab;
-import com.desive.nodes.toolbars.EditorToolBar;
+import com.desive.nodes.editor.tabs.EditorTab;
+import com.desive.nodes.editor.toolbars.EditorToolBar;
+import com.desive.nodes.editor.toolbars.nodes.CaretPositionPane;
 import com.desive.stages.dialogs.DialogFactory;
-import com.desive.utilities.Dictionary;
 import com.desive.utilities.Utils;
+import com.desive.utilities.constants.Dictionary;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.scene.control.Tab;
@@ -62,7 +62,7 @@ public class TabFactory {
         addSampleEditorTab(); // temp
 
         // Reset the caret position pane on tab select
-        tabPane.getSelectionModel().selectedItemProperty().addListener((ov, oldTab, newTab) -> LineNumberPane.resetPosition(newTab != null ? ((EditorTab) newTab).getEditorPane() : null));
+        tabPane.getSelectionModel().selectedItemProperty().addListener((ov, oldTab, newTab) -> CaretPositionPane.resetPosition(newTab != null ? ((EditorTab) newTab).getEditorPane() : null));
 
     }
 

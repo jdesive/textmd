@@ -20,7 +20,7 @@
 package com.desive.utilities;
 
 import com.desive.nodes.TabFactory;
-import com.desive.nodes.tabs.EditorTab;
+import com.desive.nodes.editor.tabs.EditorTab;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
