@@ -77,10 +77,17 @@ public class TextMd extends Application{
         if(Settings.LOAD_FONTS_AT_RUNTIME) {
             logger.info("Using \'{}\' fonts", fonts.COURIER_PRIMAL_NAME);
             if(!fonts.fontExits(fonts.COURIER_PRIMAL_NAME)){
+                logger.info("Downloading fonts...");
+                Utils.printProgress(100, 1);
                 fonts.registerFont(fonts.COURIER_PRIMAL_URL, fonts.COURIER_PRIMAL_NAME);
+                Utils.printProgress(100, 25);
                 fonts.registerFont(fonts.COURIER_PRIMAL_ITALICS_URL, fonts.COURIER_PRIMAL_ITALICS_NAME);
+                Utils.printProgress(100, 50);
                 fonts.registerFont(fonts.COURIER_PRIMAL_BOLD_URL, fonts.COURIER_PRIMAL_BOLD_NAME);
+                Utils.printProgress(100, 75);
                 fonts.registerFont(fonts.COURIER_PRIMAL_BOLD_ITALICS_URL, fonts.COURIER_PRIMAL_BOLD_ITALICS_NAME);
+                Utils.printProgress(100, 100);
+                System.out.println();
             }
         } else {
             logger.info("Using \'{}\' font", fonts.COURIER_REGULAR_NAME);

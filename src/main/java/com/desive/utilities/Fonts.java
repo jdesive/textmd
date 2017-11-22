@@ -49,7 +49,6 @@ public class Fonts {
     }
 
     public void registerFont(String fontUrl, String name) {
-        logger.debug("Loading font \'{}\'", name);
         Font.loadFont(fontUrl, 14);
     }
 }

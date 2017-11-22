@@ -48,6 +48,7 @@ public class ExportToPdf extends SaveMachine{
         File file = fileChooser.showSaveDialog(primaryStage);
         if(file != null){
             timer.start();
+            System.out.println(markdownParser.convertToHTML(Utils.wrapWithHtmlDocType(content)));
             PdfConverterExtension.exportToPdf(
                     file.getAbsolutePath(),
                     markdownParser.convertToHTML(Utils.wrapWithHtmlDocType(content)),

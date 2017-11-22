@@ -22,6 +22,7 @@ package com.desive.utilities;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
+import java.util.Collections;
 import java.util.Scanner;
 
 /*
@@ -39,42 +40,56 @@ public class Utils {
         return Color.valueOf("f8f8f2");
     }
 
-    public static String getDefaultFileName(){
+    public static String getDefaultFileName() {
         return "untitled.md";
     }
 
-    public static String getHelpPageFileName(){
+    public static String getHelpPageFileName() {
         return "help.md";
     }
 
-    public static String getTestPageFileName(){
+    public static String getTestPageFileName() {
         return "test.md";
     }
 
-    public static String getSampleText(){
+    public static String getSampleText() {
         return new Scanner(loader.getResourceAsStream("assets/defaults/sample.md")).useDelimiter("\\Z").next();
     }
 
-    public static String getHelpText(){
+    public static String getHelpText() {
         return new Scanner(loader.getResourceAsStream("assets/defaults/help.md")).useDelimiter("\\Z").next();
     }
 
-    public static String getTestText(){
+    public static String getTestText() {
         return new Scanner(loader.getResourceAsStream("assets/defaults/test.md")).useDelimiter("\\Z").next();
     }
 
-    public static String getNewPageText(){
+    public static String getNewPageText() {
         return new Scanner(loader.getResourceAsStream("assets/defaults/new_page.md")).useDelimiter("\\Z").next();
     }
 
-    public static String getWebViewCss(String background){
+    public static String getWebViewCss(String background) {
         return new Scanner(loader.getResourceAsStream("css/editor_view.css"))
                 .useDelimiter("\\Z").next()
                 .replace("${code.background}", background);
     }
 
-    public static String wrapWithHtmlDocType(String content){
+    public static String wrapWithHtmlDocType(String content) {
         return "<!DOCTYPE html>\n<html>\n" + content + "\n</html>";
+    }
+
+    public static void printProgress(long total, long current) {
+        StringBuilder progressString = new StringBuilder(140);
+        int percent = (int) (current * 100 / total);
+        progressString.append('\r')
+                .append(String.join("", Collections.nCopies(percent == 0 ? 2 : 2 - (int) (Math.log10(percent)), " ")))
+                .append("[")
+                .append(String.join("", Collections.nCopies(percent, "=")))
+                .append(percent == 100 ? "=" : ">")
+                .append(String.join("", Collections.nCopies(100 - percent, " ")))
+                .append(String.format("] %d%%", percent))
+                .append(String.join("", Collections.nCopies((int) (Math.log10(total)) - (int) (Math.log10(current)), " ")));
+        System.out.print(progressString);
     }
 
 }

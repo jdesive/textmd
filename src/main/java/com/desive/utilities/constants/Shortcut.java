@@ -27,7 +27,7 @@ import javafx.scene.input.KeyCombination;
 public class Shortcut {
 
     public final static KeyCombination REFRESH_EDITOR_VIEW = KeyCombination.valueOf("F5"),
-            OPEN_SETTINGS_STAGE = KeyCombination.valueOf("SHORTCUT+ALT+S"),
+            OPEN_SETTINGS_STAGE = KeyCombination.valueOf("SHORTCUT+SHIFT+P"),
             UNDO_EDITOR = KeyCombination.valueOf("SHORTCUT+Z"),
             REDO_EDITOR = KeyCombination.valueOf("SHORTCUT+SHIFT+Z"),
             NEW_FILE_EDITOR = KeyCombination.valueOf("SHORTCUT+N"),

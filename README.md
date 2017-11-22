@@ -7,14 +7,14 @@ of your document as you type. The editor supports many extensions to help suppor
 There are many export types supported including PDF, Microsoft Word, and HTML. ( [Full list](#markdown-export-types) ) Please note that not all export types support extensions.
 
 ## Features
-* Simple Markdown highlighting
+* Simple Markdown syntax highlighting
 * Tabular view
 * Open from url
 * Export Markdown to multiple file types
 * Split view & live HTML rendering 
 * Source-code snippet formatter ( [Code-Prettify](https://github.com/google/code-prettify) )
 
-![Main Page](https://i.imgur.com/7Mk5iBn.png)
+![Main Page](https://i.imgur.com/jk2hxeo.png)
 
 ## Markdown Export Types
 * Microsoft Word Document (Docx)

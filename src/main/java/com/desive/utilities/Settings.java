@@ -38,7 +38,7 @@ public class Settings {
     public static int VIEW_REFRESH_RATE = 1;
 
     // Settings Editor
-    public static int EDITOR_HIGHLIGHT_REFRESH_RATE = 500;
+    public static int EDITOR_HIGHLIGHT_REFRESH_RATE = 50;
 
     // General Settings
     public static boolean LOAD_FONTS_AT_RUNTIME = true;

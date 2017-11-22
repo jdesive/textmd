@@ -17,28 +17,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.desive.nodes.editor.toolbars.menus.items.help;
+package com.desive.nodes.editor.toolbars.menus.items;
 
-import com.desive.nodes.editor.toolbars.menus.items.MdStageMenuItem;
-import com.desive.utilities.constants.Dictionary;
-import javafx.scene.input.KeyCombination;
+import javafx.scene.control.MenuItem;
 import javafx.stage.Stage;
 
 /*
- Created by Jack DeSive on 11/1/2017 at 9:54 PM
+ Created by Jack DeSive on 11/2/2017 at 8:59 PM
 */
-public class EditorSettingsItem extends MdStageMenuItem {
+public abstract class MdStageMenuItem extends MenuItem {
 
-    public EditorSettingsItem(Dictionary dictionary, KeyCombination accelerator, Stage stage) {
-        super(dictionary.TOOLBAR_EDITOR_SETTINGS_ITEM);
-        this.setAccelerator(accelerator);
-        this.setOnAction(event -> getClickAction(stage));
+    protected MdStageMenuItem(String text) {
+        super(text);
     }
 
-    @Override
-    public void getClickAction(final Stage stage) {
-        stage.centerOnScreen();
-        stage.show();
-    }
-
+    public abstract void getClickAction(final Stage stage);
 }
