@@ -275,7 +275,12 @@ public class EditorPane extends SplitPane {
                 MarkdownHighligher.computeSpellcheckHighlighting(matches, this);
                 editorToolBar.setActionText("Found " + matches.size() + " misspellings in the document \'" + file.getName() + "\' (" + timer.end() + "ms)");
             } catch (IOException e) {
-                e.printStackTrace(); // TODO: Exception Dialog
+                dialogFactory.buildExceptionDialogBox(
+                        dict.DIALOG_EXCEPTION_TITLE,
+                        dict.DIALOG_EXCEPTION_SPELLCHECK_CONTENT,
+                        e.getMessage(),
+                        e
+                );
             }
         });
 

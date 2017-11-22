@@ -19,6 +19,7 @@
 
 package com.desive.nodes.editor.toolbars.menus.items.help;
 
+import com.desive.nodes.TabFactory;
 import com.desive.nodes.editor.toolbars.menus.items.MdStageMenuItem;
 import com.desive.utilities.constants.Dictionary;
 import javafx.scene.input.KeyCombination;
@@ -29,14 +30,15 @@ import javafx.stage.Stage;
 */
 public class EditorSettingsItem extends MdStageMenuItem {
 
-    public EditorSettingsItem(Dictionary dictionary, KeyCombination accelerator, Stage stage) {
+    public EditorSettingsItem(Dictionary dictionary, KeyCombination accelerator, Stage stage, TabFactory tabFactory) {
         super(dictionary.TOOLBAR_EDITOR_SETTINGS_ITEM);
         this.setAccelerator(accelerator);
-        this.setOnAction(event -> getClickAction(stage));
+        this.setOnAction(event -> getClickAction(stage, tabFactory));
     }
 
     @Override
-    public void getClickAction(final Stage stage) {
+    public void getClickAction(final Stage stage, final TabFactory tabFactory) {
+        // TODO: Maybe lock the editor via tab factory?
         stage.centerOnScreen();
         stage.show();
     }

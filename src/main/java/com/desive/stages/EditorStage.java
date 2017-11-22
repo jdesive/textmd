@@ -69,7 +69,6 @@ public class EditorStage extends Stage {
         menuToolbar = new EditorMenuToolBar(tabFactory, dialogFactory, dictionary, toolBarMenus, markdownParser,this, settingsStage);
         toolBar = new EditorToolBar(dictionary, tabFactory);
         tabFactory.setEditorToolBar(toolBar);
-        //tabFactory.createAndAddNewEditorTab(new File(Utils.getDefaultFileName()), Utils.getSampleText());
 
         BorderPane root = new BorderPane(tabFactory.getTabPane());
         root.setTop(menuToolbar);
@@ -87,13 +86,6 @@ public class EditorStage extends Stage {
 
         this.setOnCloseRequest(event -> getOnCloseAction(tabFactory, event));
 
-    }
-
-    /*
-    TODO: Find a better way to pass toolbar to tab factory. Maybe we can initialize TabFactory here? Haven't looked at all
-     */
-    public EditorToolBar getToolBar() {
-        return toolBar;
     }
 
     private void getOnCloseAction(TabFactory tabFactory, Event event){

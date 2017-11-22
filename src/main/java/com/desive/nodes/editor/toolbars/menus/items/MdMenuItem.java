@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.desive.nodes.editor.toolbars.menus;
+package com.desive.nodes.editor.toolbars.menus.items;
 
 import com.desive.nodes.TabFactory;
 import javafx.scene.control.MenuItem;
@@ -25,11 +25,12 @@ import javafx.scene.control.MenuItem;
 /*
  Created by Jack DeSive on 11/2/2017 at 8:59 PM
 */
-public abstract class MdNewPageMenuItem extends MenuItem {
+public abstract class MdMenuItem extends MenuItem {
 
-    protected MdNewPageMenuItem(String text) {
+    protected MdMenuItem(String text) {
         super(text);
     }
 
     public abstract void getClickAction(final TabFactory tabFactory);
+
 }

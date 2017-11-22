@@ -96,7 +96,7 @@ public class EditorMenuToolBar extends MenuBar {
                 new EditorHelpPageItem(dictionary, tabFactory),
                 new EditorTestPageItem(dictionary, tabFactory),
                 new SeparatorMenuItem(),
-                new EditorSettingsItem(dictionary, OPEN_SETTINGS_STAGE, settingsStage)
+                new EditorSettingsItem(dictionary, OPEN_SETTINGS_STAGE, settingsStage, tabFactory)
         );
 
         this.log(dictionary.TOOLBAR_EDITOR_EXTENSIONS_MENU);

@@ -21,7 +21,7 @@ package com.desive.nodes.editor.toolbars.menus.items.view.extensions;
 
 import com.desive.markdown.MarkdownParser;
 import com.desive.nodes.TabFactory;
-import com.desive.nodes.editor.toolbars.menus.MdExtensionMenuItem;
+import com.desive.nodes.editor.toolbars.menus.items.MdExtensionMenuItem;
 import com.desive.utilities.constants.Dictionary;
 import com.vladsch.flexmark.Extension;
 import com.vladsch.flexmark.ext.wikilink.WikiLinkExtension;

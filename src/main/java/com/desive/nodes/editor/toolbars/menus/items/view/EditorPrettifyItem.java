@@ -21,7 +21,7 @@ package com.desive.nodes.editor.toolbars.menus.items.view;
 
 import com.desive.nodes.TabFactory;
 import com.desive.nodes.editor.tabs.EditorTab;
-import com.desive.nodes.editor.toolbars.menus.MdMenuItem;
+import com.desive.nodes.editor.toolbars.menus.items.MdMenuItem;
 import com.desive.utilities.constants.Dictionary;
 
 /*

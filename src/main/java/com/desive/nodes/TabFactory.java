@@ -19,6 +19,7 @@
 
 package com.desive.nodes;
 
+import com.desive.editor.exceptions.TabFactoryNotInitializedException;
 import com.desive.markdown.MarkdownParser;
 import com.desive.nodes.editor.EditorPane;
 import com.desive.nodes.editor.EditorTabPane;
@@ -72,9 +73,8 @@ public class TabFactory {
 
     public void createAndAddNewEditorTab(File file, String fileContent) {
 
-        if(editorToolBar == null) { // TODO throw some type of NotYetInitialized error
-            logger.error("Tried to add a new editor tab but the toolbar has not been initialized yet!");
-            return;
+        if(editorToolBar == null) {
+            throw new TabFactoryNotInitializedException();
         }
 
         EditorPane editorPane = new EditorPane(dictionary, dialogFactory, markdownParser, editorToolBar, ownerStage, fileContent);

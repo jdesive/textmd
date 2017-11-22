@@ -17,20 +17,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.desive.nodes.editor.toolbars.menus;
+package com.desive.nodes.editor.toolbars.menus.items;
 
 import com.desive.nodes.TabFactory;
+import com.desive.stages.dialogs.DialogFactory;
+import com.desive.utilities.constants.Dictionary;
 import javafx.scene.control.MenuItem;
 
 /*
  Created by Jack DeSive on 11/2/2017 at 8:59 PM
 */
-public abstract class MdMenuItem extends MenuItem {
+public abstract class MdPageMenuItem extends MenuItem {
 
-    protected MdMenuItem(String text) {
+    protected MdPageMenuItem(String text) {
         super(text);
     }
 
-    public abstract void getClickAction(final TabFactory tabFactory);
-
+    public abstract void getClickAction(final Dictionary dictionary, final TabFactory tabFactory, final DialogFactory dialogFactory);
 }

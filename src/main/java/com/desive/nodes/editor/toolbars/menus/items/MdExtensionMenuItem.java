@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.desive.nodes.editor.toolbars.menus;
+package com.desive.nodes.editor.toolbars.menus.items;
 
 import com.desive.markdown.MarkdownParser;
 import com.desive.nodes.TabFactory;

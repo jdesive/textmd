@@ -20,7 +20,7 @@
 package com.desive.nodes.editor.toolbars.menus.items.file;
 
 import com.desive.nodes.TabFactory;
-import com.desive.nodes.editor.toolbars.menus.MdNewPageMenuItem;
+import com.desive.nodes.editor.toolbars.menus.items.MdNewPageMenuItem;
 import com.desive.utilities.Utils;
 import com.desive.utilities.constants.Dictionary;
 import javafx.scene.input.KeyCombination;

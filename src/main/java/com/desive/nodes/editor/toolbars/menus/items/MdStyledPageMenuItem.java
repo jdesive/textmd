@@ -20,17 +20,18 @@
 package com.desive.nodes.editor.toolbars.menus.items;
 
 import com.desive.nodes.TabFactory;
+import com.desive.stages.dialogs.DialogFactory;
+import com.desive.utilities.constants.Dictionary;
 import javafx.scene.control.MenuItem;
-import javafx.stage.Stage;
 
 /*
  Created by Jack DeSive on 11/2/2017 at 8:59 PM
 */
-public abstract class MdStageMenuItem extends MenuItem {
+public abstract class MdStyledPageMenuItem extends MenuItem {
 
-    protected MdStageMenuItem(String text) {
-        super(text);
+    protected MdStyledPageMenuItem() {
+        super();
     }
 
-    public abstract void getClickAction(final Stage stage, final TabFactory tabFactory);
+    public abstract void getClickAction(final Dictionary dictionary, final TabFactory tabFactory, final DialogFactory dialogFactory, final boolean cssStyle);
 }

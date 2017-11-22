@@ -21,7 +21,7 @@ package com.desive.nodes.editor.toolbars.menus.items.file.export;
 
 import com.desive.nodes.TabFactory;
 import com.desive.nodes.editor.tabs.EditorTab;
-import com.desive.nodes.editor.toolbars.menus.MdStyledPageMenuItem;
+import com.desive.nodes.editor.toolbars.menus.items.MdStyledPageMenuItem;
 import com.desive.stages.dialogs.DialogFactory;
 import com.desive.utilities.constants.Dictionary;
 

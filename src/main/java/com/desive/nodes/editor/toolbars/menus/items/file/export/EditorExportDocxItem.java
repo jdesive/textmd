@@ -21,7 +21,7 @@ package com.desive.nodes.editor.toolbars.menus.items.file.export;
 
 import com.desive.nodes.TabFactory;
 import com.desive.nodes.editor.tabs.EditorTab;
-import com.desive.nodes.editor.toolbars.menus.MdPageMenuItem;
+import com.desive.nodes.editor.toolbars.menus.items.MdPageMenuItem;
 import com.desive.stages.dialogs.DialogFactory;
 import com.desive.utilities.constants.Dictionary;
 import org.docx4j.openpackaging.exceptions.Docx4JException;

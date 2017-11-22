@@ -128,6 +128,7 @@ public class Dictionary {
             DIALOG_EXCEPTION_SAVING_MARKDOWN_CONTENT = "Error saving Markdown",
             DIALOG_EXCEPTION_OPENING_MARKDOWN_CONTENT = "Error opening Markdown",
             DIALOG_EXCEPTION_OPENING_MARKDOWN_URL_CONTENT = "Error opening Markdown from URL",
+            DIALOG_EXCEPTION_SPELLCHECK_CONTENT = "Error spellchecking document",
             DIALOG_IMPORT_URL_TITLE = "Import from URL",
             DIALOG_IMPORT_URL_CONTENT = "Enter a url to pull markdown from.",
             DIALOG_EXPORT_SUCCESS_TITLE = "Exported Successfully",

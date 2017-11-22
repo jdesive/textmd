@@ -17,21 +17,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.desive.nodes.editor.toolbars.menus;
-
-import com.desive.nodes.TabFactory;
-import com.desive.stages.dialogs.DialogFactory;
-import com.desive.utilities.constants.Dictionary;
-import javafx.scene.control.MenuItem;
+package com.desive.editor.exceptions;
 
 /*
- Created by Jack DeSive on 11/2/2017 at 8:59 PM
+ Created by Jack DeSive on 11/21/2017 at 9:35 PM
 */
-public abstract class MdStyledPageMenuItem extends MenuItem {
+public class TabFactoryNotInitializedException extends RuntimeException {
 
-    protected MdStyledPageMenuItem() {
-        super();
+    public TabFactoryNotInitializedException() {
+        super("TabFactory is not initialized yet! You cannot add an tab until it is.");
     }
-
-    public abstract void getClickAction(final Dictionary dictionary, final TabFactory tabFactory, final DialogFactory dialogFactory, final boolean cssStyle);
 }
