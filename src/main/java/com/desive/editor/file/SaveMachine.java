@@ -19,11 +19,17 @@
 
 package com.desive.editor.file;
 
+import com.desive.markdown.MarkdownParser;
 import com.desive.nodes.editor.toolbars.EditorToolBar;
+import com.desive.utilities.Utils;
+import com.desive.utilities.constants.FileExtensionFilters;
 import com.desive.utilities.constants.Timer;
+import com.vladsch.flexmark.pdf.converter.PdfConverterExtension;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.docx4j.openpackaging.exceptions.Docx4JException;
 
+import javax.xml.bind.JAXBException;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -34,7 +40,7 @@ import java.io.PrintWriter;
 */
 public abstract class SaveMachine {
 
-    protected Timer timer = new Timer();
+    Timer timer = new Timer();
     protected Stage primaryStage;
     protected EditorToolBar toolbar;
 
@@ -54,6 +60,41 @@ public abstract class SaveMachine {
             PrintWriter writer = new PrintWriter(new FileWriter(file));
             writer.print(content);
             writer.close();
+            toolbar.setActionText(actionText + " in " + timer.end() + "ms");
+            return true;
+        }
+        return false;
+    }
+
+    protected boolean saveDocxFile(File contentFile, String content, String actionText, MarkdownParser markdownParser) throws JAXBException, Docx4JException {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setInitialDirectory(contentFile.getParentFile());
+        fileChooser.setInitialFileName(contentFile.getName().split("\\.")[0] + ".docx");
+        fileChooser.getExtensionFilters().add(FileExtensionFilters.DOCX);
+        File file = fileChooser.showSaveDialog(primaryStage);
+        if(file != null){
+            timer.start();
+            markdownParser.convertToDocx(content, file);
+            toolbar.setActionText(actionText + " in " + timer.end() + "ms");
+            return true;
+        }
+        return false;
+    }
+
+    protected  boolean savePdfFile(File contentFile, MarkdownParser markdownParser, String content, String actionText) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setInitialDirectory(contentFile.getParentFile());
+        fileChooser.setInitialFileName(contentFile.getName().split("\\.")[0] + ".pdf");
+        fileChooser.getExtensionFilters().add(FileExtensionFilters.PDF);
+        File file = fileChooser.showSaveDialog(primaryStage);
+        if(file != null){
+            timer.start();
+            PdfConverterExtension.exportToPdf(
+                    file.getAbsolutePath(),
+                    markdownParser.convertToHTML(Utils.wrapWithHtmlDocType(content)),
+                    "",
+                    markdownParser.getOptions()
+            );
             toolbar.setActionText(actionText + " in " + timer.end() + "ms");
             return true;
         }

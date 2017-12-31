@@ -46,11 +46,11 @@ import static java.lang.String.join;
 public class TextMd extends Application{
 
     private Fonts fonts;
-    private String ARTIFACT_ID = null, VERSION = null, NAME = null, GROUPID = null;
+    private String ARTIFACT_ID = null, VERSION = null, NAME = null, GROUP_ID = null;
     private final Logger logger = LoggerFactory.getLogger(TextMd.class);
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage) {
         primaryStage.close(); // Throw away the default stage
 
         loadPomVariables();
@@ -63,14 +63,12 @@ public class TextMd extends Application{
         loadUtilities();
         loadFonts();
 
-        logger.info("Starting {} v{}" , join(".", GROUPID, ARTIFACT_ID), VERSION);
+        logger.info("Starting {} v{}" , join(".", GROUP_ID, ARTIFACT_ID), VERSION);
 
         SettingsStage settingsStage = new SettingsStage(languageDictionary);
         EditorStage editorStage = new EditorStage(languageDictionary, dialogFactory, settingsStage);
         settingsStage.initOwner(editorStage);
         dialogFactory.initOwner(editorStage);
-
-        editorStage.show();
     }
 
     private void loadFonts(){
@@ -103,7 +101,7 @@ public class TextMd extends Application{
             ARTIFACT_ID = model.getArtifactId();
             VERSION = model.getVersion();
             NAME = model.getName();
-            GROUPID = model.getGroupId();
+            GROUP_ID = model.getGroupId();
         } catch (IOException | XmlPullParserException e) {
             e.printStackTrace();
         }

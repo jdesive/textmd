@@ -27,7 +27,7 @@ public class Dictionary {
     private static Dictionary instance;
 
     // Editor Stage
-    public String STAGE_EDITOR_TITLE = ""; // Set in constructor
+    public String STAGE_EDITOR_TITLE; // Set in constructor
     public final String STAGE_EDITOR_VIEW_SELECTOR_LABEL = "View: ",
             STAGE_EDITOR_VIEW_CODE_TOOLTIP = "Show editor only",
             STAGE_EDITOR_VIEW_VIEW_TOOLTIP = "Show view only",
@@ -132,15 +132,15 @@ public class Dictionary {
             DIALOG_IMPORT_URL_TITLE = "Import from URL",
             DIALOG_IMPORT_URL_CONTENT = "Enter a url to pull markdown from.",
             DIALOG_EXPORT_SUCCESS_TITLE = "Exported Successfully",
-            DIALOG_EXPORT_SUCCESS_HTML_CONTENT = "Exported HTML successfully.",
-            DIALOG_EXPORT_SUCCESS_HTML_CSS_CONTENT = "Exported HTML/CSS successfully.",
-            DIALOG_EXPORT_SUCCESS_DOCX_CONTENT = "Exported Docx successfully.",
-            DIALOG_EXPORT_SUCCESS_PDF_CONTENT = "Exported PDF successfully.",
-            DIALOG_EXPORT_SUCCESS_PDF_CSS_CONTENT = "Exported PDF/CSS successfully.",
-            DIALOG_EXPORT_SUCCESS_JIRA_CONTENT = "Exported JIRA formatted text successfully.",
-            DIALOG_EXPORT_SUCCESS_YOUTRACK_CONTENT = "Exported YouTrack formatted text successfully.",
-            DIALOG_EXPORT_SUCCESS_CONFLUENCE_CONTENT = "Exported Confluence markup successfully.",
-            DIALOG_EXPORT_SUCCESS_PLAIN_TEXT_CONTENT = "Exported Plain Text successfully.",
+            DIALOG_EXPORT_SUCCESS_HTML_CONTENT = "Exported HTML successfully",
+            DIALOG_EXPORT_SUCCESS_HTML_CSS_CONTENT = "Exported HTML/CSS successfully",
+            DIALOG_EXPORT_SUCCESS_DOCX_CONTENT = "Exported Docx successfully",
+            DIALOG_EXPORT_SUCCESS_PDF_CONTENT = "Exported PDF successfully",
+            DIALOG_EXPORT_SUCCESS_PDF_CSS_CONTENT = "Exported PDF/CSS successfully",
+            DIALOG_EXPORT_SUCCESS_JIRA_CONTENT = "Exported JIRA formatted text successfully",
+            DIALOG_EXPORT_SUCCESS_YOUTRACK_CONTENT = "Exported YouTrack formatted text successfully",
+            DIALOG_EXPORT_SUCCESS_CONFLUENCE_CONTENT = "Exported Confluence markup successfully",
+            DIALOG_EXPORT_SUCCESS_PLAIN_TEXT_CONTENT = "Exported Plain Text successfully",
             DIALOG_OPEN_URL_TITLE = "Open from URL",
             DIALOG_OPEN_URL_CONTENT = "Enter a url to pull markdown from.",
             DIALOG_FILE_NOT_SAVED_TITLE = "File is not saved!",

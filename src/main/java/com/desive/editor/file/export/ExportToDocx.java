@@ -22,14 +22,12 @@ package com.desive.editor.file.export;
 import com.desive.editor.file.SaveMachine;
 import com.desive.markdown.MarkdownParser;
 import com.desive.nodes.editor.toolbars.EditorToolBar;
-import com.desive.utilities.constants.FileExtensionFilters;
-import javafx.stage.FileChooser;
+import com.desive.utilities.constants.Dictionary;
 import javafx.stage.Stage;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
 
 import javax.xml.bind.JAXBException;
 import java.io.File;
-import java.io.IOException;
 
 /*
  Created by Jack DeSive on 11/18/2017 at 6:27 PM
@@ -40,23 +38,10 @@ public class ExportToDocx extends SaveMachine{
         super(primaryStage, toolbar);
     }
 
-    public boolean saveDocx(String text, File contentFile, MarkdownParser markdownParser) throws IOException, Docx4JException, JAXBException {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setInitialDirectory(contentFile.getParentFile());
-        fileChooser.setInitialFileName(contentFile.getName().split("\\.")[0] + ".docx");
-        fileChooser.getExtensionFilters().add(FileExtensionFilters.DOCX);
-        File file = fileChooser.showSaveDialog(primaryStage);
-        if(file != null){
-            timer.start();
-            markdownParser.convertToDocx(text, file);
-            toolbar.setActionText("Successfully exported docx file \'" + file.getName() + "\' in " + timer.end() + "ms");
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    protected boolean saveFile(File contentFile, FileChooser.ExtensionFilter ext, String content, String actionText) throws IOException {
-        return false;
+    public boolean saveDocx(String text, File contentFile, MarkdownParser markdownParser, Dictionary dictionary) throws Docx4JException, JAXBException {
+        return super.saveDocxFile(contentFile,
+                text,
+                dictionary.DIALOG_EXPORT_SUCCESS_DOCX_CONTENT,
+                markdownParser);
     }
 }

@@ -27,7 +27,6 @@ import com.desive.utilities.constants.Dictionary;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
 
 import javax.xml.bind.JAXBException;
-import java.io.IOException;
 
 /*
  Created by Jack DeSive on 11/1/2017 at 9:54 PM
@@ -50,7 +49,7 @@ public class EditorExportDocxItem extends MdPageMenuItem {
                         dictionary.DIALOG_EXPORT_SUCCESS_DOCX_CONTENT
                 ).showAndWait();
             }
-        } catch (IOException | Docx4JException | JAXBException e1) {
+        } catch (Docx4JException | JAXBException e1) {
             dialogFactory.buildExceptionDialogBox(
                     dictionary.DIALOG_EXCEPTION_TITLE,
                     dictionary.DIALOG_EXCEPTION_EXPORT_DOCX_CONTENT,

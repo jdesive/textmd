@@ -160,31 +160,31 @@ public class EditorPane extends SplitPane {
     }
 
     public boolean saveHtml(boolean style) throws IOException {
-        return fileFactory.html().save(file, style ? currentHtmlWithStyle : currentHtml);
+        return fileFactory.html().save(file, style ? currentHtmlWithStyle : currentHtml, style, dict);
     }
 
-    public boolean saveDocx() throws IOException, Docx4JException, JAXBException {
-        return fileFactory.office().saveDocx(getContent(), file, markdownParser);
+    public boolean saveDocx() throws Docx4JException, JAXBException {
+        return fileFactory.office().saveDocx(getContent(), file, markdownParser, dict);
     }
 
     public boolean savePdf(boolean style) throws IOException{
-        return fileFactory.pdf().save(file, markdownParser, style ? currentHtmlWithStyle : currentHtml);
+        return fileFactory.pdf().save(file, markdownParser, style ? currentHtmlWithStyle : currentHtml, style, dict);
     }
 
     public boolean saveJira() throws IOException{
-        return fileFactory.jira().save(file, markdownParser, getContent());
+        return fileFactory.jira().save(file, markdownParser, getContent(), dict);
     }
 
     public boolean saveYoutrack() throws IOException{
-        return fileFactory.youtrack().save(file, markdownParser, getContent());
+        return fileFactory.youtrack().save(file, markdownParser, getContent(), dict);
     }
 
     public boolean saveText() throws IOException{
-        return fileFactory.plainText().save(file, markdownParser, getContent());
+        return fileFactory.plainText().save(file, markdownParser, getContent(), dict);
     }
 
     public boolean saveConfluenceMarkup() throws IOException{
-        return fileFactory.confluence().save(file, markdownParser, getContent());
+        return fileFactory.confluence().save(file, markdownParser, getContent(), dict);
     }
 
     public void setView(EditorView view) {

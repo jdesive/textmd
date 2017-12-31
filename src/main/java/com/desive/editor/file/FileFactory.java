@@ -29,6 +29,7 @@ import javafx.stage.Stage;
 public class FileFactory {
 
     private SaveMarkdown saveMarkdown;
+
     private ExportToDocx exportToDocx;
     private ExportToPdf exportToPdf;
     private ExportToJira exportToJira;
@@ -39,6 +40,7 @@ public class FileFactory {
 
     public FileFactory(Stage primaryStage, EditorToolBar toolBar) {
         saveMarkdown = new SaveMarkdown(primaryStage, toolBar);
+
         exportToDocx = new ExportToDocx(primaryStage, toolBar);
         exportToPdf = new ExportToPdf(primaryStage, toolBar);
         exportToJira = new ExportToJira(primaryStage, toolBar);

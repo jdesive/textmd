@@ -9,9 +9,9 @@ There are many export types supported including PDF, Microsoft Word, and HTML. (
 ## Features
 * Simple Markdown syntax highlighting
 * Tabular view
-* Open from url
+* Open/Import from url or file
 * Export Markdown to multiple file types
-* Split view & live HTML rendering 
+* Split view with live HTML rendering 
 * Source-code snippet formatter ( [Code-Prettify](https://github.com/google/code-prettify) )
 
 ![Main Page](https://i.imgur.com/jk2hxeo.png)
@@ -49,4 +49,4 @@ Help -> Settings -> General -> Use Courier Primal
 This will download and load the fonts at runtime. You can also manually install the fonts if you don't want it to load at runtime.  
 
 ## Author
-*  JDeSive ([GitHub](http://linkshrink.net/79JCDO) | [LinkedIn](http://linkshrink.net/7FiiXP) | [Donate](https://paypal.me/Jdesive/5))
+*  JDeSive ([GitHub](http://github.com/jdesive) | [LinkedIn](https://www.linkedin.com/in/jack-desive-7aa819149/) | [Donate](https://paypal.me/Jdesive/5))

@@ -22,6 +22,7 @@ package com.desive.editor.file.export;
 import com.desive.editor.file.SaveMachine;
 import com.desive.markdown.MarkdownParser;
 import com.desive.nodes.editor.toolbars.EditorToolBar;
+import com.desive.utilities.constants.Dictionary;
 import com.desive.utilities.constants.FileExtensionFilters;
 import javafx.stage.Stage;
 
@@ -37,12 +38,12 @@ public class ExportToYoutrack extends SaveMachine{
         super(primaryStage, toolbar);
     }
 
-    public boolean save(File file, MarkdownParser markdownParser, String content) throws IOException {
+    public boolean save(File file, MarkdownParser markdownParser, String content, Dictionary dictionary) throws IOException {
         return super.saveFile(
                 file,
                 FileExtensionFilters.TEXT,
                 markdownParser.convertToYoutrack(content),
-                "Successfully exported youtrack file"
+                dictionary.DIALOG_EXPORT_SUCCESS_YOUTRACK_CONTENT
         );
     }
 }

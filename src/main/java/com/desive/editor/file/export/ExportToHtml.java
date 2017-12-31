@@ -22,6 +22,7 @@ package com.desive.editor.file.export;
 import com.desive.editor.file.SaveMachine;
 import com.desive.nodes.editor.toolbars.EditorToolBar;
 import com.desive.utilities.Utils;
+import com.desive.utilities.constants.Dictionary;
 import com.desive.utilities.constants.FileExtensionFilters;
 import javafx.stage.Stage;
 
@@ -37,12 +38,12 @@ public class ExportToHtml extends SaveMachine{
         super(primaryStage, toolbar);
     }
 
-    public boolean save(File file, String content) throws IOException {
+    public boolean save(File file, String content, boolean style, Dictionary dictionary) throws IOException {
         return super.saveFile(
                 file,
                 FileExtensionFilters.HTML,
                 Utils.wrapWithHtmlDocType(content),
-                "Successfully exported html file"
+                style ? dictionary.DIALOG_EXPORT_SUCCESS_HTML_CSS_CONTENT : dictionary.DIALOG_EXPORT_SUCCESS_HTML_CONTENT
         );
     }
 }

@@ -83,7 +83,6 @@
     -fx-background-insets: 0px;
 }
 
-
 .split-pane:horizontal .split-pane-divider {
     -fx-background-color: #545454;
 }
@@ -128,7 +127,6 @@
 .toolbar {
     -fx-border-width: 1 0 0 0;
 }
-
 
 .toolbar-view-selector-label {
     -fx-text-fill: #f8f8f2;

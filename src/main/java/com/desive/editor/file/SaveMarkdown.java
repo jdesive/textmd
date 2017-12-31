@@ -35,7 +35,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 */
 public class SaveMarkdown extends SaveMachine{
 
-    public SaveMarkdown(Stage primaryStage, EditorToolBar toolbar) {
+    SaveMarkdown(Stage primaryStage, EditorToolBar toolbar) {
         super(primaryStage, toolbar);
     }
 
@@ -65,11 +65,6 @@ public class SaveMarkdown extends SaveMachine{
             save(contentFile, content, saved);
             return true;
         }
-        return false;
-    }
-
-    @Override
-    protected boolean saveFile(File contentFile, FileChooser.ExtensionFilter ext, String content, String actionText) throws IOException {
         return false;
     }
 
